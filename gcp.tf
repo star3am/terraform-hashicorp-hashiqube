@@ -40,7 +40,7 @@ data "google_compute_subnetwork" "default" {
 }
 
 data "template_file" "hashiqube2_user_data" {
-  template = file("./startup_script")
+  template = file("${path.module}/startup_script")
   vars = {
     HASHIQUBE1_IP = aws_eip.hashiqube.public_ip
     HASHIQUBE2_IP = google_compute_address.static.address
