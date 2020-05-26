@@ -1,3 +1,10 @@
+resource "null_resource" "variables" {
+  triggers = {
+    location  = var.location
+    whitelist = var.whitelist
+  }
+}
+
 data "external" "myipaddress" {
   program = ["bash", "-c", "curl -s 'https://api.ipify.org?format=json'"]
 }

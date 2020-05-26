@@ -59,7 +59,7 @@ __Instructions on how to setup Cloud Account__: <br />
 | Name | Description | Type | Default | Required | Examples |
 |------|-------------|------|---------|----------|---------|
 | location | Name of the Cloud provider | `string` | `aws` | no | aws \| gcp |
-| whitelist | Whitelisted CIDRs | `list(string)` | `[]` | no | 0.0.0.0/0 | 
+| whitelist | Whitelisted CIDRs | `string` | `""` | no | 0.0.0.0/0 |
 
 #### Outputs
 

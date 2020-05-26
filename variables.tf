@@ -1,3 +1,13 @@
+variable "location" {
+  default     = "aws"
+  description = "Cloud where HashiQube will run"
+}
+
+variable "whitelist" {
+  default     = ""
+  description = "Whitelisted CIDRs"
+}
+
 variable "gcp_project" {
   default     = "thermal-formula-256223"
   description = "GCP project ID"
