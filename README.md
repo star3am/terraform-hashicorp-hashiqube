@@ -15,6 +15,7 @@ HashiQube has been created to enable anyone interested in secure automation pipe
 - [How do you use this module](#how-do-you-use-this-module)
     - [Prerequisites](#prerequisites)
     - [Module Inputs](#inputs)
+    - [Module Outputs](#outputs)
 
 ## What is a Terraform module
 A Terraform "module" refers to a self-contained package of Terraform configurations that are managed as a group.
@@ -26,7 +27,8 @@ A default HashiQube can be provisioned by creating a file _main.tf_ in an empty 
 ```terraform
 module "hashiqube" {
   source   = "star3am/terraform-hashicorp-hashiqube"
-  provider = "aws"
+  location  = "aws"
+  whitelist = ""
 }
 ```
 
@@ -50,9 +52,6 @@ __Instructions on how to setup a SSH Key pair__: <br />
 __Instructions on how to setup Cloud Account__: <br />
 [Google Cloud Installation and Setup](https://cloud.google.com/deployment-manager/docs/step-by-step-guide/installation-and-setup)<br />
 [AWS Cloud Installation and Setup](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
-
-
-
 
 #### Inputs
 
