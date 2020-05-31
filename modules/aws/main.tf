@@ -1,5 +1,20 @@
 # https://www.terraform.io/docs/providers/aws/r/instance.html
 
+resource "null_resource" "variables" {
+  triggers = {
+    location  = var.location
+    whitelist = var.whitelist
+  }
+}
+
+data "external" "myipaddress" {
+  program = ["bash", "-c", "curl -sk 'https://api.ipify.org?format=json'"]
+}
+
+output "OnPrem_hashiqube0-service-consul" {
+  value = data.external.myipaddress.result.ip
+}
+
 provider "aws" {
   region                  = "ap-southeast-2"
   shared_credentials_file = "~/.aws/credentials"
@@ -67,11 +82,10 @@ resource "aws_iam_role_policy" "hashiqube" {
 EOF
 }
 
-data "template_file" "hashiqube1_user_data" {
-  template = file("${path.module}/startup_script")
+data "template_file" "hashiqube_user_data" {
+  template = file("../../modules/shared/startup_script")
   vars = {
-    HASHIQUBE1_IP = aws_eip.hashiqube.public_ip
-    HASHIQUBE2_IP = google_compute_address.static.address
+    HASHIQUBE_IP = aws_eip.hashiqube.public_ip
   }
 }
 
@@ -83,7 +97,7 @@ resource "aws_instance" "hashiqube" {
 
   key_name  = aws_key_pair.hashiqube.key_name
   # user_data = file("./startup_script")
-  user_data = data.template_file.hashiqube1_user_data.rendered
+  user_data = data.template_file.hashiqube_user_data.rendered
 
   iam_instance_profile = aws_iam_instance_profile.hashiqube.name
 
@@ -110,16 +124,8 @@ resource "aws_security_group" "hashiqube" {
   ingress {
     from_port   = 0
     to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["${google_compute_address.static.address}/32"]
-    description = "HASHIQUBE2_IP"
-  }
-
-  ingress {
-    from_port   = 0
-    to_port     = 65535
     protocol    = "udp"
-    cidr_blocks = ["${data.external.myipaddress.result.ip}/32", "${google_compute_address.static.address}/32"]
+    cidr_blocks = ["${data.external.myipaddress.result.ip}/32"]
   }
 
   egress {
@@ -139,26 +145,26 @@ resource "aws_eip" "hashiqube" {
   vpc = true
 }
 
-output "AWS_hashiqube1-service-consul" {
+output "AWS_hashiqube-service-consul" {
   value = aws_eip.hashiqube.public_ip
 }
 
-output "AWS_hashiqube1-ssh-service-consul" {
+output "AWS_hashiqube-ssh-service-consul" {
   value = "ssh ubuntu@${aws_eip.hashiqube.public_ip}"
 }
 
-output "AWS_hashiqube1-consul-service-consul" {
+output "AWS_hashiqube-consul-service-consul" {
   value = "http://${aws_eip.hashiqube.public_ip}:8500"
 }
 
-output "AWS_hashiqube1-nomad-service-consul" {
+output "AWS_hashiqube-nomad-service-consul" {
   value = "http://${aws_eip.hashiqube.public_ip}:4646"
 }
 
-output "AWS_hashiqube1-vault-service-consul" {
+output "AWS_hashiqube-vault-service-consul" {
   value = "http://${aws_eip.hashiqube.public_ip}:8200"
 }
 
-output "AWS_hashiqube1-fabio-ui-service-consul" {
+output "AWS_hashiqube-fabio-ui-service-consul" {
   value = "http://${aws_eip.hashiqube.public_ip}:9998"
 }

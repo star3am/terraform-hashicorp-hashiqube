@@ -1,6 +1,21 @@
 # https://www.terraform.io/docs/providers/google/r/compute_instance.html
 # https://github.com/terraform-providers/terraform-provider-google/blob/master/examples/internal-load-balancing/main.tf
 
+resource "null_resource" "variables" {
+  triggers = {
+    location  = var.location
+    whitelist = var.whitelist
+  }
+}
+
+data "external" "myipaddress" {
+  program = ["bash", "-c", "curl -sk 'https://api.ipify.org?format=json'"]
+}
+
+output "OnPrem_hashiqube0-service-consul" {
+  value = data.external.myipaddress.result.ip
+}
+
 provider "google" {
   credentials = file("~/.gcp/credentials.json")
   project     = var.gcp_project
@@ -40,10 +55,9 @@ data "google_compute_subnetwork" "default" {
 }
 
 data "template_file" "hashiqube2_user_data" {
-  template = file("${path.module}/startup_script")
+  template = file("../../modules/shared/startup_script")
   vars = {
-    HASHIQUBE1_IP = aws_eip.hashiqube.public_ip
-    HASHIQUBE2_IP = google_compute_address.static.address
+    HASHIQUBE_IP = google_compute_address.static.address
   }
 }
 
@@ -72,7 +86,7 @@ resource "google_compute_instance_template" "hashiqube" {
   }
 
   # metadata_startup_script = file("./startup_script")
-  metadata_startup_script = data.template_file.hashiqube2_user_data.rendered
+  metadata_startup_script = data.template_file.hashiqube_user_data.rendered
 
   metadata = {
     ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
@@ -115,26 +129,7 @@ resource "google_compute_firewall" "hashiqube" {
     ports    = ["0-65535"]
   }
 
-  source_ranges = ["${data.external.myipaddress.result.ip}/32", "${aws_eip.hashiqube.public_ip}/32"]
-}
-
-resource "google_compute_firewall" "hashiqube1" {
-  name    = "${var.gcp_cluster_name}-hashiqube1"
-  network = "default"
-  project = var.gcp_project
-
-  allow {
-    protocol = "tcp"
-    ports    = ["0-65535"]
-  }
-
-  allow {
-    protocol = "udp"
-    ports    = ["0-65535"]
-  }
-
-  source_ranges = ["${aws_eip.hashiqube.public_ip}/32"]
-  description   = "HASHIQUBE1_IP"
+  source_ranges = ["${data.external.myipaddress.result.ip}/32"]
 }
 
 resource "google_service_account" "consul_compute" {
@@ -149,26 +144,26 @@ resource "google_project_iam_member" "compute_policy" {
   member  = "serviceAccount:${google_service_account.consul_compute.email}"
 }
 
-output "GCP_hashiqube2-service-consul" {
+output "GCP_hashiqube-service-consul" {
   value = google_compute_address.static.address
 }
 
-output "GCP_hashiqube2-ssh-service-consul" {
+output "GCP_hashiqube-ssh-service-consul" {
   value = "ssh ubuntu@${google_compute_address.static.address}"
 }
 
-output "GCP_hashiqube2-consul-service-consul" {
+output "GCP_hashiqube-consul-service-consul" {
   value = "http://${google_compute_address.static.address}:8500"
 }
 
-output "GCP_hashiqube2-nomad-service-consul" {
+output "GCP_hashiqube-nomad-service-consul" {
   value = "http://${google_compute_address.static.address}:4646"
 }
 
-output "GCP_hashiqube2-vault-service-consul" {
+output "GCP_hashiqube-vault-service-consul" {
   value = "http://${google_compute_address.static.address}:8200"
 }
 
-output "GCP_hashiqube2-fabio-ui-service-consul" {
+output "GCP_hashiqube-fabio-ui-service-consul" {
   value = "http://${google_compute_address.static.address}:9998"
 }
