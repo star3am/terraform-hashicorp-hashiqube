@@ -11,10 +11,6 @@ data "external" "myipaddress" {
   program = ["bash", "-c", "curl -sk 'https://api.ipify.org?format=json'"]
 }
 
-output "OnPrem_hashiqube0-service-consul" {
-  value = data.external.myipaddress.result.ip
-}
-
 provider "aws" {
   region                  = "ap-southeast-2"
   shared_credentials_file = "~/.aws/credentials"
@@ -95,9 +91,9 @@ resource "aws_instance" "hashiqube" {
 
   security_groups = [aws_security_group.hashiqube.name]
 
-  key_name  = aws_key_pair.hashiqube.key_name
+  key_name    = aws_key_pair.hashiqube.key_name
   # user_data = file("./startup_script")
-  user_data = data.template_file.hashiqube_user_data.rendered
+  user_data   = data.template_file.hashiqube_user_data.rendered
 
   iam_instance_profile = aws_iam_instance_profile.hashiqube.name
 
