@@ -1,5 +1,5 @@
 variable "location" {
-  default     = "aws"
+  default     = "gcp"
   description = "Cloud where HashiQube will run"
 }
 

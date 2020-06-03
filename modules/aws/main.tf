@@ -1,12 +1,5 @@
 # https://www.terraform.io/docs/providers/aws/r/instance.html
 
-resource "null_resource" "variables" {
-  triggers = {
-    location  = var.location
-    whitelist = var.whitelist
-  }
-}
-
 data "external" "myipaddress" {
   program = ["bash", "-c", "curl -sk 'https://api.ipify.org?format=json'"]
 }
@@ -78,7 +71,7 @@ resource "aws_iam_role_policy" "hashiqube" {
 EOF
 }
 
-data "template_file" "hashiqube_user_data" {
+data "template_file" "hashiqube" {
   template = file("../../modules/shared/startup_script")
   vars = {
     HASHIQUBE_IP = aws_eip.hashiqube.public_ip
@@ -93,7 +86,7 @@ resource "aws_instance" "hashiqube" {
 
   key_name    = aws_key_pair.hashiqube.key_name
   # user_data = file("./startup_script")
-  user_data   = data.template_file.hashiqube_user_data.rendered
+  user_data   = data.template_file.hashiqube.rendered
 
   iam_instance_profile = aws_iam_instance_profile.hashiqube.name
 

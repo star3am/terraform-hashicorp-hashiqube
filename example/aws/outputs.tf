@@ -1,23 +1,23 @@
-output "AWS_hashiqube-service-consul" {
-  value = "${module.aws.aws_eip.hashiqube.public_ip}"
+output "hashiqube-01-ip" {
+  value = "${module.aws.hashiqube_ip}"
 }
 
-output "AWS_hashiqube-ssh-service-consul" {
-  value = "ssh ubuntu@${module.aws.aws_eip.hashiqube.public_ip}"
+output "hashiqube-02-ssh" {
+  value = "ssh ubuntu@${module.aws.hashiqube_ip}"
 }
 
-output "AWS_hashiqube-consul-service-consul" {
-  value = "http://${module.aws.aws_eip.hashiqube.public_ip}:8500"
+output "hashiqube-03-consul" {
+  value = "http://${module.aws.hashiqube_ip}:8500"
 }
 
-output "AWS_hashiqube-nomad-service-consul" {
-  value = "http://${module.aws.aws_eip.hashiqube.public_ip}:4646"
+output "hashiqube-04-nomad" {
+  value = "http://${module.aws.hashiqube_ip}:4646"
 }
 
-output "AWS_hashiqube-vault-service-consul" {
-  value = "http://${module.aws.aws_eip.hashiqube.public_ip}:8200"
+output "hashiqube-05-vault" {
+  value = "http://${module.aws.hashiqube_ip}:8200"
 }
 
-output "AWS_hashiqube-fabio-ui-service-consul" {
-  value = "http://${module.aws.aws_eip.hashiqube.public_ip}:9998"
+output "hashiqube-06-fabio" {
+  value = "http://${module.aws.hashiqube_ip}:9998"
 }
