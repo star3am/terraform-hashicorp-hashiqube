@@ -6,7 +6,7 @@ data "external" "myipaddress" {
 }
 
 provider "google" {
-  credentials = file("~/.gcp/credentials.json")
+  credentials = file(var.gcp_credentials)
   project     = var.gcp_project
   region      = var.gcp_region
 }

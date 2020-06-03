@@ -515,12 +515,12 @@ EOF
   else
     sed -i "s/VAULT_ADDR=.*/VAULT_ADDR=http://127.0.0.1:8200/g" /etc/environment
   fi
-echo -e '\e[38;5;198m'"++++ Vault http://$INSTANCE_IP:8200"
+  echo -e '\e[38;5;198m'"++++ Vault http://$INSTANCE_IP:8200"
 }
 
+vault-install
 consul-install
 nomad-install
-vault-install
 
 # check whos listening on what
 lsof -nPi

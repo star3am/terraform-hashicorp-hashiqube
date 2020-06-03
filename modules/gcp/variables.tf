@@ -13,6 +13,11 @@ variable "gcp_project" {
   description = "GCP project ID"
 }
 
+variable "gcp_credentials" {
+  default     = ""
+  description = "GCP credentials file location"
+}
+
 variable "gcp_cluster_name" {
   default     = "consul"
   description = "Cluster name"
