@@ -19,7 +19,7 @@ output "hashiqube-05-vault" {
 Run the folowing command to get the Initial Root Token for Vault
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q ubuntu@${module.aws.hashiqube_ip} "grep 'Root Token' /etc/vault/init.file | cut -d ':' -f2 | tr -d ' '"
 Copy the Initial Root Token for Vault and use it to login at the Vault address below
-http://${module.gcp.hashiqube_ip}:8200
+http://${module.aws.hashiqube_ip}:8200
   VAULT
 }
 
