@@ -1,31 +1,26 @@
-variable "location" {
-  default     = "gcp"
-  description = "Cloud where HashiQube will run"
-}
-
 variable "whitelist" {
   default     = ""
   description = "Whitelisted CIDRs"
 }
 
 variable "gcp_project" {
-  default     = "thermal-formula-256223"
+  default     = ""
   description = "GCP project ID"
 }
 
 variable "gcp_cluster_name" {
-  default     = "consul"
+  default     = "hashiqube"
   description = "Cluster name"
 }
 
 variable "gcp_cluster_description" {
-  default     = "Consul cluster for multicloud demo"
+  default     = "hashiqube"
   description = "the description for the cluster"
 }
 
 variable "gcp_cluster_tag_name" {
-  default     = "consul-cluster"
-  description = "Cluster tag to apply"
+  default     = "hashiqube"
+  description = "cluster tag to apply"
 }
 
 variable "gcp_cluster_size" {
@@ -34,8 +29,8 @@ variable "gcp_cluster_size" {
 }
 
 variable "gcp_region" {
-  description = "The region in which all GCP resources will be launched"
   default     = "australia-southeast1"
+  description = "The region in which all GCP resources will be launched"
 }
 
 variable "gcp_zones" {
