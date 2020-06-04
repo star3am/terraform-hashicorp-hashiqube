@@ -1,13 +1,13 @@
 # https://www.terraform.io/docs/providers/aws/r/instance.html
 
-data "external" "myipaddress" {
-  program = ["bash", "-c", "curl -sk 'https://api.ipify.org?format=json'"]
-}
-
 provider "aws" {
   region                  = "ap-southeast-2"
   shared_credentials_file = "~/.aws/credentials"
   profile                 = "default"
+}
+
+data "external" "myipaddress" {
+  program = ["bash", "-c", "curl -sk 'https://api.ipify.org?format=json'"]
 }
 
 data "aws_ami" "ubuntu" {

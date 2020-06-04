@@ -1,44 +1,53 @@
 variable "gcp_project" {
+  type        = string
   default     = ""
   description = "GCP project ID"
 }
 
 variable "gcp_credentials" {
+  type        = string
   default     = ""
   description = "GCP credentials file location"
 }
 
 variable "ssh_public_key" {
+  type        = string
   default     = ""
   description = "SSH public key that HashiQube will be bootstrapped with"
 }
 
 variable "whitelist" {
+  type        = string
   default     = ""
   description = "Whitelisted CIDRs"
 }
 
 variable "gcp_cluster_name" {
-  default     = "consul"
+  type        = string
+  default     = "hashiqube"
   description = "Cluster name"
 }
 
 variable "gcp_cluster_description" {
-  default     = "Consul cluster for multicloud demo"
+  type        = string
+  default     = "hashiqube"
   description = "the description for the cluster"
 }
 
 variable "gcp_cluster_tag_name" {
-  default     = "consul-cluster"
+  type        = string
+  default     = "hashiqube-cluster"
   description = "Cluster tag to apply"
 }
 
 variable "gcp_cluster_size" {
+  type        = number
   default     = 1
   description = "size of the cluster"
 }
 
 variable "gcp_region" {
+  type        = string
   description = "The region in which all GCP resources will be launched"
   default     = "australia-southeast1"
 }
@@ -55,6 +64,7 @@ variable "gcp_zones" {
 }
 
 variable "gcp_machine_type" {
+  type    = string
   default = "n1-standard-1"
 }
 
@@ -65,11 +75,13 @@ variable "gcp_custom_metadata" {
 }
 
 variable "gcp_root_volume_disk_size_gb" {
-  description = "The size, in GB, of the root disk volume on each Consul node"
+  type        = number
+  description = "The size, in GB, of the root disk volume on each HashiQube node"
   default     = 16
 }
 
 variable "gcp_root_volume_disk_type" {
+  type        = string
   description = "The GCE disk type. Can be either pd-ssd, local-ssd, or pd-standard"
   default     = "pd-standard"
 }
