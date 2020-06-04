@@ -1,21 +1,21 @@
-variable "location" {
-  default     = "gcp"
-  description = "Cloud where HashiQube will run"
-}
-
-variable "whitelist" {
-  default     = ""
-  description = "Whitelisted CIDRs"
-}
-
 variable "gcp_project" {
-  default     = "thermal-formula-256223"
+  default     = ""
   description = "GCP project ID"
 }
 
 variable "gcp_credentials" {
   default     = ""
   description = "GCP credentials file location"
+}
+
+variable "ssh_public_key" {
+  default     = ""
+  description = "SSH public key that HashiQube will be bootstrapped with"
+}
+
+variable "whitelist" {
+  default     = ""
+  description = "Whitelisted CIDRs"
 }
 
 variable "gcp_cluster_name" {

@@ -1,14 +1,14 @@
 # https://www.terraform.io/docs/providers/google/r/compute_instance.html
 # https://github.com/terraform-providers/terraform-provider-google/blob/master/examples/internal-load-balancing/main.tf
 
-data "external" "myipaddress" {
-  program = ["bash", "-c", "curl -sk 'https://api.ipify.org?format=json'"]
-}
-
 provider "google" {
   credentials = file(var.gcp_credentials)
   project     = var.gcp_project
   region      = var.gcp_region
+}
+
+data "external" "myipaddress" {
+  program = ["bash", "-c", "curl -sk 'https://api.ipify.org?format=json'"]
 }
 
 resource "google_compute_region_instance_group_manager" "hashiqube" {
@@ -77,7 +77,7 @@ resource "google_compute_instance_template" "hashiqube" {
   metadata_startup_script = data.template_file.hashiqube.rendered
 
   metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
+    ssh-keys = "ubuntu:${file(var.ssh_public_key)}"
   }
 
   network_interface {
