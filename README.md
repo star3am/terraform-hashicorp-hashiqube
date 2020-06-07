@@ -49,9 +49,7 @@ __You can just clone this repo, and change directory to example/aws or example/g
 
 You can then apply this Terraform configuration via:
 
-```bash
-terraform init
-```
+`terraform init`
 
 ```
 Initializing modules...
@@ -88,9 +86,7 @@ rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 ```
 
-```bash
-terraform apply --auto-approve
-```
+`terraform apply --auto-approve`
 
 ```
 module.gcp-hashiqube.data.external.myipaddress: Refreshing state...
