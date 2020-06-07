@@ -1,9 +1,9 @@
 # https://www.terraform.io/docs/providers/aws/r/instance.html
 
 provider "aws" {
-  region                  = "ap-southeast-2"
-  shared_credentials_file = "~/.aws/credentials"
-  profile                 = "default"
+  region                  = var.aws_region
+  shared_credentials_file = file(var.aws_credentials)
+  profile                 = var.aws_profile
 }
 
 data "external" "myipaddress" {
@@ -80,12 +80,11 @@ data "template_file" "hashiqube" {
 
 resource "aws_instance" "hashiqube" {
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.medium"
+  instance_type = var.aws_instance_type
 
   security_groups = [aws_security_group.hashiqube.name]
 
   key_name    = aws_key_pair.hashiqube.key_name
-  # user_data = file("./startup_script")
   user_data   = data.template_file.hashiqube.rendered
 
   iam_instance_profile = aws_iam_instance_profile.hashiqube.name
@@ -97,7 +96,7 @@ resource "aws_instance" "hashiqube" {
 
 resource "aws_key_pair" "hashiqube" {
   key_name   = "hashiqube"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = file(var.ssh_public_key)
 }
 
 resource "aws_security_group" "hashiqube" {
