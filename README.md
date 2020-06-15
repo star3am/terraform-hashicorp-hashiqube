@@ -132,26 +132,26 @@ hashiqube-07-fabio = http://34.87.228.156:9998
 ```
 
 Now that HashiQube is up, let's SSH into the instance. 
-![HashiQube SSH](images/hashiqube-03-ssh.png?raw=true "HashiQube SSH")
+![HashiQube SSH](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-03-ssh.png?raw=true "HashiQube SSH")
 
 Now we can retrieve Vault's Initial Root Token, so let's do that. 
 `ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q ubuntu@34.87.228.156 "grep 'Root Token' /etc/vault/init.file | cut -d ':' -f2 | tr -d ' '"`
-![HashiQube SSH](images/hashiqube-06-vault_initial-root-token.png?raw=true "HashiQube SSH")
+![HashiQube SSH](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-06-vault_initial-root-token.png?raw=true "HashiQube SSH")
 
 Now that we have Vault's Initial Root Token, let's navigate to Vault's login page
-![HashiQube Login](images/hhashiqube-06-vault_initial-login.png?raw=true "HashiQube Login")
+![HashiQube Login](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-06-vault_initial-login.png?raw=true "HashiQube Login")
 
 We can now enter Vault's Initial Root Token to login
-![HashiQube Logged in](images/hashiqube-06-vault_initial-logged-in.png?raw=true "HashiQube Logged in")
+![HashiQube Logged in](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-06-vault_initial-logged-in.png?raw=true "HashiQube Logged in")
 
 We can access Hashicorp Consul
-![Consul](images/hashiqube-04-consul.png?raw=true "Consul")
+![Consul](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-04-consul.png?raw=true "Consul")
 
 We can also access Hashicorp Nomad
-![Nomad](images/hashiqube-05-nomad.png?raw=true "Nomad")
+![Nomad](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-05-nomad.png?raw=true "Nomad")
 
 We can also access Fabio Load Balancer, running as a Nomad job
-![Fabio](images/hashiqube-07-fabio.png?raw=true "Fabio")
+![Fabio](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-07-fabio.png?raw=true "Fabio")
 
 ### Prerequisites
 

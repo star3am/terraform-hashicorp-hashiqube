@@ -1,6 +1,16 @@
 # https://www.terraform.io/docs/providers/google/r/compute_instance.html
 # https://github.com/terraform-providers/terraform-provider-google/blob/master/examples/internal-load-balancing/main.tf
 
+resource "null_resource" "hashiqube" {
+  triggers = {
+    gcp_project     = var.gcp_project
+    gcp_credentials = var.gcp_credentials
+    ssh_public_key  = var.ssh_public_key
+    vault_enabled   = lookup(var.vault, "enabled")
+    vault_version   = lookup(var.vault, "version")
+  }
+}
+
 provider "google" {
   credentials = file(var.gcp_credentials)
   project     = var.gcp_project
@@ -46,7 +56,8 @@ data "google_compute_subnetwork" "hashiqube" {
 data "template_file" "hashiqube" {
   template = file("../../modules/shared/startup_script")
   vars = {
-    HASHIQUBE_IP = google_compute_address.hashiqube.address
+    HASHIQUBE_IP  = google_compute_address.hashiqube.address
+    VAULT_ENABLED = lookup(var.vault, "enabled")
   }
 }
 

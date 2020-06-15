@@ -85,3 +85,12 @@ variable "gcp_root_volume_disk_type" {
   description = "The GCE disk type. Can be either pd-ssd, local-ssd, or pd-standard"
   default     = "pd-standard"
 }
+
+variable "vault" {
+  type = map
+  description = "vault configuration"
+  default = {
+    enabled = true
+    version = "1.4.2"
+  }
+}
