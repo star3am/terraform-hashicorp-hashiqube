@@ -54,7 +54,7 @@ data "google_compute_subnetwork" "hashiqube" {
 }
 
 data "template_file" "hashiqube" {
-  template = file("../../modules/shared/startup_script")
+  template = file("${path.module}/../../modules/shared/startup_script")
   vars = {
     HASHIQUBE_IP  = google_compute_address.hashiqube.address
     VAULT_ENABLED = lookup(var.vault, "enabled")

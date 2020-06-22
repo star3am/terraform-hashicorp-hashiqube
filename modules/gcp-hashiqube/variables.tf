@@ -91,6 +91,6 @@ variable "vault" {
   description = "vault configuration"
   default = {
     enabled = true
-    version = "1.4.2"
+    version = "latest"
   }
 }

@@ -72,7 +72,7 @@ EOF
 }
 
 data "template_file" "hashiqube" {
-  template = file("../../modules/shared/startup_script")
+  template = file("${path.module}/../../modules/shared/startup_script")
   vars = {
     HASHIQUBE_IP = aws_eip.hashiqube.public_ip
   }
