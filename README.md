@@ -1,5 +1,5 @@
 # terraform-hashicorp-hashiqube
-Terraform Registry Module for HashiQube 
+Terraform Registry Module for HashiQube - a Development Lab using all the HashiCorp Products.
 
 This repo contains a [Terraform](https://www.terraform.io/) module for provisioning [HashiQube](https://servian.github.io/hashiqube) <br />
 A __Development__ lab running all [HashiCorp](https://www.hashicorp.com/) products.
@@ -8,8 +8,10 @@ __DO NOT USE HASHIQUBE IN PRODUCTION__
 
 [HashiQube at HashiTalks 2020](https://www.hashicorp.com/resources/hashiqube-a-development-lab-using-all-the-hashicorp-products/)
 
+[HashiQube Website](https://servian.github.io/hashiqube)
+
 ## Purpose
-HashiQube has been created to enable anyone interested in secure automation pipelines the ability to run a suite of 'best in class' tools their local machines or in the cloud  at the cost of a small number of system resources. HashiQube gives all interested parties the empowerment to deploy these tools in a way covers multiple use cases effectively providing a 'concept to completion' testbed using open-source HashiCorp products.
+HashiQube has been created to help developers and engineers to get up to speed with HashiCorp products. It can be used for development, testing or training. HashiQube gives all interested parties the empowerment to deploy these tools in a way covers multiple use cases effectively providing a 'concept to completion' testbed using open-source HashiCorp products.
 
 - [What is a Terraform module](#what-is-a-terraform-module)
 - [How do you use this module](#how-do-you-use-this-module)

@@ -1,13 +1,22 @@
 # https://www.terraform.io/docs/providers/aws/r/instance.html
 
-provider "aws" {
-  region                  = var.aws_region
-  shared_credentials_file = file(var.aws_credentials)
-  profile                 = var.aws_profile
+locals {
+  cluster_ips = join(", ", flatten(["${var.azure_hashiqube_ip}", "${var.gcp_hashiqube_ip}" ]))
 }
 
-data "external" "myipaddress" {
-  program = ["bash", "-c", "curl -sk 'https://api.ipify.org?format=json'"]
+resource "null_resource" "hashiqube" {
+  triggers = {
+    deploy_to_aws      = var.deploy_to_aws
+    deploy_to_azure    = var.deploy_to_azure
+    deploy_to_gcp      = var.deploy_to_gcp
+    whitelist_cidr     = var.whitelist_cidr
+    my_ipaddress       = var.my_ipaddress
+    ssh_public_key     = var.ssh_public_key
+    azure_hashiqube_ip = var.azure_hashiqube_ip
+    gcp_hashiqube_ip   = var.gcp_hashiqube_ip
+    vault_enabled      = lookup(var.vault, "enabled")
+    vault_version      = lookup(var.vault, "version")
+  }
 }
 
 data "aws_ami" "ubuntu" {
@@ -74,21 +83,19 @@ EOF
 data "template_file" "hashiqube" {
   template = file("${path.module}/../../modules/shared/startup_script")
   vars = {
-    HASHIQUBE_IP = aws_eip.hashiqube.public_ip
+    HASHIQUBE_IP  = aws_eip.hashiqube.public_ip
+    CLUSTER_IPS   = local.cluster_ips
+    VAULT_ENABLED = lookup(var.vault, "enabled")
   }
 }
 
 resource "aws_instance" "hashiqube" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = var.aws_instance_type
-
-  security_groups = [aws_security_group.hashiqube.name]
-
-  key_name    = aws_key_pair.hashiqube.key_name
-  user_data   = data.template_file.hashiqube.rendered
-
+  ami                  = data.aws_ami.ubuntu.id
+  instance_type        = var.aws_instance_type
+  security_groups      = [aws_security_group.hashiqube.name]
+  key_name             = aws_key_pair.hashiqube.key_name
+  user_data            = data.template_file.hashiqube.rendered
   iam_instance_profile = aws_iam_instance_profile.hashiqube.name
-
   tags = {
     Name = "hashiqube"
   }
@@ -106,14 +113,14 @@ resource "aws_security_group" "hashiqube" {
     from_port   = 0
     to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = ["${data.external.myipaddress.result.ip}/32"]
+    cidr_blocks = ["${var.my_ipaddress}/32"]
   }
 
   ingress {
     from_port   = 0
     to_port     = 65535
     protocol    = "udp"
-    cidr_blocks = ["${data.external.myipaddress.result.ip}/32"]
+    cidr_blocks = ["${var.my_ipaddress}/32"]
   }
 
   egress {
@@ -123,6 +130,36 @@ resource "aws_security_group" "hashiqube" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_security_group_rule" "azure_hashiqube" {
+  count             = var.deploy_to_azure ? 1 : 0
+  type              = "ingress"
+  to_port           = 65535
+  protocol          = "all"
+  cidr_blocks       = ["${var.azure_hashiqube_ip}/32"]
+  from_port         = 0
+  security_group_id = aws_security_group.hashiqube.id
+}
+
+resource "aws_security_group_rule" "gcp_hashiqube" {
+  count             = var.deploy_to_gcp ? 1 : 0
+  type              = "ingress"
+  to_port           = 65535
+  protocol          = "all"
+  cidr_blocks       = ["${var.gcp_hashiqube_ip}/32"]
+  from_port         = 0
+  security_group_id = aws_security_group.hashiqube.id
+}
+
+//resource "aws_security_group_rule" "whitelist_cidr" {
+//  count             = var.whitelist_cidr ? 1 : 0
+//  type              = "ingress"
+//  to_port           = 65535
+//  protocol          = "all"
+//  cidr_blocks       = [var.whitelist_cidr]
+//  from_port         = 0
+//  security_group_id = aws_security_group.hashiqube.id
+//}
 
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.hashiqube.id

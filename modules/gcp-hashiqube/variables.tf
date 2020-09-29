@@ -1,3 +1,26 @@
+variable "deploy_to_aws" {}
+
+variable "deploy_to_azure" {}
+
+variable "deploy_to_gcp" {}
+
+variable "aws_hashiqube_ip" {}
+
+variable "azure_hashiqube_ip" {}
+
+variable "whitelist_cidr" {}
+
+variable "my_ipaddress" {}
+
+variable "vault" {
+  type = map
+  description = "vault configuration"
+  default = {
+    enabled = true
+    version = "latest"
+  }
+}
+
 variable "gcp_project" {
   type        = string
   default     = ""
@@ -36,7 +59,7 @@ variable "gcp_cluster_description" {
 
 variable "gcp_cluster_tag_name" {
   type        = string
-  default     = "hashiqube-cluster"
+  default     = "hashiqube"
   description = "Cluster tag to apply"
 }
 
@@ -84,13 +107,4 @@ variable "gcp_root_volume_disk_type" {
   type        = string
   description = "The GCE disk type. Can be either pd-ssd, local-ssd, or pd-standard"
   default     = "pd-standard"
-}
-
-variable "vault" {
-  type = map
-  description = "vault configuration"
-  default = {
-    enabled = true
-    version = "latest"
-  }
 }

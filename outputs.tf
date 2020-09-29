@@ -1,48 +1,116 @@
-output "hashiqube-01-welcome" {
+output "your_ipaddress" {
+  value = data.external.myipaddress.result.ip
+}
+
+output "aaa_welcome" {
   value = <<WELCOME
-Your HashiQube instance is busy launching, usually this takes ~5 minutes. 
+Your HashiQube instance is busy launching, usually this takes ~5 minutes.
 Below are some links to open in your browser, and commands you can copy and paste in a terminal to login via SSH into your HashiQube instance.
 Thank you for using this module, you are most welcome to fork this repository to make it your own.
 ** DO NOT USE THIS IN PRODUCTION **
-  WELCOME
+WELCOME
   description = <<WELCOME
-A Welcome message. Your HashiQube instance is busy launching, usually this takes ~5 minutes. 
+A Welcome message. Your HashiQube instance is busy launching, usually this takes ~5 minutes.
 Below are some links to open in your browser, and commands you can copy and paste in a terminal to login via SSH into your HashiQube instance.
 Thank you for using this module, you are most welcome to fork this repository to make it your own.
 ** DO NOT USE THIS IN PRODUCTION **
-  WELCOME
+WELCOME
 }
 
-output "hashiqube-02-ip" {
-  value = "${module.gcp-hashiqube.hashiqube_ip}"
-  description = "The IP Address of the Hashiqube instance"
+output "aab_instructions" {
+  value = <<INSTRUCTIONS
+Use the Hashiqube SSH output below to login to your instance
+To get Vault Shamir keys and Root token do "sudo cat /etc/vault/init.file"
+INSTRUCTIONS
+  description = <<INSTRUCTIONS
+Use the Hashiqube SSH output below to login to your instance
+To get Vault Shamir keys and Root token do "sudo cat /etc/vault/init.file"
+INSTRUCTIONS
 }
 
-output "hashiqube-03-ssh" {
-  value = "ssh ubuntu@${module.gcp-hashiqube.hashiqube_ip}"
-  description = "ssh ubuntu@HASHIQUBE_IP"
+# AWS
+output "aws_hashiqube_ip" {
+  value = var.deploy_to_aws ? try(module.aws-hashiqube[0].hashiqube_ip, null) : null
 }
 
-output "hashiqube-04-consul" {
-  value = "http://${module.gcp-hashiqube.hashiqube_ip}:8500"
-  description = "The URL to access Consul"
+output "aws_hashiqube-ssh" {
+  value = var.deploy_to_aws ? try("ssh ubuntu@${module.aws-hashiqube[0].hashiqube_ip}", null) : null
 }
 
-output "hashiqube-05-nomad" {
-  value = "http://${module.gcp-hashiqube.hashiqube_ip}:4646"
-  description = "The URL to access Nomad"
+output "aws_hashiqube-consul" {
+  value = var.deploy_to_aws ? try("http://${module.aws-hashiqube[0].hashiqube_ip}:8500", null) : null
 }
 
-output "hashiqube-06-vault" {
-  value = <<VAULT
-Once you can open http://${module.gcp-hashiqube.hashiqube_ip}:8200 in your browser and you see the Vault website, run the folowing command to get the Initial Root Token for Vault
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q ubuntu@${module.gcp-hashiqube.hashiqube_ip} "grep 'Root Token' /etc/vault/init.file | cut -d ':' -f2 | tr -d ' '"
-Copy the Initial Root Token for Vault and use it to login at the Vault address http://${module.gcp-hashiqube.hashiqube_ip}:8200
-  VAULT
-  description = "An SSH command that will output your Initial Root Token for Vault, used to Login with"
+output "aws_hashiqube-nomad" {
+  value = var.deploy_to_aws ? try("http://${module.aws-hashiqube[0].hashiqube_ip}:4646", null) : null
 }
 
-output "hashiqube-07-fabio" {
-  value = "http://${module.gcp-hashiqube.hashiqube_ip}:9998"
-  description = "The URL to access Fabio Load Balancer"
+output "aws_hashiqube-vault" {
+  value = var.deploy_to_aws ? try("http://${module.aws-hashiqube[0].hashiqube_ip}:8200", null) : null
+}
+
+output "aws_hashiqube-fabio-ui" {
+  value = var.deploy_to_aws ? try("http://${module.aws-hashiqube[0].hashiqube_ip}:9998", null) : null
+}
+
+output "aws_hashiqube-fabio-lb" {
+  value = var.deploy_to_aws ? try("http://${module.aws-hashiqube[0].hashiqube_ip}:9999", null) : null
+}
+
+# Azure
+output "azure_hashiqube_ip" {
+  value = var.deploy_to_azure ? try(module.azure-hashiqube[0].hashiqube_ip, null) : null
+}
+
+output "azure_hashiqube-ssh" {
+  value = var.deploy_to_azure ? try("ssh ubuntu@${module.azure-hashiqube[0].hashiqube_ip}", null) : null
+}
+
+output "azure_hashiqube-consul" {
+  value = var.deploy_to_azure ? try("http://${module.azure-hashiqube[0].hashiqube_ip}:8500", null) : null
+}
+
+output "azure_hashiqube-nomad" {
+  value = var.deploy_to_azure ? try("http://${module.azure-hashiqube[0].hashiqube_ip}:4646", null) : null
+}
+
+output "azure_hashiqube-vault" {
+  value = var.deploy_to_azure ? try("http://${module.azure-hashiqube[0].hashiqube_ip}:8200", null) : null
+}
+
+output "azure_hashiqube-fabio-ui" {
+  value = var.deploy_to_azure ? try("http://${module.azure-hashiqube[0].hashiqube_ip}:9998", null) : null
+}
+
+output "azure_hashiqube-fabio-lb" {
+  value = var.deploy_to_azure ? try("http://${module.azure-hashiqube[0].hashiqube_ip}:9999", null) : null
+}
+
+# GCP
+output "gcp_hashiqube_ip" {
+  value = var.deploy_to_gcp ? try(module.gcp-hashiqube[0].hashiqube_ip, null) : null
+}
+
+output "gcp_hashiqube-ssh" {
+  value = var.deploy_to_gcp ? try("ssh ubuntu@${module.gcp-hashiqube[0].hashiqube_ip}", null) : null
+}
+
+output "gcp_hashiqube-consul" {
+  value = var.deploy_to_gcp ? try("http://${module.gcp-hashiqube[0].hashiqube_ip}:8500", null) : null
+}
+
+output "gcp_hashiqube-nomad" {
+  value = var.deploy_to_gcp ? try("http://${module.gcp-hashiqube[0].hashiqube_ip}:4646", null) : null
+}
+
+output "gcp_hashiqube-vault" {
+  value = var.deploy_to_gcp ? try("http://${module.gcp-hashiqube[0].hashiqube_ip}:8200", null) : null
+}
+
+output "gcp_hashiqube-fabio-ui" {
+  value = var.deploy_to_gcp ? try("http://${module.gcp-hashiqube[0].hashiqube_ip}:9998", null) : null
+}
+
+output "gcp_hashiqube-fabio-lb" {
+  value = var.deploy_to_gcp ? try("http://${module.gcp-hashiqube[0].hashiqube_ip}:9999", null) : null
 }
