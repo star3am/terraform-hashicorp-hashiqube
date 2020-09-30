@@ -22,9 +22,15 @@ variable "whitelist_cidr" {
   default     = "" # Example: 0.0.0.0/0
 }
 
+variable "ssh_public_key" {
+  type        = string
+  default     = "~/.ssh/id_rsa.pub"
+  description = "SSH public key"
+}
+
 variable "aws_credentials" {
   type        = string
-  default     = ""
+  default     = "~/.aws/credentials"
   description = "AWS credentials file location"
 }
 
@@ -40,12 +46,89 @@ variable "aws_region" {
   description = "AWS region"
 }
 
+variable "aws_instance_type" {
+  type        = string
+  default     = "t2.medium"
+  description = "AWS instance type"
+}
+
+variable "gcp_credentials" {
+  type    = string
+  default = "~/.gcp/credentials.json"
+}
+
 variable "gcp_project" {
+  type        = string
   default     = "thermal-formula-256223"
   description = "GCP project ID"
 }
 
 variable "gcp_region" {
+  type        = string
   description = "The region in which all GCP resources will be launched"
   default     = "australia-southeast1"
+}
+
+variable "gcp_account_id" {
+  type        = string
+  description = "Account ID"
+  default     = "sa-consul-compute-prod"
+}
+
+variable "gcp_cluster_name" {
+  type        = string
+  default     = "hashiqube"
+  description = "Cluster name"
+}
+
+variable "gcp_cluster_description" {
+  type        = string
+  default     = "hashiqube"
+  description = "the description for the cluster"
+}
+
+variable "gcp_cluster_tag_name" {
+  type        = string
+  default     = "hashiqube"
+  description = "Cluster tag to apply"
+}
+
+variable "gcp_cluster_size" {
+  type        = number
+  default     = 1
+  description = "size of the cluster"
+}
+
+variable "gcp_zones" {
+  type        = list(string)
+  description = "The zones accross which GCP resources will be launched"
+
+  default = [
+    "australia-southeast1-a",
+    "australia-southeast1-b",
+    "australia-southeast1-c",
+  ]
+}
+
+variable "gcp_machine_type" {
+  type    = string
+  default = "n1-standard-1"
+}
+
+variable "gcp_custom_metadata" {
+  description = "A map of metadata key value pairs to assign to the Compute Instance metadata"
+  type        = map(string)
+  default     = {}
+}
+
+variable "gcp_root_volume_disk_size_gb" {
+  type        = number
+  description = "The size, in GB, of the root disk volume on each HashiQube node"
+  default     = 16
+}
+
+variable "gcp_root_volume_disk_type" {
+  type        = string
+  description = "The GCE disk type. Can be either pd-ssd, local-ssd, or pd-standard"
+  default     = "pd-standard"
 }

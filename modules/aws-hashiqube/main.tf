@@ -1,9 +1,5 @@
 # https://www.terraform.io/docs/providers/aws/r/instance.html
 
-locals {
-  cluster_ips = join(", ", flatten(["${var.azure_hashiqube_ip}", "${var.gcp_hashiqube_ip}" ]))
-}
-
 resource "null_resource" "hashiqube" {
   triggers = {
     deploy_to_aws      = var.deploy_to_aws
@@ -83,18 +79,19 @@ EOF
 data "template_file" "hashiqube" {
   template = file("${path.module}/../../modules/shared/startup_script")
   vars = {
-    HASHIQUBE_IP  = aws_eip.hashiqube.public_ip
-    CLUSTER_IPS   = local.cluster_ips
-    VAULT_ENABLED = lookup(var.vault, "enabled")
+    HASHIQUBE_AWS_IP   = aws_eip.hashiqube.public_ip
+    HASHIQUBE_AZURE_IP = var.azure_hashiqube_ip
+    HASHIQUBE_GCP_IP   = var.gcp_hashiqube_ip
+    VAULT_ENABLED      = lookup(var.vault, "enabled")
   }
 }
 
 resource "aws_instance" "hashiqube" {
-  ami                  = data.aws_ami.ubuntu.id
-  instance_type        = var.aws_instance_type
-  security_groups      = [aws_security_group.hashiqube.name]
-  key_name             = aws_key_pair.hashiqube.key_name
-  user_data            = data.template_file.hashiqube.rendered
+  ami                 = data.aws_ami.ubuntu.id
+  instance_type       = var.aws_instance_type
+  security_groups     = [aws_security_group.hashiqube.name]
+  key_name            = aws_key_pair.hashiqube.key_name
+  user_data           = data.template_file.hashiqube.rendered
   iam_instance_profile = aws_iam_instance_profile.hashiqube.name
   tags = {
     Name = "hashiqube"
@@ -151,15 +148,15 @@ resource "aws_security_group_rule" "gcp_hashiqube" {
   security_group_id = aws_security_group.hashiqube.id
 }
 
-//resource "aws_security_group_rule" "whitelist_cidr" {
-//  count             = var.whitelist_cidr ? 1 : 0
-//  type              = "ingress"
-//  to_port           = 65535
-//  protocol          = "all"
-//  cidr_blocks       = [var.whitelist_cidr]
-//  from_port         = 0
-//  security_group_id = aws_security_group.hashiqube.id
-//}
+resource "aws_security_group_rule" "whitelist_cidr" {
+  count             = var.whitelist_cidr != "" ? 1 : 0
+  type              = "ingress"
+  to_port           = 65535
+  protocol          = "all"
+  cidr_blocks       = [var.whitelist_cidr]
+  from_port         = 0
+  security_group_id = aws_security_group.hashiqube.id
+}
 
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.hashiqube.id

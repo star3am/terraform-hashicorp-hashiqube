@@ -1,7 +1,3 @@
-locals {
-  cluster_ips = join(", ", flatten(["${var.aws_hashiqube_ip}", "${var.gcp_hashiqube_ip}" ]))
-}
-
 resource "null_resource" "hashiqube" {
   triggers = {
     deploy_to_aws      = var.deploy_to_aws
@@ -119,26 +115,26 @@ resource "azurerm_network_security_group" "gcp_hashiqube_ip" {
   }
 }
 
-//resource "azurerm_network_security_group" "whitelist_cidr" {
-//  count               = var.whitelist_cidr ? 1 : 0
-//  name                = "whitelist_cidr"
-//  location            = "Australia East"
-//  resource_group_name = azurerm_resource_group.hashiqube.name
-//  security_rule {
-//    name                         = "whitelist_cidr"
-//    priority                     = 1004
-//    direction                    = "Inbound"
-//    access                       = "Allow"
-//    protocol                     = "Tcp"
-//    source_port_range            = "*"
-//    destination_port_range       = "*"
-//    source_address_prefixes      = [var.whitelist_cidr]
-//    destination_address_prefixes = [azurerm_network_interface.hashiqube.private_ip_address]
-//  }
-//  tags = {
-//    environment = "hashiqube"
-//  }
-//}
+resource "azurerm_network_security_group" "whitelist_cidr" {
+  count               = var.whitelist_cidr != "" ? 1 : 0
+  name                = "whitelist_cidr"
+  location            = "Australia East"
+  resource_group_name = azurerm_resource_group.hashiqube.name
+  security_rule {
+    name                         = "whitelist_cidr"
+    priority                     = 1004
+    direction                    = "Inbound"
+    access                       = "Allow"
+    protocol                     = "Tcp"
+    source_port_range            = "*"
+    destination_port_range       = "*"
+    source_address_prefixes      = [var.whitelist_cidr]
+    destination_address_prefixes = [azurerm_network_interface.hashiqube.private_ip_address]
+  }
+  tags = {
+    environment = "hashiqube"
+  }
+}
 
 # Create network interface
 resource "azurerm_network_interface" "hashiqube" {
@@ -160,9 +156,10 @@ resource "azurerm_network_interface" "hashiqube" {
 data "template_file" "hashiqube_user_data" {
   template = file("${path.module}/../../modules/shared/startup_script")
   vars = {
-    HASHIQUBE_IP  = azurerm_public_ip.hashiqube.ip_address
-    CLUSTER_IPS   = local.cluster_ips
-    VAULT_ENABLED = lookup(var.vault, "enabled")
+    HASHIQUBE_AZURE_IP = azurerm_public_ip.hashiqube.ip_address
+    HASHIQUBE_GCP_IP   = var.gcp_hashiqube_ip
+    HASHIQUBE_AWS_IP   = var.aws_hashiqube_ip
+    VAULT_ENABLED      = lookup(var.vault, "enabled")
   }
 }
 

@@ -1,10 +1,6 @@
 # https://www.terraform.io/docs/providers/google/r/compute_instance.html
 # https://github.com/terraform-providers/terraform-provider-google/blob/master/examples/internal-load-balancing/main.tf
 
-locals {
-  cluster_ips = join(", ", flatten(["${var.aws_hashiqube_ip}", "${var.azure_hashiqube_ip}" ]))
-}
-
 resource "null_resource" "hashiqube" {
   triggers = {
     deploy_to_aws      = var.deploy_to_aws
@@ -40,11 +36,11 @@ resource "google_compute_region_instance_group_manager" "hashiqube" {
   depends_on = [google_compute_instance_template.hashiqube]
 
   update_policy {
-    type                  = "PROACTIVE"
-    minimal_action        = "REPLACE"
+    type                 = "PROACTIVE"
+    minimal_action       = "REPLACE"
     max_surge_fixed       = 3
     max_unavailable_fixed = 0
-    min_ready_sec         = 60
+    min_ready_sec        = 60
   }
 }
 
@@ -56,19 +52,20 @@ data "google_compute_subnetwork" "hashiqube" {
 data "template_file" "hashiqube" {
   template = file("${path.module}/../../modules/shared/startup_script")
   vars = {
-    HASHIQUBE_IP  = google_compute_address.hashiqube.address
-    CLUSTER_IPS   = local.cluster_ips
-    VAULT_ENABLED = lookup(var.vault, "enabled")
+    HASHIQUBE_GCP_IP   = google_compute_address.hashiqube.address
+    HASHIQUBE_AWS_IP   = var.aws_hashiqube_ip
+    HASHIQUBE_AZURE_IP = var.azure_hashiqube_ip
+    VAULT_ENABLED      = lookup(var.vault, "enabled")
   }
 }
 
 resource "google_compute_instance_template" "hashiqube" {
   provider             = google
-  name_prefix          = var.gcp_cluster_name
+  name_prefix           = var.gcp_cluster_name
   description          = var.gcp_cluster_description
   instance_description = var.gcp_cluster_description
   machine_type         = var.gcp_machine_type
-  tags = list(var.gcp_cluster_tag_name)
+  tags                 = list(var.gcp_cluster_tag_name)
   scheduling {
     automatic_restart   = true
     on_host_maintenance = "MIGRATE"
@@ -167,27 +164,27 @@ resource "google_compute_firewall" "azure_hashiqube_ip" {
   source_ranges = ["${var.aws_hashiqube_ip}/32"]
 }
 
-//resource "google_compute_firewall" "whitelist_cidr" {
-//  count   = var.whitelist_cidr ? 1 : 0
-//  name    = "whitelist-cidr"
-//  network = "default"
-//  project = var.gcp_project
-//
-//  allow {
-//    protocol = "tcp"
-//    ports    = ["0-65535"]
-//  }
-//
-//  allow {
-//    protocol = "udp"
-//    ports    = ["0-65535"]
-//  }
-//
-//  source_ranges = [var.whitelist_cidr]
-//}
+resource "google_compute_firewall" "whitelist_cidr" {
+  count   = var.whitelist_cidr != "" ? 1 : 0
+  name    = "whitelist-cidr"
+  network = "default"
+  project = var.gcp_project
+
+  allow {
+    protocol = "tcp"
+    ports    = ["0-65535"]
+  }
+
+  allow {
+    protocol = "udp"
+    ports    = ["0-65535"]
+  }
+
+  source_ranges = [var.whitelist_cidr]
+}
 
 resource "google_service_account" "hashiqube" {
-  account_id   = "sa-consul-compute-prod"
+  account_id   = var.gcp_account_id
   display_name = "hashiqube"
   project      = var.gcp_project
 }

@@ -12,17 +12,6 @@ variable "whitelist_cidr" {}
 
 variable "my_ipaddress" {}
 
-variable "ssh_public_key" {
-  type        = string
-  default     = ""
-  description = "SSH public key that HashiQube will be bootstrapped with"
-}
+variable "ssh_public_key" {}
 
-variable "vault" {
-  type = map
-  description = "vault configuration"
-  default = {
-    enabled = true
-    version = "latest"
-  }
-}
+variable "vault" {}

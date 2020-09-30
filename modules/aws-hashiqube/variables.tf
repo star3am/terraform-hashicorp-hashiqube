@@ -10,49 +10,16 @@ variable "gcp_hashiqube_ip" {}
 
 variable "whitelist_cidr" {}
 
+variable "ssh_public_key" {}
+
 variable "my_ipaddress" {}
 
-variable "vault" {
-  type = map
-  description = "vault configuration"
-  default = {
-    enabled = true
-    version = "latest"
-  }
-}
+variable "vault" {}
 
-variable "aws_credentials" {
-  type        = string
-  default     = ""
-  description = "AWS credentials file location"
-}
+variable "aws_credentials" {}
 
-variable "aws_profile" {
-  type        = string
-  default     = "default"
-  description = "AWS profile"
-}
+variable "aws_profile" {}
 
-variable "aws_region" {
-  type        = string
-  default     = "ap-southeast-2"
-  description = "AWS region"
-}
+variable "aws_region" {}
 
-variable "aws_instance_type" {
-  type        = string
-  default     = "t2.medium"
-  description = "AWS instance type"
-}
-
-variable "ssh_public_key" {
-  type        = string
-  default     = ""
-  description = "SSH public key that HashiQube will be bootstrapped with"
-}
-
-variable "whitelist" {
-  type        = string
-  default     = ""
-  description = "Whitelisted CIDRs"
-}
+variable "aws_instance_type" {}

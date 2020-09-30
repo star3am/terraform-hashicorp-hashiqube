@@ -1,48 +1,50 @@
 #!/bin/bash -x
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 echo BEGIN $(date '+%Y-%m-%d %H:%M:%S')
-
 # install some base tools
 sudo DEBIAN_FRONTEND=noninteractive apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install curl unzip jq
-
-# figure out which cloud we are in and set some variables
+# determine which cloud we are in and set some variables
 if [[ $(sudo dmidecode -s bios-version) =~ .*\.amazon ]]
 then
   echo "This is AWS"
   DC=1
   INSTANCE_PRIVATE_IP=$(hostname --all-ip-addresses | cut -d ' ' -f1)
   INSTANCE_IP=$(curl -s 'https://api.ipify.org?format=text')
-  HASHIQUBE_IP=${HASHIQUBE_IP}
+  HASHIQUBE_IP=${HASHIQUBE_AWS_IP}
+  HASHIQUBE_AWS_IP=${HASHIQUBE_AWS_IP}
+  HASHIQUBE_AZURE_IP=${HASHIQUBE_AZURE_IP}
+  HASHIQUBE_GCP_IP=${HASHIQUBE_GCP_IP}
   HOSTNAME=hashiqube-aws
-  CLUSTER_IPS=${CLUSTER_IPS}
   FQDN=hashiqube-aws.service.consul
 elif [[ $(sudo dmidecode -s bios-version) =~ Google ]]
 then
   echo "This is GCP"
-  DC=1
+  DC=2
   INSTANCE_PRIVATE_IP=$(hostname --all-ip-addresses | cut -d ' ' -f1)
   INSTANCE_IP=$(curl -s 'https://api.ipify.org?format=text')
-  HASHIQUBE_IP=${HASHIQUBE_IP}
-  CLUSTER_IPS=${CLUSTER_IPS}
+  HASHIQUBE_IP=${HASHIQUBE_GCP_IP}
+  HASHIQUBE_GCP_IP=${HASHIQUBE_GCP_IP}
+  HASHIQUBE_AZURE_IP=${HASHIQUBE_AZURE_IP}
+  HASHIQUBE_AWS_IP=${HASHIQUBE_AWS_IP}
   HOSTNAME=hashiqube-gcp
   FQDN=hashiqube-gcp.service.consul
 else
   echo "This is Azure"
-  DC=1
+  DC=3
   INSTANCE_PRIVATE_IP=$(hostname --all-ip-addresses | cut -d ' ' -f1)
   INSTANCE_IP=$(curl -s 'https://api.ipify.org?format=text')
-  HASHIQUBE_IP=${HASHIQUBE_IP}
-  CLUSTER_IPS=${CLUSTER_IPS}
+  HASHIQUBE_IP=${HASHIQUBE_AZURE_IP}
+  HASHIQUBE_AZURE_IP=${HASHIQUBE_AZURE_IP}
+  HASHIQUBE_AWS_IP=${HASHIQUBE_AWS_IP}
+  HASHIQUBE_GCP_IP=${HASHIQUBE_GCP_IP}
   HOSTNAME=hashiqube-azure
   FQDN=hashiqube-azure.service.consul
 fi
-
 # set hostname
 echo "$HOSTNAME" > /etc/hostname
 hostname "$HOSTNAME"
 sed -i "s/.*127.0.0.1.*/127.0.0.1 $FQDN $HOSTNAME localhost/g" /etc/hosts
-
 # https://docs.docker.com/install/linux/docker-ce/ubuntu/
 sudo DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes apt-transport-https ca-certificates curl unzip jq gnupg-agent software-properties-common awscli
 sudo -i
@@ -52,12 +54,10 @@ sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes docker-ce docker-ce-cli containerd.io
 sudo usermod -aG docker vagrant
 sudo service docker restart
-
 # install and configure Consul
 function consul-install() {
 mkdir -p /etc/consul
 mkdir -p /etc/consul.d
-
 # consul config file
 cat <<EOF | sudo tee /etc/consul/server.hcl
 primary_datacenter = "dc1"
@@ -65,7 +65,7 @@ client_addr = "127.0.0.1 $INSTANCE_PRIVATE_IP"
 bind_addr = "$INSTANCE_PRIVATE_IP"
 advertise_addr = "$INSTANCE_IP"
 data_dir = "/var/lib/consul"
-datacenter = "dc$DC"
+datacenter = "dc1"
 disable_host_node_id = true
 disable_update_check = true
 leave_on_terminate = true
@@ -82,266 +82,44 @@ recursors = [
 ]
 server_name = "$FQDN"
 ui = true
-retry_join_wan = ["${HASHIQUBE_IP}, ${CLUSTER_IPS}"]
+retry_join_wan = ["$HASHIQUBE_IP"]
 EOF
-
 # consul services
-#cat <<EOF | sudo tee /etc/consul.d/consul-hashiqube1.json
-#{"service":
-#{"name": "consul-hashiqube1",
-#"tags": ["urlprefix-consul-hashiqube1.service.consul/"],
-#"address": "${HASHIQUBE_IP}",
-#"port": 8500
-#}}
-#EOF
+cat <<EOF | sudo tee /etc/consul.d/consul-hashiqube.json
+{"service":
+{"name": "consul-$HOSTNAME",
+"tags": ["urlprefix-$FQDN/"],
+"address": "$HASHIQUBE_IP",
+"port": 8500
+}}
+EOF
   # check if consul is installed, start and exit
   if [ -f /usr/bin/consul ]; then
     sudo pkill -9 consul
-    sleep 5
-    # die mofo!
     sudo pkill -9 consul
-    sudo killall consul
-    sudo killall consul
     sudo nohup consul agent -dev -advertise-wan=$INSTANCE_IP -client="0.0.0.0" -bind="0.0.0.0" -enable-script-checks -config-file=/etc/consul/server.hcl -config-dir=/etc/consul.d > /var/log/consul.log 2>&1 &
-    #sh -c 'sudo tail -f /var/log/consul.log | { sed "/agent: Synced/ q" && kill $$ ;}'
+    sh -c 'sudo tail -f /var/log/consul.log | { sed "/agent: Synced/ q" && kill $$ ;}'
   else
   # if consul is not installed, download and install
     LATEST_URL=$(curl -sL https://releases.hashicorp.com/consul/index.json | jq -r '.versions[].builds[].url' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | egrep -v 'rc|ent|beta' | egrep 'linux.*amd64' | sort -V | tail -1)
     wget -q $LATEST_URL -O /tmp/consul.zip
     (cd /usr/bin && unzip /tmp/consul.zip)
     sudo nohup consul agent -dev -advertise-wan=$INSTANCE_IP -client="0.0.0.0" -bind="0.0.0.0" -enable-script-checks -config-file=/etc/consul/server.hcl -config-dir=/etc/consul.d > /var/log/consul.log 2>&1 &
-    #sh -c 'sudo tail -f /var/log/consul.log | { sed "/agent: Synced/ q" && kill $$ ;}'
+    sh -c 'sudo tail -f /var/log/consul.log | { sed "/agent: Synced/ q" && kill $$ ;}'
   fi
   consul kv put fabio/config/consul-hashiqube "route add consul consul.service.consul:9999/ http://$INSTANCE_IP:8500"
   consul kv put fabio/config/nomad-hashiqube "route add nomad nomad.service.consul:9999/ http://$INSTANCE_IP:4646"
   consul kv put fabio/config/fabio-hashiqube "route add fabio fabio.service.consul:9999/ http://$INSTANCE_IP:9998"
-}
-
-# install and configure Nomad
-function nomad-install() {
-sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install curl unzip jq
-mkdir -p /etc/nomad
-mkdir -p /etc/nomad.d
-cat <<EOF | sudo tee /etc/nomad/server.conf
-data_dir  = "/var/lib/nomad"
-
-datacenter = "dc$DC"
-
-bind_addr = "0.0.0.0" # the default
-
-advertise {
-  # Defaults to the first private IP address.
-  http = "$INSTANCE_PRIVATE_IP"
-  rpc  = "$INSTANCE_PRIVATE_IP"
-  serf = "$INSTANCE_PRIVATE_IP:5648" # non-default ports may be specified
-}
-
-server {
-  enabled          = true
-  bootstrap_expect = 1
-}
-
-client {
-  enabled       = true
-  # https://github.com/hashicorp/nomad/issues/1282
-  network_speed = 100
-  servers = ["$INSTANCE_PRIVATE_IP:4647"]
-}
-
-plugin "raw_exec" {
-  config {
-    enabled = true
-  }
-}
-
-consul {
-  address = "$INSTANCE_PRIVATE_IP:8500"
-}
-EOF
-
-# add the countdash demo nomad job
-cat <<EOF | sudo tee /etc/nomad.d/countdashboard.nomad
-// https://www.nomadproject.io/guides/integrations/consul-connect/index.html
-job "countdash" {
-  datacenters = ["dc$DC"]
-
-  group "api" {
-    network {
-      mode = "bridge"
-    }
-
-    service {
-      name = "count-api"
-      port = "9001"
-
-      connect {
-        sidecar_service {}
-        sidecar_task {
-          resources {
-            cpu = 600
-            memory = 600
-            network {
-              mbits = 1
-            }
-          }
-        }
-      }
-    }
-
-    task "web" {
-      driver = "docker"
-
-      config {
-        image = "hashicorpnomad/counter-api:v1"
-      }
-    }
-  }
-
-  group "dashboard" {
-    network {
-      mode = "bridge"
-
-      port "http" {
-        static = 9002
-        to     = 9002
-      }
-    }
-
-    service {
-      name = "count-dashboard"
-      port = "9002"
-      tags = ["urlprefix-/count-dashboard", "urlprefix-/count-dash"]
-
-      connect {
-        sidecar_service {
-          proxy {
-            upstreams {
-              destination_name = "count-api"
-              local_bind_port  = 8880
-            }
-          }
-        }
-      }
-    }
-
-    task "dashboard" {
-      driver = "docker"
-
-      env {
-        COUNTING_SERVICE_URL = "http://$NOMAD_UPSTREAM_ADDR_count_api"
-      }
-
-      config {
-        image = "hashicorpnomad/counter-dashboard:v1"
-      }
-    }
-  }
-
-  update {
-    max_parallel = 1
-    min_healthy_time = "10s"
-    healthy_deadline = "20s"
-  }
-
-}
-EOF
-
-# add fabio load balancer nomad job
-cat <<EOF | sudo tee /etc/nomad.d/fabio.nomad
-# https://learn.hashicorp.com/nomad/load-balancing/fabio
-job "fabio" {
-  datacenters = ["dc$DC"]
-  type = "system"
-
-  group "fabio" {
-    task "fabio" {
-      driver = "docker"
-      config {
-        image = "fabiolb/fabio"
-        network_mode = "host"
-      }
-
-      env {
-         NOMAD_IP_elb   = "0.0.0.0"
-         NOMAD_IP_admin = "0.0.0.0"
-         NOMAD_IP_tcp   = "0.0.0.0"
-         NOMAD_ADDR_ui  = "0.0.0.0:9998"
-         NOMAD_ADDR_lb  = "0.0.0.0:9999"
-      }
-
-      resources {
-        cpu    = 200
-        memory = 128
-        network {
-          mbits = 10
-          port "lb" {
-            static = 9999
-          }
-          port "ui" {
-            static = 9998
-          }
-        }
-      }
-
-      service {
-        port = "ui"
-        name = "fabio"
-        tags = ["urlprefix-fabio.service.consul/", "urlprefix-/", "urlprefix-/routes"]
-        check {
-           type     = "http"
-           path     = "/health"
-           port     = "ui"
-           interval = "10s"
-           timeout  = "2s"
-         }
-      }
-
-    }
-  }
-}
-EOF
-  # check if nomad is installed, start and exit
-  if [ -f /usr/bin/nomad ]; then
-    # https://nomadproject.io/guides/integrations/consul-connect/#cni-plugins
-    if [ -f /opt/cni/bin/bridge ]; then
-      echo "cni-plugins already installed"
-    else
-      wget -q https://github.com/containernetworking/plugins/releases/download/v0.8.1/cni-plugins-linux-amd64-v0.8.1.tgz -O /tmp/cni-plugins.tgz
-      mkdir -p /opt/cni/bin
-      tar -C /opt/cni/bin -xzf /tmp/cni-plugins.tgz
-      echo 1 > /proc/sys/net/bridge/bridge-nf-call-arptables
-      echo 1 > /proc/sys/net/bridge/bridge-nf-call-ip6tables
-      echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
-    fi
-    pkill nomad
-    sleep 10
-    pkill nomad
-    nohup nomad agent -config=/etc/nomad/server.conf -dev-connect > /var/log/nomad.log 2>&1 &
-    #sh -c 'sudo tail -f /var/log/nomad.log | { sed "/node registration complete/ q" && kill $$ ;}'
-    nomad server members
-    nomad node status
-  else
-  # if nomad is not installed, download and install
-    LATEST_URL=$(curl -sL https://releases.hashicorp.com/nomad/index.json | jq -r '.versions[].builds[].url' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | egrep -v 'rc|beta' | egrep 'linux.*amd64' | sort -V | tail -n 1)
-    wget -q $LATEST_URL -O /tmp/nomad.zip
-    (cd /usr/bin && unzip /tmp/nomad.zip)
-    wget -q https://github.com/containernetworking/plugins/releases/download/v0.8.1/cni-plugins-linux-amd64-v0.8.1.tgz -O /tmp/cni-plugins.tgz
-    mkdir -p /opt/cni/bin
-    tar -C /opt/cni/bin -xzf /tmp/cni-plugins.tgz
-    echo 1 > /proc/sys/net/bridge/bridge-nf-call-arptables
-    echo 1 > /proc/sys/net/bridge/bridge-nf-call-ip6tables
-    echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
-    nohup nomad agent -config=/etc/nomad/server.conf -dev-connect > /var/log/nomad.log 2>&1 &
-    #sh -c 'sudo tail -f /var/log/nomad.log | { sed "/node registration complete/ q" && kill $$ ;}'
-    for i in ${CLUSTER_IPS}; do nomad server join $i; done
-    nomad server members
-    nomad node status
+  # join servers in cluster
+  if [[ $HASHIQUBE_AZURE_IP ]]; then
+    consul join $HASHIQUBE_AZURE_IP
   fi
-  cd /etc/nomad.d;
-  nomad plan --address=http://$INSTANCE_PRIVATE_IP:4646 countdashboard.nomad
-  nomad run --address=http://$INSTANCE_PRIVATE_IP:4646 countdashboard.nomad
-  nomad plan --address=http://$INSTANCE_PRIVATE_IP:4646 fabio.nomad
-  nomad run --address=http://$INSTANCE_PRIVATE_IP:4646 fabio.nomad
+  if [[ $HASHIQUBE_AWS_IP ]]; then
+    consul join $HASHIQUBE_AWS_IP
+  fi
+  if [[ $HASHIQUBE_GCP_IP ]]; then
+    consul join $HASHIQUBE_GCP_IP
+  fi
 }
 # install and configure Vault
 function vault-install() {
@@ -399,28 +177,28 @@ disable_cache = true
 disable_mlock = true
 ui = true
 listener "tcp" {
-   address          = "0.0.0.0:8200"
-   tls_disable      = 1
+   address     = "0.0.0.0:8200"
+   tls_disable = 1
 }
 # https://www.vaultproject.io/docs/configuration/storage/raft/
 storage "raft" {
-  path = "/var/lib/vault/raft/data"
+  path    = "/var/lib/vault/raft/data"
   node_id = "raft_$HOSTNAME"
 }
 cluster_addr = "http://$INSTANCE_PRIVATE_IP:8201"
 #storage "file" {
-#   path  = "/var/lib/vault/data"
+#   path = "/var/lib/vault/data"
 #}
 # use consul as storage backend
 #storage "consul" {
 #  address = "$INSTANCE_PRIVATE_IP:8500"
 #  path    = "vault"
 #}
-api_addr         = "http://0.0.0.0:8200"
-max_lease_ttl         = "10h"
+api_addr             = "http://0.0.0.0:8200"
+max_lease_ttl        = "10h"
 default_lease_ttl    = "10h"
 cluster_name         = "vault"
-raw_storage_endpoint     = true
+raw_storage_endpoint = true
 disable_sealwrap     = true
 disable_printable_check = true
 EOF
@@ -452,9 +230,215 @@ EOF
     sed -i "s/VAULT_ADDR=.*/VAULT_ADDR=http://127.0.0.1:8200/g" /etc/environment
   fi
 }
+# install and configure Nomad
+function nomad-install() {
+sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install curl unzip jq
+mkdir -p /etc/nomad
+mkdir -p /etc/nomad.d
+cat <<EOF | sudo tee /etc/nomad/server.conf
+data_dir   = "/var/lib/nomad"
+datacenter = "dc$DC"
+bind_addr  = "0.0.0.0" # the default
+advertise {
+  # Defaults to the first private IP address.
+  http = "$INSTANCE_PRIVATE_IP"
+  rpc  = "$INSTANCE_PRIVATE_IP"
+  serf = "$INSTANCE_PRIVATE_IP:5648" # non-default ports may be specified
+}
+server {
+  enabled          = true
+  bootstrap_expect = 3
+}
+client {
+  enabled       = true
+  # https://github.com/hashicorp/nomad/issues/1282
+  network_speed = 100
+  servers       = ["$HASHIQUBE_IP:4647"]
+}
+plugin "raw_exec" {
+  config {
+    enabled = true
+  }
+}
+consul {
+  address = "$INSTANCE_PRIVATE_IP:8500"
+  allow_unauthenticated = true
+}
+#vault {
+#  enabled = true
+#  address = "$INSTANCE_PRIVATE_IP:8200"
+#}
+EOF
+# add the countdash demo nomad job
+cat <<EOF | sudo tee /etc/nomad.d/countdashboard.nomad
+# https://www.nomadproject.io/guides/integrations/consul-connect/index.html
+job "countdash" {
+  datacenters = ["dc$DC"]
+  group "api" {
+    network {
+      mode = "bridge"
+    }
+    service {
+      name = "count-api"
+      port = "9001"
+      connect {
+        sidecar_service {}
+        sidecar_task {
+          resources {
+            cpu = 600
+            memory = 600
+            network {
+              mbits = 1
+            }
+          }
+        }
+      }
+    }
+    task "web" {
+      driver = "docker"
+      config {
+        image = "hashicorpnomad/counter-api:v1"
+      }
+    }
+  }
+  group "dashboard" {
+    network {
+      mode = "bridge"
+      port "http" {
+        static = 9002
+        to     = 9002
+      }
+    }
+    service {
+      name = "count-dashboard"
+      port = "9002"
+      tags = ["urlprefix-countdash-$HOSTNAME.service.consul/", "urlprefix-/countdash"]
+      connect {
+        sidecar_service {
+          proxy {
+            upstreams {
+              destination_name = "count-api"
+              local_bind_port  = 8880
+            }
+          }
+        }
+      }
+    }
+    task "dashboard" {
+      driver = "docker"
+      env {
+        COUNTING_SERVICE_URL = "http://$NOMAD_UPSTREAM_ADDR_count_api"
+      }
+      config {
+        image = "hashicorpnomad/counter-dashboard:v1"
+      }
+    }
+  }
+  update {
+    max_parallel     = 1
+    min_healthy_time = "10s"
+    healthy_deadline = "20s"
+  }
+}
+EOF
+# add fabio load balancer nomad job
+cat <<EOF | sudo tee /etc/nomad.d/fabio.nomad
+# https://learn.hashicorp.com/nomad/load-balancing/fabio
+job "fabio" {
+  datacenters = ["dc$DC"]
+  type = "system"
+  group "fabio" {
+    task "fabio" {
+      driver = "docker"
+      config {
+        image = "fabiolb/fabio"
+        network_mode = "host"
+      }
+      env {
+         NOMAD_IP_elb   = "0.0.0.0"
+         NOMAD_IP_admin = "0.0.0.0"
+         NOMAD_IP_tcp   = "0.0.0.0"
+         NOMAD_ADDR_ui  = "0.0.0.0:9998"
+         NOMAD_ADDR_lb  = "0.0.0.0:9999"
+      }
+      resources {
+        cpu    = 200
+        memory = 128
+        network {
+          mbits = 10
+          port "lb" {
+            static = 9999
+          }
+          port "ui" {
+            static = 9998
+          }
+        }
+      }
+      service {
+        port = "ui"
+        name = "fabio"
+        tags = ["urlprefix-fabio-$HOSTNAME.service.consul/", "urlprefix-/", "urlprefix-/routes"]
+        check {
+           type     = "http"
+           path     = "/health"
+           port     = "ui"
+           interval = "10s"
+           timeout  = "2s"
+         }
+      }
+    }
+  }
+}
+EOF
+  # check if nomad is installed, start and exit
+  if [ -f /usr/bin/nomad ]; then
+    # https://nomadproject.io/guides/integrations/consul-connect/#cni-plugins
+    if [ -f /opt/cni/bin/bridge ]; then
+      echo "cni-plugins already installed"
+    else
+      wget -q https://github.com/containernetworking/plugins/releases/download/v0.8.1/cni-plugins-linux-amd64-v0.8.1.tgz -O /tmp/cni-plugins.tgz
+      mkdir -p /opt/cni/bin
+      tar -C /opt/cni/bin -xzf /tmp/cni-plugins.tgz
+      echo 1 > /proc/sys/net/bridge/bridge-nf-call-arptables
+      echo 1 > /proc/sys/net/bridge/bridge-nf-call-ip6tables
+      echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
+    fi
+    pkill -9 nomad
+    pkill -9 nomad
+  else
+  # if nomad is not installed, download and install
+    LATEST_URL=$(curl -sL https://releases.hashicorp.com/nomad/index.json | jq -r '.versions[].builds[].url' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | egrep -v 'rc|beta' | egrep 'linux.*amd64' | sort -V | tail -n 1)
+    wget -q $LATEST_URL -O /tmp/nomad.zip
+    (cd /usr/bin && unzip /tmp/nomad.zip)
+    wget -q https://github.com/containernetworking/plugins/releases/download/v0.8.1/cni-plugins-linux-amd64-v0.8.1.tgz -O /tmp/cni-plugins.tgz
+    mkdir -p /opt/cni/bin
+    tar -C /opt/cni/bin -xzf /tmp/cni-plugins.tgz
+    echo 1 > /proc/sys/net/bridge/bridge-nf-call-arptables
+    echo 1 > /proc/sys/net/bridge/bridge-nf-call-ip6tables
+    echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
+  fi
+  nohup nomad agent -config=/etc/nomad/server.conf -dev-connect > /var/log/nomad.log 2>&1 &
+  #sh -c 'sudo tail -f /var/log/nomad.log | { sed "/node registration complete/ q" && kill $$ ;}'
+  # join servers in cluster
+  if [[ $HASHIQUBE_AZURE_IP ]]; then
+    nomad server join $HASHIQUBE_AZURE_IP
+  fi
+  if [[ $HASHIQUBE_AWS_IP ]]; then
+    nomad server join $HASHIQUBE_AWS_IP
+  fi
+  if [[ $HASHIQUBE_GCP_IP ]]; then
+    nomad server join $HASHIQUBE_GCP_IP
+  fi
+  nomad server members
+  nomad node status
+  cd /etc/nomad.d;
+  nomad plan --address=http://$INSTANCE_PRIVATE_IP:4646 countdashboard.nomad
+  nomad run --address=http://$INSTANCE_PRIVATE_IP:4646 countdashboard.nomad
+  nomad plan --address=http://$INSTANCE_PRIVATE_IP:4646 fabio.nomad
+  nomad run --address=http://$INSTANCE_PRIVATE_IP:4646 fabio.nomad
+}
 consul-install
-nomad-install
 vault-install
-# check processes listening on what ports
+nomad-install
 lsof -nPi
 echo END $(date '+%Y-%m-%d %H:%M:%S')
