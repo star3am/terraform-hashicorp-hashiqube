@@ -80,8 +80,8 @@ data "template_file" "hashiqube" {
   template = file("${path.module}/../../modules/shared/startup_script")
   vars = {
     HASHIQUBE_AWS_IP   = aws_eip.hashiqube.public_ip
-    HASHIQUBE_AZURE_IP = var.azure_hashiqube_ip
-    HASHIQUBE_GCP_IP   = var.gcp_hashiqube_ip
+    HASHIQUBE_AZURE_IP = var.azure_hashiqube_ip == null ? "" : var.azure_hashiqube_ip
+    HASHIQUBE_GCP_IP   = var.gcp_hashiqube_ip == null ? "" : var.gcp_hashiqube_ip
     VAULT_ENABLED      = lookup(var.vault, "enabled")
   }
 }

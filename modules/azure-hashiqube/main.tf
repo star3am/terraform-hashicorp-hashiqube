@@ -157,8 +157,8 @@ data "template_file" "hashiqube_user_data" {
   template = file("${path.module}/../../modules/shared/startup_script")
   vars = {
     HASHIQUBE_AZURE_IP = azurerm_public_ip.hashiqube.ip_address
-    HASHIQUBE_GCP_IP   = var.gcp_hashiqube_ip
-    HASHIQUBE_AWS_IP   = var.aws_hashiqube_ip
+    HASHIQUBE_GCP_IP   = var.gcp_hashiqube_ip == null ? "" : var.gcp_hashiqube_ip
+    HASHIQUBE_AWS_IP   = var.aws_hashiqube_ip == null ? "" : var.aws_hashiqube_ip
     VAULT_ENABLED      = lookup(var.vault, "enabled")
   }
 }
