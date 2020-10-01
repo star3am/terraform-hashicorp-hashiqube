@@ -247,13 +247,13 @@ advertise {
 }
 server {
   enabled          = true
-  bootstrap_expect = 3
+  bootstrap_expect = 1
 }
 client {
   enabled       = true
   # https://github.com/hashicorp/nomad/issues/1282
   network_speed = 100
-  servers       = ["$HASHIQUBE_IP:4647"]
+  servers       = ["$INSTANCE_PRIVATE_IP:4647"]
 }
 plugin "raw_exec" {
   config {
@@ -273,7 +273,7 @@ EOF
 cat <<EOF | sudo tee /etc/nomad.d/countdashboard.nomad
 # https://www.nomadproject.io/guides/integrations/consul-connect/index.html
 job "countdash" {
-  datacenters = ["dc$DC"]
+  datacenters = ["dc1", "dc2", "dc3"]
   group "api" {
     network {
       mode = "bridge"
@@ -345,7 +345,7 @@ EOF
 cat <<EOF | sudo tee /etc/nomad.d/fabio.nomad
 # https://learn.hashicorp.com/nomad/load-balancing/fabio
 job "fabio" {
-  datacenters = ["dc$DC"]
+  datacenters = ["dc1", "dc2", "dc3"]
   type = "system"
   group "fabio" {
     task "fabio" {
@@ -418,7 +418,14 @@ EOF
     echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
   fi
   nohup nomad agent -config=/etc/nomad/server.conf -dev-connect > /var/log/nomad.log 2>&1 &
+  sleep 20
   #sh -c 'sudo tail -f /var/log/nomad.log | { sed "/node registration complete/ q" && kill $$ ;}'
+  cd /etc/nomad.d;
+  nomad plan --address=http://$INSTANCE_PRIVATE_IP:4646 countdashboard.nomad
+  nomad run --address=http://$INSTANCE_PRIVATE_IP:4646 countdashboard.nomad
+  nomad plan --address=http://$INSTANCE_PRIVATE_IP:4646 fabio.nomad
+  nomad run --address=http://$INSTANCE_PRIVATE_IP:4646 fabio.nomad
+  sleep 20
   # join servers in cluster
   if [[ $HASHIQUBE_AZURE_IP ]]; then
     nomad server join $HASHIQUBE_AZURE_IP
@@ -431,11 +438,6 @@ EOF
   fi
   nomad server members
   nomad node status
-  cd /etc/nomad.d;
-  nomad plan --address=http://$INSTANCE_PRIVATE_IP:4646 countdashboard.nomad
-  nomad run --address=http://$INSTANCE_PRIVATE_IP:4646 countdashboard.nomad
-  nomad plan --address=http://$INSTANCE_PRIVATE_IP:4646 fabio.nomad
-  nomad run --address=http://$INSTANCE_PRIVATE_IP:4646 fabio.nomad
 }
 consul-install
 vault-install
