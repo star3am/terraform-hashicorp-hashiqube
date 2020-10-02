@@ -285,7 +285,7 @@ __Instructions on how to setup Cloud Account__: <br />
 | gcp_cluster_description | string | "hashiqube" | The description for the cluster |
 | gcp_cluster_tag_name | string | "hashiqube" | GCP Cluster tag to apply |
 | gcp_cluster_size | number | 1 | GCP size of the cluster |
-| gcp_zones| list(string) | ["australia-southeast1-a","australia-southeast1-b","australia-southeast1-c" | The zones accross which GCP resources will be launched |
+| gcp_zones| list(string) | ["australia-southeast1-a","australia-southeast1-b","australia-southeast1-c"] | The zones accross which GCP resources will be launched |
 | gcp_machine_type | string | "n1-standard-1" | GCP machine type | 
 | gcp_custom_metadata | map(string) | {} | A map of metadata key value pairs to assign to the Compute Instance metadata |
 | gcp_root_volume_disk_size_gb | number | 16 | The size, in GB, of the root disk volume on each HashiQube node |
