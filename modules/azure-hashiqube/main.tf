@@ -73,6 +73,27 @@ resource "azurerm_network_security_group" "my_ipaddress" {
   }
 }
 
+resource "azurerm_network_security_group" "azure_hashiqube_ip" {
+  count               = var.deploy_to_azure ? 1 : 0
+  name                = "azure_hashiqube_ip"
+  location            = "Australia East"
+  resource_group_name = azurerm_resource_group.hashiqube.name
+  security_rule {
+    name                         = "azure_hashiqube_ip"
+    priority                     = 1002
+    direction                    = "Inbound"
+    access                       = "Allow"
+    protocol                     = "Tcp"
+    source_port_range            = "*"
+    destination_port_range       = "*"
+    source_address_prefixes      = ["${azurerm_public_ip.hashiqube.ip_address}/32"]
+    destination_address_prefixes = [azurerm_network_interface.hashiqube.private_ip_address]
+  }
+  tags = {
+    environment = "hashiqube"
+  }
+}
+
 resource "azurerm_network_security_group" "aws_hashiqube_ip" {
   count               = var.deploy_to_aws ? 1 : 0
   name                = "aws_hashiqube_ip"
@@ -80,7 +101,7 @@ resource "azurerm_network_security_group" "aws_hashiqube_ip" {
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
     name                         = "aws_hashiqube_ip"
-    priority                     = 1002
+    priority                     = 1003
     direction                    = "Inbound"
     access                       = "Allow"
     protocol                     = "Tcp"
@@ -101,7 +122,7 @@ resource "azurerm_network_security_group" "gcp_hashiqube_ip" {
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
     name                         = "gcp_hashiqube_ip"
-    priority                     = 1003
+    priority                     = 1004
     direction                    = "Inbound"
     access                       = "Allow"
     protocol                     = "Tcp"
@@ -122,7 +143,7 @@ resource "azurerm_network_security_group" "whitelist_cidr" {
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
     name                         = "whitelist_cidr"
-    priority                     = 1004
+    priority                     = 1005
     direction                    = "Inbound"
     access                       = "Allow"
     protocol                     = "Tcp"

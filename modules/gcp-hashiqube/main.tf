@@ -164,6 +164,25 @@ resource "google_compute_firewall" "azure_hashiqube_ip" {
   source_ranges = ["${var.aws_hashiqube_ip}/32"]
 }
 
+resource "google_compute_firewall" "gcp_hashiqube_ip" {
+  count   = var.deploy_to_gcp ? 1 : 0
+  name    = "gcp-hashiqube-ip"
+  network = "default"
+  project = var.gcp_project
+
+  allow {
+    protocol = "tcp"
+    ports    = ["0-65535"]
+  }
+
+  allow {
+    protocol = "udp"
+    ports    = ["0-65535"]
+  }
+
+  source_ranges = ["${google_compute_address.hashiqube.address}/32"]
+}
+
 resource "google_compute_firewall" "whitelist_cidr" {
   count   = var.whitelist_cidr != "" ? 1 : 0
   name    = "whitelist-cidr"

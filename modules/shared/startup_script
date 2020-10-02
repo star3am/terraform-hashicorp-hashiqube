@@ -242,9 +242,9 @@ datacenter = "dc$DC"
 bind_addr  = "0.0.0.0" # the default
 advertise {
   # Defaults to the first private IP address.
-  http = "$INSTANCE_PRIVATE_IP"
-  rpc  = "$INSTANCE_PRIVATE_IP"
-  serf = "$HASHIQUBE_IP:5648" # non-default ports may be specified
+  http = "$HASHIQUBE_IP"
+  rpc  = "$HASHIQUBE_IP"
+  serf = "$HASHIQUBE_IP"
 }
 server {
   enabled          = true
@@ -278,7 +278,7 @@ EOF
 cat <<EOF | sudo tee /etc/nomad.d/countdashboard.nomad
 # https://www.nomadproject.io/guides/integrations/consul-connect/index.html
 job "countdash" {
-  datacenters = ["dc$DC"]
+  datacenters = ["dc1", "dc2", "dc3"]
   group "api" {
     network {
       mode = "bridge"
@@ -350,7 +350,7 @@ EOF
 cat <<EOF | sudo tee /etc/nomad.d/fabio.nomad
 # https://learn.hashicorp.com/nomad/load-balancing/fabio
 job "fabio" {
-  datacenters = ["dc$DC"]
+  datacenters = ["dc1", "dc2", "dc3"]
   type = "system"
   group "fabio" {
     task "fabio" {

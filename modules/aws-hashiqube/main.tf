@@ -128,6 +128,16 @@ resource "aws_security_group" "hashiqube" {
   }
 }
 
+resource "aws_security_group_rule" "aws_hashiqube" {
+  count             = var.deploy_to_aws ? 1 : 0
+  type              = "ingress"
+  to_port           = 65535
+  protocol          = "all"
+  cidr_blocks       = ["${aws_eip.hashiqube.public_ip}/32"]
+  from_port         = 0
+  security_group_id = aws_security_group.hashiqube.id
+}
+
 resource "aws_security_group_rule" "azure_hashiqube" {
   count             = var.deploy_to_azure ? 1 : 0
   type              = "ingress"
