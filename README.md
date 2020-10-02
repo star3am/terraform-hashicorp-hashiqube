@@ -267,7 +267,7 @@ __Instructions on how to setup Cloud Account__: <br />
 | Name | Type | Default | Description |
 |------|-------------|------|---------|
 | deploy_to_aws | bool | false | Deploy Hashiqube on AWS |
-| deploy_to_gcp | bool false | Deploy Hashiqube on GCP |
+| deploy_to_gcp | bool | false | Deploy Hashiqube on GCP |
 | deploy_to_azure | bool | false | Deploy Hashiqube on Azure |
 | whitelist_cidr | string | "" | Additional CIDR to whitelist |
 | ssh_public_key | string | "~/.ssh/id_rsa.pub" | SSH public key |
