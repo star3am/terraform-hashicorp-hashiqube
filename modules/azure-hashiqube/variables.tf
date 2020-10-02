@@ -15,3 +15,7 @@ variable "my_ipaddress" {}
 variable "ssh_public_key" {}
 
 variable "vault" {}
+
+variable "azure_region" {}
+
+variable "azure_instance_type" {}

@@ -17,23 +17,19 @@ resource "null_resource" "hashiqube" {
 
 data "aws_ami" "ubuntu" {
   most_recent = true
-
   filter {
     name   = "name"
     values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
   }
-
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-
   owners = ["099720109477"] # Canonical
 }
 
 resource "aws_iam_role" "hashiqube" {
   name = "hashiqube"
-
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -59,7 +55,6 @@ resource "aws_iam_instance_profile" "hashiqube" {
 resource "aws_iam_role_policy" "hashiqube" {
   name = "hashiqube"
   role = aws_iam_role.hashiqube.id
-
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -105,21 +100,18 @@ resource "aws_key_pair" "hashiqube" {
 
 resource "aws_security_group" "hashiqube" {
   name = "hashiqube"
-
   ingress {
     from_port   = 0
     to_port     = 65535
     protocol    = "tcp"
     cidr_blocks = ["${var.my_ipaddress}/32"]
   }
-
   ingress {
     from_port   = 0
     to_port     = 65535
     protocol    = "udp"
     cidr_blocks = ["${var.my_ipaddress}/32"]
   }
-
   egress {
     from_port   = 0
     to_port     = 0

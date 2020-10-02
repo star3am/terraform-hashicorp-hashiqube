@@ -1,18 +1,18 @@
 variable "deploy_to_aws" {
   type        = bool
-  default     = false
+  default     = true
   description = "Deploy Hashiqube on AWS"
 }
 
 variable "deploy_to_gcp" {
   type        = bool
-  default     = false
+  default     = true
   description = "Deploy Hashiqube on GCP"
 }
 
 variable "deploy_to_azure" {
   type        = bool
-  default     = false
+  default     = true
   description = "Deploy Hashiqube on Azure"
 }
 
@@ -26,6 +26,18 @@ variable "ssh_public_key" {
   type        = string
   default     = "~/.ssh/id_rsa.pub"
   description = "SSH public key"
+}
+
+variable "azure_region" {
+  type        = string
+  description = "The region in which all Azure resources will be launched"
+  default     = "Australia East"
+}
+
+variable "azure_instance_type" {
+  type        = string
+  default     = "Standard_F2"
+  description = "Azure instance type"
 }
 
 variable "aws_credentials" {
@@ -43,7 +55,7 @@ variable "aws_profile" {
 variable "aws_region" {
   type        = string
   default     = "ap-southeast-2"
-  description = "AWS region"
+  description = "The region in which all AWS resources will be launched"
 }
 
 variable "aws_instance_type" {

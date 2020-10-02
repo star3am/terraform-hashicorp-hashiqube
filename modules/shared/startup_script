@@ -173,34 +173,36 @@ EOF
   # create Vault /etc/vault/config.hcl file
   touch /etc/vault/config.hcl
   # add basic configuration settings for Vault to /etc/vault/config.hcl file
+  # https://learn.hashicorp.com/tutorials/vault/ha-with-consul#step-4-configure-the-vault-servers
+  hashiqube-03-ssh.png# https://www.vaultproject.io/docs/configuration/storage/raft/
   cat <<EOF | sudo tee /etc/vault/config.hcl
 disable_cache = true
 disable_mlock = true
 ui = true
 listener "tcp" {
-   address     = "0.0.0.0:8200"
-   tls_disable = 1
+   address      = "0.0.0.0:8200"
+   cluster_addr = "$HASHIQUBE_IP:8201"
+   tls_disable  = 1
 }
-# https://www.vaultproject.io/docs/configuration/storage/raft/
-storage "raft" {
-  path    = "/var/lib/vault/raft/data"
-  node_id = "$HOSTNAME"
-}
-cluster_addr = "http://$INSTANCE_PRIVATE_IP:8201"
+#storage "raft" {
+#  path    = "/var/lib/vault/raft/data"
+#  node_id = "$HOSTNAME"
+#}
 #storage "file" {
 #   path = "/var/lib/vault/data"
 #}
 # use consul as storage backend
-#storage "consul" {
-#  address = "$INSTANCE_PRIVATE_IP:8500"
-#  path    = "vault"
-#}
-api_addr             = "http://0.0.0.0:8200"
-max_lease_ttl        = "10h"
-default_lease_ttl    = "10h"
-cluster_name         = "vault"
-raw_storage_endpoint = true
-disable_sealwrap     = true
+storage "consul" {
+  address = "$INSTANCE_PRIVATE_IP:8500"
+  path    = "vault"
+}
+api_addr                = "http://$HASHIQUBE_IP:8200"
+cluster_addr            = "https://$HASHIQUBE_IP:8201"
+max_lease_ttl           = "10h"
+default_lease_ttl       = "10h"
+cluster_name            = "hashiqube-vault"
+raw_storage_endpoint    = true
+disable_sealwrap        = true
 disable_printable_check = true
 EOF
   # start and enable vault service to start on system boot

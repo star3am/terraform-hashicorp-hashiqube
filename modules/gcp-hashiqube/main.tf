@@ -21,20 +21,15 @@ resource "null_resource" "hashiqube" {
 resource "google_compute_region_instance_group_manager" "hashiqube" {
   name     = "hashiqube"
   provider = google
-
   base_instance_name        = var.gcp_cluster_name
   region                    = var.gcp_region
   distribution_policy_zones = var.gcp_zones
-
   version {
     name              = var.gcp_cluster_name
     instance_template = google_compute_instance_template.hashiqube.self_link
   }
-
   target_size = var.gcp_cluster_size
-
   depends_on = [google_compute_instance_template.hashiqube]
-
   update_policy {
     type                 = "PROACTIVE"
     minimal_action       = "REPLACE"
@@ -71,7 +66,6 @@ resource "google_compute_instance_template" "hashiqube" {
     on_host_maintenance = "MIGRATE"
     preemptible         = false
   }
-
   disk {
     boot         = true
     auto_delete  = true
@@ -79,26 +73,20 @@ resource "google_compute_instance_template" "hashiqube" {
     disk_size_gb = var.gcp_root_volume_disk_size_gb
     disk_type    = var.gcp_root_volume_disk_type
   }
-
   metadata_startup_script = data.template_file.hashiqube.rendered
-
   metadata = {
     ssh-keys = "ubuntu:${file(var.ssh_public_key)}"
   }
-
   network_interface {
     subnetwork = data.google_compute_subnetwork.hashiqube.self_link
-
     access_config {
       nat_ip = google_compute_address.hashiqube.address
     }
   }
-
   service_account {
     email  = google_service_account.hashiqube.email
     scopes = ["userinfo-email", "compute-ro", "storage-rw"]
   }
-
   lifecycle {
     create_before_destroy = true
   }
@@ -112,17 +100,14 @@ resource "google_compute_firewall" "my_ipaddress" {
   name    = "${var.gcp_cluster_name}-my-ipaddress"
   network = "default"
   project = var.gcp_project
-
   allow {
     protocol = "tcp"
     ports    = ["0-65535"]
   }
-
   allow {
     protocol = "udp"
     ports    = ["0-65535"]
   }
-
   source_ranges = ["${var.my_ipaddress}/32"]
 }
 
@@ -131,17 +116,14 @@ resource "google_compute_firewall" "aws-hashiqube_ip" {
   name    = "aws-hashiqube-ip"
   network = "default"
   project = var.gcp_project
-
   allow {
     protocol = "tcp"
     ports    = ["0-65535"]
   }
-
   allow {
     protocol = "udp"
     ports    = ["0-65535"]
   }
-
   source_ranges = ["${var.aws_hashiqube_ip}/32"]
 }
 
@@ -150,17 +132,14 @@ resource "google_compute_firewall" "azure_hashiqube_ip" {
   name    = "azure-hashiqube-ip"
   network = "default"
   project = var.gcp_project
-
   allow {
     protocol = "tcp"
     ports    = ["0-65535"]
   }
-
   allow {
     protocol = "udp"
     ports    = ["0-65535"]
   }
-
   source_ranges = ["${var.aws_hashiqube_ip}/32"]
 }
 
@@ -169,17 +148,14 @@ resource "google_compute_firewall" "gcp_hashiqube_ip" {
   name    = "gcp-hashiqube-ip"
   network = "default"
   project = var.gcp_project
-
   allow {
     protocol = "tcp"
     ports    = ["0-65535"]
   }
-
   allow {
     protocol = "udp"
     ports    = ["0-65535"]
   }
-
   source_ranges = ["${google_compute_address.hashiqube.address}/32"]
 }
 
@@ -188,17 +164,14 @@ resource "google_compute_firewall" "whitelist_cidr" {
   name    = "whitelist-cidr"
   network = "default"
   project = var.gcp_project
-
   allow {
     protocol = "tcp"
     ports    = ["0-65535"]
   }
-
   allow {
     protocol = "udp"
     ports    = ["0-65535"]
   }
-
   source_ranges = [var.whitelist_cidr]
 }
 

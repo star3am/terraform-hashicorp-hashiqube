@@ -57,7 +57,7 @@ module "gcp-hashiqube" {
   aws_hashiqube_ip             = var.deploy_to_aws ? try(module.aws-hashiqube[0].hashiqube_ip, null) : null
   azure_hashiqube_ip           = var.deploy_to_azure ? try(module.azure-hashiqube[0].hashiqube_ip, null) : null
   my_ipaddress                 = data.external.myipaddress.result.ip
-  vault              = {
+  vault = {
     enabled = true
     version = "1.4.1"
   }
@@ -92,16 +92,18 @@ module "azure-hashiqube" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
   # source = "git::git@github.com:star3am/terraform-hashicorp-hashiqube.git//modules/azure-hashiqube?ref=v0.0.1"
-  source            = "./modules/azure-hashiqube"
-  deploy_to_aws     = var.deploy_to_aws
-  deploy_to_azure   = var.deploy_to_azure
-  deploy_to_gcp     = var.deploy_to_gcp
-  whitelist_cidr    = var.whitelist_cidr
-  ssh_public_key    = var.ssh_public_key
-  aws_hashiqube_ip  = var.deploy_to_aws ? try(module.aws-hashiqube[0].hashiqube_ip, null) : null
-  gcp_hashiqube_ip  = var.deploy_to_gcp ? try(module.gcp-hashiqube[0].hashiqube_ip, null) : null
-  my_ipaddress      = data.external.myipaddress.result.ip
-  vault             = {
+  source              = "./modules/azure-hashiqube"
+  deploy_to_aws       = var.deploy_to_aws
+  deploy_to_azure     = var.deploy_to_azure
+  deploy_to_gcp       = var.deploy_to_gcp
+  whitelist_cidr      = var.whitelist_cidr
+  ssh_public_key      = var.ssh_public_key
+  aws_hashiqube_ip    = var.deploy_to_aws ? try(module.aws-hashiqube[0].hashiqube_ip, null) : null
+  gcp_hashiqube_ip    = var.deploy_to_gcp ? try(module.gcp-hashiqube[0].hashiqube_ip, null) : null
+  my_ipaddress        = data.external.myipaddress.result.ip
+  azure_region        = var.azure_region
+  azure_instance_type = var.azure_instance_type
+  vault               = {
     enabled = true
     version = "1.4.1"
   }
