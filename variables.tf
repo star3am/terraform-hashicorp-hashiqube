@@ -1,12 +1,12 @@
 variable "deploy_to_aws" {
   type        = bool
-  default     = true
+  default     = false
   description = "Deploy Hashiqube on AWS"
 }
 
 variable "deploy_to_gcp" {
   type        = bool
-  default     = true
+  default     = false
   description = "Deploy Hashiqube on GCP"
 }
 
