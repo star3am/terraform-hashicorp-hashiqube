@@ -230,11 +230,11 @@ your_ipaddress = 103.234.250.xxx
 When you do Terraform Apply, this is the output you will see. 
 ![HashiQube SSH](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-01-terraform-apply.png?raw=true "HashiQube Terraform Apply")
 
-You can check the Vault, Consul and Nomad Cluster status.
-![HashiQube SSH](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-02-clusters-status.png?raw=true "HashiQube SSH")
-
 Now that HashiQube is up, let's SSH into the instance. 
 ![HashiQube SSH](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-03-ssh.png?raw=true "HashiQube SSH")
+
+You can check the Vault, Consul and Nomad Cluster status.
+![HashiQube SSH](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-02-clusters-status.png?raw=true "HashiQube SSH")
 
 We can access Hashicorp Consul
 ![Consul](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-04-consul.png?raw=true "Consul")

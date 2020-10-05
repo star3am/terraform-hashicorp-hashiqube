@@ -86,7 +86,7 @@ resource "aws_instance" "hashiqube" {
   instance_type       = var.aws_instance_type
   security_groups     = [aws_security_group.hashiqube.name]
   key_name            = aws_key_pair.hashiqube.key_name
-  user_data           = data.template_file.hashiqube.rendered
+  user_data_base64    = base64gzip(data.template_file.hashiqube.rendered)
   iam_instance_profile = aws_iam_instance_profile.hashiqube.name
   tags = {
     Name = "hashiqube"
