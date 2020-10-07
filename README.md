@@ -6,9 +6,26 @@ A __Development__ lab running all [HashiCorp](https://www.hashicorp.com/) produc
 
 __DO NOT USE HASHIQUBE IN PRODUCTION__
 
+## Introduction
+
+Hello friends!
+
+Hashicorp clustered Consul, Nomad and Vault HA in GCP, AWS and Azure using Terraform.
+
+Last year I started learning about #Hashicorp products, and to help me do that, I created a Virtual Machine running all the Hashicorp products, you can read more about HashiQube the Development Lab that runs all Hashicorp products here:
 [HashiQube at HashiTalks 2020](https://www.hashicorp.com/resources/hashiqube-a-development-lab-using-all-the-hashicorp-products/)
 
 [HashiQube Website](https://servian.github.io/hashiqube)
+
+This year I wanted to improve my Terraform knowledge while studying for my Terraform Associate Exam and I decided to try spin up HashiQube on the Clouds, GCP, Azure and AWS using Terraform.
+
+I have written a Terraform Registry module that can help you do exactly that, https://lnkd.in/dS6cuSR
+
+This module can launch a Vault, Consul and Nomad (Clustered) on all clouds or just 1 if you only have 1 Cloud account.
+
+Give it a try and most of all have fun with this module, your feedback is always greatly appreciated!
+
+#Hashicorp #Vault #Consul #Nomad #HashiQube #Servian #Curious
 
 ## Purpose
 HashiQube has been created to help developers and engineers to get up to speed with HashiCorp products. It can be used for development, testing or training. HashiQube gives all interested parties the empowerment to deploy these tools in a way covers multiple use cases effectively providing a 'concept to completion' testbed using open-source HashiCorp products.
@@ -28,6 +45,7 @@ For more information around modules refer to the Terraform [documentation](https
 To use this module You have 2 options
 
 1) You clone this repository and edit the variables.tf file and main.tf
+
 2) You can look for an example in the examples folder, this will use the module from the Terraform Registry
 
 In both cases you only need to edit the variables.tf
