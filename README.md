@@ -24,6 +24,14 @@ A Terraform "module" refers to a self-contained package of Terraform configurati
 For more information around modules refer to the Terraform [documentation](https://www.terraform.io/docs/modules/index.html)
 
 ## How do you use this module
+
+To use this module You have 2 options
+
+1) You clone this repository and edit the variables.tf file and main.tf
+2) You can look for an example in the examples folder, this will use the module from the Terraform Registry
+
+In both cases you only need to edit the variables.tf
+
 I've tried to include the batteries, so all you need to do is enable your cloud (or all 3) in `variables.tf`
 
 ```
