@@ -6,7 +6,7 @@
 
 module "hashiqube" {
   source          = "star3am/hashiqube/hashicorp"
-  version         = "0.0.10"
+  version         = "0.0.12"
   deploy_to_aws   = var.deploy_to_aws
   deploy_to_gcp   = var.deploy_to_gcp
   deploy_to_azure = var.deploy_to_azure
