@@ -19,7 +19,7 @@ variable "deploy_to_azure" {
 variable "whitelist_cidr" {
   description = "Additional CIDR to whitelist"
   type        = string
-  default     = "" # Example: 0.0.0.0/0
+  default     = "20.191.210.171/32" # Example: 0.0.0.0/0
 }
 
 variable "ssh_public_key" {
