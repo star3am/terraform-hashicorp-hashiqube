@@ -49,6 +49,22 @@ output "aws_hashiqube-vault" {
   value = var.deploy_to_aws ? try("http://${module.aws-hashiqube[0].hashiqube_ip}:8200", null) : null
 }
 
+output "aws_hashiqube-waypoint" {
+  value = var.deploy_to_aws ? try("https://${module.aws-hashiqube[0].hashiqube_ip}:9702", null) : null
+}
+
+output "aws_hashiqube-boundary" {
+  value = var.deploy_to_aws ? try("http://${module.aws-hashiqube[0].hashiqube_ip}:19200 username: admin password: password", null) : null
+}
+
+output "aws_hashiqube-traefik-ui" {
+  value = var.deploy_to_aws ? try("http://${module.aws-hashiqube[0].hashiqube_ip}:8181", null) : null
+}
+
+output "aws_hashiqube-traefik-lb" {
+  value = var.deploy_to_aws ? try("http://${module.aws-hashiqube[0].hashiqube_ip}:8080", null) : null
+}
+
 output "aws_hashiqube-fabio-ui" {
   value = var.deploy_to_aws ? try("http://${module.aws-hashiqube[0].hashiqube_ip}:9998", null) : null
 }
@@ -78,6 +94,22 @@ output "azure_hashiqube-vault" {
   value = var.deploy_to_azure ? try("http://${module.azure-hashiqube[0].hashiqube_ip}:8200", null) : null
 }
 
+output "azure_hashiqube-waypoint" {
+  value = var.deploy_to_azure ? try("https://${module.azure-hashiqube[0].hashiqube_ip}:9702", null) : null
+}
+
+output "azure_hashiqube-boundary" {
+  value = var.deploy_to_azure ? try("http://${module.azure-hashiqube[0].hashiqube_ip}:19200 username: admin password: password", null) : null
+}
+
+output "azure_hashiqube-traefik-ui" {
+  value = var.deploy_to_azure ? try("http://${module.azure-hashiqube[0].hashiqube_ip}:8181", null) : null
+}
+
+output "azure_hashiqube-traefik-lb" {
+  value = var.deploy_to_azure ? try("http://${module.azure-hashiqube[0].hashiqube_ip}:8080", null) : null
+}
+
 output "azure_hashiqube-fabio-ui" {
   value = var.deploy_to_azure ? try("http://${module.azure-hashiqube[0].hashiqube_ip}:9998", null) : null
 }
@@ -105,6 +137,22 @@ output "gcp_hashiqube-nomad" {
 
 output "gcp_hashiqube-vault" {
   value = var.deploy_to_gcp ? try("http://${module.gcp-hashiqube[0].hashiqube_ip}:8200", null) : null
+}
+
+output "gcp_hashiqube-waypoint" {
+  value = var.deploy_to_gcp ? try("https://${module.gcp-hashiqube[0].hashiqube_ip}:9702", null) : null
+}
+
+output "gcp_hashiqube-boundary" {
+  value = var.deploy_to_gcp ? try("http://${module.gcp-hashiqube[0].hashiqube_ip}:19200 username: admin password: password", null) : null
+}
+
+output "gcp_hashiqube-traefik-ui" {
+  value = var.deploy_to_gcp ? try("http://${module.gcp-hashiqube[0].hashiqube_ip}:8181", null) : null
+}
+
+output "gcp_hashiqube-traefik-lb" {
+  value = var.deploy_to_gcp ? try("http://${module.gcp-hashiqube[0].hashiqube_ip}:8080", null) : null
 }
 
 output "gcp_hashiqube-fabio-ui" {
