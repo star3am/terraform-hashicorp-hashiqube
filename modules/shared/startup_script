@@ -63,6 +63,7 @@ printf " * Get Nomad Job Status:     vagrant ssh -c 'nomad job status'\n"
 printf " * Get Nomad Server Members: vagrant ssh -c 'nomad server members'\n"
 printf " * Get Consul Info:          vagrant ssh -c 'consul info'\n"
 printf " * Get Consul Members:       vagrant ssh -c 'consul members -wan'\n"
+printf " * Get Waypoint Token:       vagrant ssh -c 'cat /home/vagrant/.waypoint-nomad-token'\n"
 printf " * SSH into Hashiqube:       vagrant ssh\n"
 printf "\n"
 EOF

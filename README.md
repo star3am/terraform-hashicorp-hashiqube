@@ -171,6 +171,28 @@ Last login: Tue May 23 23:28:49 2023 from 172.17.0.1
 vagrant@hashiqube-aws:~$
 ```
 
+Get Waypoint Token
+*root@hashiqube-aws:/hashiqube#* `vagrant ssh -c "cat /home/vagrant/.waypoint-nomad-token"`
+```
+HZCwuUtmrrpW5ycZ63TToJgrFN3CsxSYJT5pEo2kWp1npxEksykGHtZ9uAUkj5YhqL6Q4ZHAPCGToVLCpanmAoASuABmbFQvnjgRzEtt5zDbkosYD4KXFimWhKx1NC5EnQn8c71qivsms7pLXYMknmfSsmRaLjDhkJmW
+```
+
+And acces Waypoint on the address in the Output of Terraform Apply in your browser
+```
+aws_hashiqube-waypoint = "https://13.55.129.xxx:9702"
+```
+
+![Hashicorp Waypoint on Hashiqube](images/hashiqube-waypoint.png?raw=true "Hashicorp Waypoint on Hashiqube")
+
+Access Hashicorp Boundary on Hashiqube on the address in the Output of Terraform Apply in your browser
+```
+aws_hashiqube-boundary = "http://13.55.129.152:19200 username: admin password: password"
+```
+
+![Hashicorp Boundary on Hashiqube](images/hashiqube-boundary.png?raw=true "Hashicorp Boundary on Hashiqube")
+
+## Development Environment using VSCode Dev Containers
+
 ![VSCode Dev Containers](images/vscode-dev-containers.png?raw=true "VSCode Dev Containers")
 
 ## Using Dev Containers also called Remote Containers with VSCode 
