@@ -44,7 +44,7 @@ sudo hostname "$HOSTNAME"
 sudo sed -i "s/.*127.0.0.1.*/127.0.0.1 $FQDN $HOSTNAME localhost/g" /etc/hosts
 # install basetools
 sudo DEBIAN_FRONTEND=noninteractive apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install swapspace curl unzip jq git update-motd toilet figlet apt-transport-https ca-certificates gnupg-agent software-properties-common
+sudo DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install swapspace curl unzip jq git update-motd toilet figlet apt-transport-https ca-certificates gnupg-agent software-properties-common mc
 # set motd
 sudo mkdir -p /etc/update-motd.d
 cat <<EOF | sudo tee /etc/update-motd.d/00-header
@@ -67,6 +67,8 @@ printf " * Get Waypoint Token:       vagrant ssh -c 'cat /home/vagrant/.waypoint
 printf " * SSH into Hashiqube:       vagrant ssh\n"
 printf "\n"
 EOF
+# remove unneeded motd files
+for i in $(ls /etc/update-motd.d/ | grep -v landscape | grep -v header); do rm /etc/update-motd.d/$i; done
 # install docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
