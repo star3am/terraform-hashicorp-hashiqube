@@ -43,8 +43,8 @@ echo "$HOSTNAME" > /etc/hostname
 hostname "$HOSTNAME"
 sed -i "s/.*127.0.0.1.*/127.0.0.1 $FQDN $HOSTNAME localhost/g" /etc/hosts
 # install basetools
-DEBIAN_FRONTEND=noninteractive apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install swapspace curl unzip jq git update-motd toilet figlet apt-transport-https ca-certificates gnupg-agent software-properties-common mc
+DEBIAN_FRONTEND=noninteractive apt-get update -qq < /dev/null > /dev/null
+DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install -qq swapspace curl unzip jq git update-motd toilet figlet apt-transport-https ca-certificates gnupg-agent software-properties-common mc < /dev/null > /dev/null
 # set motd
 mkdir -p /etc/update-motd.d
 cat <<EOF | tee /etc/update-motd.d/00-header
@@ -77,12 +77,12 @@ EOF
 # install docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-DEBIAN_FRONTEND=noninteractive apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install --allow-downgrades --assume-yes docker.io
+DEBIAN_FRONTEND=noninteractive apt-get update -qq < /dev/null > /dev/null
+DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker.io < /dev/null > /dev/null
 usermod -aG docker ubuntu
 service docker restart
 # install vagrant
-apt-get install -y vagrant
+apt-get install -y -qq vagrant < /dev/null > /dev/null
 # clone and run hashiqube
 sudo -u ubuntu git clone https://github.com/star3am/hashiqube.git /home/ubuntu/hashiqube
 cd /home/ubuntu/hashiqube

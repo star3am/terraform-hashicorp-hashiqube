@@ -187,7 +187,7 @@ resource "null_resource" "debug" {
       # https://developer.hashicorp.com/terraform/language/resources/provisioners/remote-exec#scripts
       # See Note in the link above about: set -o errexit
       "set -o errexit",
-      "while [ ! -f /var/log/user-data.log ]; do sleep 1; done;",
+      "while [ ! -f /var/log/user-data.log ]; do sleep 5; done;",
       "tail -f /var/log/user-data.log | { sed '/ USER-DATA END / q' && kill $$ || true; }",
       "exit 0"
     ]
