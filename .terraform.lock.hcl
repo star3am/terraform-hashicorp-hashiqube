@@ -71,6 +71,7 @@ provider "registry.terraform.io/hashicorp/google" {
   constraints = "~> 4.65"
   hashes = [
     "h1:aUKSdXehj2tc0tnK+FMniQ+ekPQwneGDrdS1ziWHkqE=",
+    "h1:rN7iHu/t+Xps0D4RUM2ZkgLdXAY6ftey+o/5osP9jKE=",
     "zh:141cddc714dec246957a47cb4103b34302222fc93a87b64de88116b22ebb0ea1",
     "zh:276ebd75cb7c265d12b2c611a5f8d38fd6b892ef3edec1b845a934721db794e5",
     "zh:574ae7b4808c1560b5a55a75ca2ad5d8ff6b5fb9dad6dffce3fae7ff8ccf78a9",
