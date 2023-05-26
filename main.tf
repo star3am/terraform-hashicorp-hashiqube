@@ -83,7 +83,7 @@ module "gcp-hashiqube" {
   my_ipaddress                 = data.external.myipaddress.result.ip
   vault = {
     enabled = true
-    version = "1.4.1"
+    version = "latest"
   }
 }
 
@@ -109,7 +109,7 @@ module "aws-hashiqube" {
   my_ipaddress       = data.external.myipaddress.result.ip
   vault              = {
     enabled = true
-    version = "1.4.1"
+    version = "latest"
   }
 }
 
@@ -133,6 +133,6 @@ module "azure-hashiqube" {
   azure_instance_type = var.azure_instance_type
   vault               = {
     enabled = true
-    version = "1.4.1"
+    version = "latest"
   }
 }

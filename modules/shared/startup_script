@@ -70,9 +70,9 @@ for i in $(ls /etc/update-motd.d/ | grep -v landscape | grep -v header); do rm /
 # set bash aliases
 cat <<EOF | sudo -u ubuntu tee /home/ubuntu/.bash_aliases
 alias vagrant='cd /home/ubuntu/hashiqube; vagrant'
-nomad() { cd /home/ubuntu/hashiqube; vagrant ssh -c "nomad $1 $2 $3 $4 $5" ;}
-consul() { cd /home/ubuntu/hashiqube; vagrant ssh -c "consul $1 $2 $3 $4 $5" ;}
-vault() { cd /home/ubuntu/hashiqube; vagrant ssh -c "vault $1 $2 $3 $4 $5" ;}
+nomad() { cd /home/ubuntu/hashiqube; vagrant ssh -c "nomad \$1 \$2 \$3 \$4 \$5" ;}
+consul() { cd /home/ubuntu/hashiqube; vagrant ssh -c "consul \$1 \$2 \$3 \$4 \$5" ;}
+vault() { cd /home/ubuntu/hashiqube; vagrant ssh -c "vault \$1 \$2 \$3 \$4 \$5" ;}
 EOF
 # install docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
