@@ -14,6 +14,7 @@ then
   HASHIQUBE_GCP_IP=${HASHIQUBE_GCP_IP}
   HOSTNAME=hashiqube-aws
   FQDN=hashiqube-aws.service.consul
+  VAGRANT_PROVISIONERS=${VAGRANT_PROVISIONERS}
 elif [[ $(dmidecode -s bios-version) =~ Google ]]
 then
   echo "This is GCP"
@@ -26,6 +27,7 @@ then
   HASHIQUBE_AWS_IP=${HASHIQUBE_AWS_IP}
   HOSTNAME=hashiqube-gcp
   FQDN=hashiqube-gcp.service.consul
+  VAGRANT_PROVISIONERS=${VAGRANT_PROVISIONERS}
 else
   echo "This is Azure"
   DC=azure
@@ -37,6 +39,7 @@ else
   HASHIQUBE_GCP_IP=${HASHIQUBE_GCP_IP}
   HOSTNAME=hashiqube-azure
   FQDN=hashiqube-azure.service.consul
+  VAGRANT_PROVISIONERS=${VAGRANT_PROVISIONERS}
 fi
 # set hostname
 echo "$HOSTNAME" > /etc/hostname
@@ -73,6 +76,8 @@ alias vagrant='cd /home/ubuntu/hashiqube; vagrant'
 nomad() { cd /home/ubuntu/hashiqube; vagrant ssh -c "nomad \$1 \$2 \$3 \$4 \$5" ;}
 consul() { cd /home/ubuntu/hashiqube; vagrant ssh -c "consul \$1 \$2 \$3 \$4 \$5" ;}
 vault() { cd /home/ubuntu/hashiqube; vagrant ssh -c "vault \$1 \$2 \$3 \$4 \$5" ;}
+waypoint() { cd /home/ubuntu/hashiqube; vagrant ssh -c "waypoint \$1 \$2 \$3 \$4 \$5" ;}
+boundary() { cd /home/ubuntu/hashiqube; vagrant ssh -c "boundary \$1 \$2 \$3 \$4 \$5" ;}
 EOF
 # install docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
@@ -92,7 +97,7 @@ for i in $(grep -Rlz '10.9.99.10' /home/ubuntu/hashiqube/); do sudo -u ubuntu se
 for i in $(grep -Rlz 'hashiqube0' /home/ubuntu/hashiqube/); do sudo -u ubuntu sed -i "s/hashiqube0/hashiqube-$DC/g" $i; done
 # set different DCs for the nodes
 for i in $(grep -Rlz 'dc1' /home/ubuntu/hashiqube/); do sudo -u ubuntu sed -i "s/dc1/$DC/g" $i; done
-sudo -u ubuntu vagrant up --provision-with basetools,docker,vault,consul,nomad,boundary,waypoint
+sudo -u ubuntu vagrant up --provision-with ${VAGRANT_PROVISIONERS}
 # cluster join
 if [[ $HASHIQUBE_AZURE_IP ]]; then
   sudo -u ubuntu vagrant ssh -c "consul join -wan ${HASHIQUBE_AZURE_IP}"
