@@ -39,7 +39,7 @@ provider "google" {
 }
 
 data "external" "myipaddress" {
-  program = ["bash", "-c", "curl -k 'https://api.ipify.org?format=json'"]
+  program = ["bash", "-c", "curl -m 10 -sk 'https://api.ipify.org?format=json'"]
 }
 
 resource "null_resource" "hashiqube" {
