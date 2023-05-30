@@ -2,7 +2,7 @@
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 echo USER-DATA BEGIN $(date '+%Y-%m-%d %H:%M:%S')
 # determine which cloud we are in and set some variables
-if [[ $(dmidecode -s bios-version) =~ .*\.amazon ]]
+if [[ $(dmidecode -s bios-version) =~ .*\.amazon ]] || [[ $(dmidecode -s bios-vendor) =~ Amazon ]]
 then
   echo "This is AWS"
   DC=aws
@@ -81,7 +81,7 @@ boundary() { cd /home/ubuntu/hashiqube; vagrant ssh -c "boundary \$1 \$2 \$3 \$4
 EOF
 # install docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" < /dev/null > /dev/null
 DEBIAN_FRONTEND=noninteractive apt-get update -qq < /dev/null > /dev/null
 DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker.io < /dev/null > /dev/null
 usermod -aG docker ubuntu
@@ -92,11 +92,11 @@ apt-get install -y -qq vagrant < /dev/null > /dev/null
 sudo -u ubuntu git clone https://github.com/star3am/hashiqube.git /home/ubuntu/hashiqube
 cd /home/ubuntu/hashiqube
 # set different IPs for the nodes
-for i in $(grep -Rlz '10.9.99.10' /home/ubuntu/hashiqube/); do sudo -u ubuntu sed -i "s/10.9.99.10/$HASHIQUBE_IP/g" $i; done
+for i in $(grep -Rlz '10.9.99.10' /home/ubuntu/hashiqube/); do sudo -u ubuntu sed -i "s/10.9.99.10/$HASHIQUBE_IP/g" $i; done < /dev/null > /dev/null
 # set different Hostnames for the nodes
-for i in $(grep -Rlz 'hashiqube0' /home/ubuntu/hashiqube/); do sudo -u ubuntu sed -i "s/hashiqube0/hashiqube-$DC/g" $i; done
+for i in $(grep -Rlz 'hashiqube0' /home/ubuntu/hashiqube/); do sudo -u ubuntu sed -i "s/hashiqube0/hashiqube-$DC/g" $i; done < /dev/null > /dev/null
 # set different DCs for the nodes
-for i in $(grep -Rlz 'dc1' /home/ubuntu/hashiqube/); do sudo -u ubuntu sed -i "s/dc1/$DC/g" $i; done
+for i in $(grep -Rlz 'dc1' /home/ubuntu/hashiqube/); do sudo -u ubuntu sed -i "s/dc1/$DC/g" $i; done < /dev/null > /dev/null
 sudo -u ubuntu vagrant up --provision-with ${VAGRANT_PROVISIONERS}
 # cluster join
 if [[ $HASHIQUBE_AZURE_IP ]]; then
