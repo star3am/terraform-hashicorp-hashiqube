@@ -26,7 +26,7 @@ variable "debug_user_data" {
 variable "vagrant_provisioners" {
   description = "The list of services you would like to run in Hashiqube, the more you run, the bigger instance youd need with more RAM"
   type        = string
-  default     = "basetools,docker,vault,consul,nomad,boundary,waypoint"
+  default     = "basetools,docker,consul,vault,nomad,boundary,waypoint"
 }
 
 variable "whitelist_cidr" {
