@@ -34,9 +34,10 @@ provider "azurerm" {
 }
 
 provider "google" {
-  credentials = file(var.gcp_credentials)
-  project     = var.gcp_project
-  region      = var.gcp_region
+  # Default authentication is via ENV variables see: https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference.html#authentication-configuration
+  # credentials = file(var.gcp_credentials)
+  # project     = var.gcp_project
+  # region      = var.gcp_region
 }
 
 data "external" "myipaddress" {
