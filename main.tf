@@ -30,6 +30,7 @@ provider "aws" {
 }
 
 provider "azurerm" {
+  # Default authentication is via ENV variables see: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret#creating-a-service-principal
   features {}
 }
 
