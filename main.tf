@@ -24,7 +24,8 @@ terraform {
 
 provider "aws" {
   region                   = var.aws_region
-  shared_credentials_files = [file(var.aws_credentials)]
+  # Default authentication is via ENV variables see: https://registry.terraform.io/providers/hashicorp/aws/latest/docs#environment-variables
+  # shared_credentials_files = [file(var.aws_credentials)]
   profile                  = var.aws_profile
 }
 
