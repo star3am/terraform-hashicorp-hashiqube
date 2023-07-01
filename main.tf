@@ -26,7 +26,7 @@ provider "aws" {
   region                   = var.aws_region
   # Default authentication is via ENV variables see: https://registry.terraform.io/providers/hashicorp/aws/latest/docs#environment-variables
   # shared_credentials_files = [file(var.aws_credentials)]
-  profile                  = var.aws_profile
+  # profile                  = var.aws_profile
 }
 
 provider "azurerm" {
