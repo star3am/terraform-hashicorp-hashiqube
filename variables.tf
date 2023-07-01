@@ -37,7 +37,7 @@ variable "whitelist_cidr" {
 
 variable "ssh_public_key" {
   type        = string
-  default     = "~/.ssh/id_rsa.pub"
+  default     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ......"
   description = "SSH public key"
 }
 
