@@ -135,7 +135,7 @@ RUN apt autoremove --purge -y && \
 USER ubuntu
 ENV PATH="$PATH:/home/ubuntu/.local/bin"
 
-# install pips 
+# install pips
 RUN python3 -m pip install --no-cache-dir --quiet --upgrade virtualenv
 
 # azure cli
