@@ -15,7 +15,7 @@ env:
 
 jobs:
   build-and-publish-latest:
-    # if: contains(github.event.pull_request.labels.*.name, 'rebuild container image')
+    if: contains(github.event.pull_request.labels.*.name, 'rebuild container image')
     runs-on: ubuntu-latest
     steps:
       # Checking out the repo
@@ -70,6 +70,15 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Run
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         run: ./run.sh
 
   terraform-plan-on-terraform-cloud:
