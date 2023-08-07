@@ -77,7 +77,6 @@ jobs:
 
   terraform-plan-on-terraform-cloud:
     if: github.repository != 'hashicorp-education/learn-terraform-github-actions'
-    name: "Terraform Plan"
     runs-on: ubuntu-latest
     permissions:
       contents: read
