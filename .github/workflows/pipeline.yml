@@ -17,6 +17,9 @@ jobs:
   build-and-publish-latest:
     # if: contains(github.event.pull_request.labels.*.name, 'rebuild container image')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       # Checking out the repo
       - uses: actions/checkout@v3
