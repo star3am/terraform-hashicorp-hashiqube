@@ -30,7 +30,6 @@ openssh-client \
 python3-crcmod \
 python3-dev \
 python3-pip \
-python3-virtualenv \
 shellcheck \
 snapd \
 software-properties-common \
@@ -119,14 +118,14 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=amd64; elif [ "$
 
 # aws cli https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 # https://aws.amazon.com/blogs/developer/aws-cli-v2-now-available-for-linux-arm/
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=x86_64; elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then ARCHITECTURE=aarch64; elif [ "$TARGETPLATFORM" = "linux/arm64/v8" ]; then ARCHITECTURE=aarch64; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=aarch64; else ARCHITECTURE=x86_64; fi && \
-    curl -Lo "/tmp/awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-${ARCHITECTURE}.zip" && \
-    cd /tmp && \
-    unzip -qq awscliv2.zip && \
-    ./aws/install --update
+# RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=x86_64; elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then ARCHITECTURE=aarch64; elif [ "$TARGETPLATFORM" = "linux/arm64/v8" ]; then ARCHITECTURE=aarch64; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=aarch64; else ARCHITECTURE=x86_64; fi && \
+#    curl -Lo "/tmp/awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-${ARCHITECTURE}.zip" && \
+#    cd /tmp && \
+#    unzip -qq awscliv2.zip && \
+#    ./aws/install --update
 
 # gcloud cli https://cloud.google.com/sdk/docs/install#deb
-RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-cli -y
+# RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-cli -y
 
 # cleanup
 RUN apt autoremove --purge -y && \
@@ -136,11 +135,14 @@ RUN apt autoremove --purge -y && \
 USER ubuntu
 ENV PATH="$PATH:/home/ubuntu/.local/bin"
 
+# install pips 
+RUN python3 -m pip install --no-cache-dir --quiet --upgrade virtualenv
+
 # azure cli
 # BUG: https://github.com/Azure/azure-cli/issues/7368 so installing via pip
-RUN python3 -m pip install --no-cache-dir --quiet --upgrade azure-cli
+# RUN python3 -m pip install --no-cache-dir --quiet --upgrade azure-cli
 
 # pre-commit https://pre-commit.com/#install
-RUN python3 -m pip install --no-cache-dir --quiet --upgrade --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org git+https://github.com/pre-commit/pre-commit.git@v2.20.0
+RUN python3 -m pip install --no-cache-dir --quiet --upgrade --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org git+https://github.com/pre-commit/pre-commit.git
 
 WORKDIR /app
