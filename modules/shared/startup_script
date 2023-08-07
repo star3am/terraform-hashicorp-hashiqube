@@ -83,11 +83,13 @@ EOF
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" < /dev/null > /dev/null
 DEBIAN_FRONTEND=noninteractive apt-get update -qq < /dev/null > /dev/null
-DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker.io < /dev/null > /dev/null
+DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker-ce < /dev/null > /dev/null
 usermod -aG docker ubuntu
 service docker restart
 # install vagrant
-apt-get install -y -qq vagrant < /dev/null > /dev/null
+wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install -y -qq vagrant < /dev/null > /dev/null
 # clone and run hashiqube
 sudo -u ubuntu git clone https://github.com/star3am/hashiqube.git /home/ubuntu/hashiqube
 cd /home/ubuntu/hashiqube

@@ -1,5 +1,5 @@
 ARG DOTNET_VERSION="3.1.413"
-ARG UBUNTU_RELEASE="jammy"
+ARG UBUNTU_RELEASE="focal"
 
 FROM ubuntu:${UBUNTU_RELEASE}
 
@@ -8,8 +8,8 @@ ARG MIRROR="http://archive.ubuntu.com"
 
 # UBUNTU_RELEASE must be redeclared because it is used before "FROM"
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG UBUNTU_RELEASE="jammy"
-ARG UBUNTU_VERSION="22.04.2"
+ARG UBUNTU_RELEASE="focal"
+ARG UBUNTU_VERSION="20.04"
 ARG TARGETPLATFORM
 ARG PKGS="\
 apt-transport-https \
