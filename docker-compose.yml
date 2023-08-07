@@ -12,7 +12,7 @@ services:
     network_mode: "bridge"
     volumes:
       - ".:/app"
-      - "~/:/home/ubuntu"
+      - "~/.ssh:/home/ubuntu/.ssh"
     # Add your .aws or .azure or .kube directories here
     # - "$AZURE_CONFIG_DIR:/home/ubuntu/.azure"
     working_dir: "/app"

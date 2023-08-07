@@ -23,31 +23,31 @@ pre-commit:
     # - docker buildx imagetools inspect star3am/repository:tools
     # - docker buildx build --push --platform linux/amd64,linux/arm64 --tag star3am/repository:tools .
     - |
-      arch=$(uname -m)
-      if [[ $arch == x86_64* ]]; then
+        arch=$(uname -m)
+        if [[ $arch == x86_64* ]]; then
         ARCH="amd64"
-      elif  [[ $arch == arm64 ]]; then
+        elif  [[ $arch == arm64 ]]; then
         ARCH="arm64"
-      fi
-      echo "CPU is ${ARCH}"
-      pwd
-      docker images | grep tools || true
-      docker rmi -f tools || true
-      docker rmi -f pre-commit_tools || true
-      docker rmi -f devops-bootstrap_tools || true
-      ls -la 
-      # Docker volumes in Gitlab dont work, we use COPY to copy the code into the container
-      sed -i 's/^# COPY/COPY/' Dockerfile
-      sed -i 's/^\.git/#\.git/' .dockerignore
-      sed -i 's/volumes/#volumes/' docker-compose.yml
-      sed -i "s%- \"\.\:/app\"%#- \"\.\:\/app\"%" docker-compose.yml
-      echo "*** cat Dockerfile"
-      cat Dockerfile
-      echo "*** cat .dockerignore"
-      cat .dockerignore
-      echo "*** cat docker-compose.yml"
-      cat docker-compose.yml
-      ARCH=${ARCH} docker-compose run --rm tools bash -c '
+        fi
+        echo "CPU is ${ARCH}"
+        pwd
+        docker images | grep tools || true
+        docker rmi -f tools || true
+        docker rmi -f pre-commit_tools || true
+        docker rmi -f devops-bootstrap_tools || true
+        ls -la
+        # Docker volumes in Gitlab dont work, we use COPY to copy the code into the container
+        sed -i 's/^# COPY/COPY/' Dockerfile
+        sed -i 's/^\.git/#\.git/' .dockerignore
+        sed -i 's/volumes/#volumes/' docker-compose.yml
+        sed -i "s%- \"\.\:/app\"%#- \"\.\:\/app\"%" docker-compose.yml
+        echo "*** cat Dockerfile"
+        cat Dockerfile
+        echo "*** cat .dockerignore"
+        cat .dockerignore
+        echo "*** cat docker-compose.yml"
+        cat docker-compose.yml
+        ARCH=${ARCH} docker-compose run --rm tools bash -c '
         cd /app
         env | grep PATH
         cat /etc/lsb-release

@@ -1,15 +1,31 @@
+terraform {
+  required_version = "~> 1.0"
+
+  required_providers {
+    # https://registry.terraform.io/providers/hashicorp/azurerm/latest
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "3.57.0"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.0"
+    }
+  }
+}
+
 resource "null_resource" "hashiqube" {
   triggers = {
-    deploy_to_aws       = var.deploy_to_aws
-    deploy_to_azure     = var.deploy_to_azure
-    deploy_to_gcp       = var.deploy_to_gcp
-    whitelist_cidr      = var.whitelist_cidr
-    my_ipaddress        = var.my_ipaddress
-    ssh_public_key      = var.ssh_public_key
-    aws_hashiqube_ip    = var.aws_hashiqube_ip
-    gcp_hashiqube_ip    = var.gcp_hashiqube_ip
-    azure_region        = var.azure_region
-    azure_instance_type = var.azure_instance_type
+    deploy_to_aws        = var.deploy_to_aws
+    deploy_to_azure      = var.deploy_to_azure
+    deploy_to_gcp        = var.deploy_to_gcp
+    whitelist_cidr       = var.whitelist_cidr
+    my_ipaddress         = var.my_ipaddress
+    ssh_public_key       = var.ssh_public_key
+    aws_hashiqube_ip     = var.aws_hashiqube_ip
+    gcp_hashiqube_ip     = var.gcp_hashiqube_ip
+    azure_region         = var.azure_region
+    azure_instance_type  = var.azure_instance_type
     vagrant_provisioners = var.vagrant_provisioners
   }
 }
@@ -200,10 +216,10 @@ resource "azurerm_linux_virtual_machine" "hashiqube" {
     username   = "ubuntu"
     public_key = var.ssh_public_key
   }
-  custom_data = base64gzip(templatefile("${path.module}/../../modules/shared/startup_script",{
-    HASHIQUBE_AZURE_IP = azurerm_public_ip.hashiqube.ip_address
-    HASHIQUBE_GCP_IP   = var.gcp_hashiqube_ip == null ? "" : var.gcp_hashiqube_ip
-    HASHIQUBE_AWS_IP   = var.aws_hashiqube_ip == null ? "" : var.aws_hashiqube_ip
+  custom_data = base64gzip(templatefile("${path.module}/../../modules/shared/startup_script", {
+    HASHIQUBE_AZURE_IP   = azurerm_public_ip.hashiqube.ip_address
+    HASHIQUBE_GCP_IP     = var.gcp_hashiqube_ip == null ? "" : var.gcp_hashiqube_ip
+    HASHIQUBE_AWS_IP     = var.aws_hashiqube_ip == null ? "" : var.aws_hashiqube_ip
     VAGRANT_PROVISIONERS = var.vagrant_provisioners
   }))
   tags = {
@@ -219,10 +235,10 @@ resource "null_resource" "debug" {
   }
 
   connection {
-    type     = "ssh"
-    user     = "ubuntu"
-    host     = azurerm_public_ip.hashiqube.ip_address
-    private_key = file(var.ssh_private_key)
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = azurerm_public_ip.hashiqube.ip_address
+    private_key = var.ssh_private_key
   }
 
   provisioner "remote-exec" {

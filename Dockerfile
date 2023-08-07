@@ -1,5 +1,5 @@
 ARG DOTNET_VERSION="3.1.413"
-ARG UBUNTU_RELEASE="focal"
+ARG UBUNTU_RELEASE="jammy"
 
 FROM ubuntu:${UBUNTU_RELEASE}
 
@@ -8,8 +8,8 @@ ARG MIRROR="http://archive.ubuntu.com"
 
 # UBUNTU_RELEASE must be redeclared because it is used before "FROM"
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG UBUNTU_RELEASE="focal"
-ARG UBUNTU_VERSION="20.04"
+ARG UBUNTU_RELEASE="jammy"
+ARG UBUNTU_VERSION="22.04.2"
 ARG TARGETPLATFORM
 ARG PKGS="\
 apt-transport-https \
@@ -17,6 +17,7 @@ apt-utils \
 build-essential \
 ca-certificates \
 curl \
+wget \
 git \
 gnupg \
 gpg \
@@ -36,9 +37,9 @@ software-properties-common \
 tree \
 unzip \
 zip \
-less \
 nano \
 vim \
+less \
 "
 
 # Env vars
@@ -116,18 +117,6 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=amd64; elif [ "$
     chmod +x terraform-docs && \
     mv terraform-docs /usr/local/bin/terraform-docs
 
-# kubectl
-ARG KUBECTL_VERSION="1.18.10"
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=amd64; elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then ARCHITECTURE=arm64; elif [ "$TARGETPLATFORM" = "linux/arm/v8" ]; then ARCHITECTURE=arm64; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=arm64; else ARCHITECTURE=amd64; fi && \
-    curl -Lo /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/${ARCHITECTURE}/kubectl && \
-    chmod +x /usr/local/bin/kubectl
-
-# helm https://helm.sh/docs/intro/install/#from-apt-debianubuntu
-RUN curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list && \
-    apt-get update && \
-    apt-get install -y helm
-
 # aws cli https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 # https://aws.amazon.com/blogs/developer/aws-cli-v2-now-available-for-linux-arm/
 RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=x86_64; elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then ARCHITECTURE=aarch64; elif [ "$TARGETPLATFORM" = "linux/arm64/v8" ]; then ARCHITECTURE=aarch64; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=aarch64; else ARCHITECTURE=x86_64; fi && \
@@ -136,42 +125,8 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=x86_64; elif [ "
     unzip -qq awscliv2.zip && \
     ./aws/install --update
 
-# azure cli https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash && \
-    apt-get update && \
-    apt-get -y install ca-certificates curl apt-transport-https lsb-release gnupg && \
-    mkdir -p /etc/apt/keyrings && \
-    curl -sLS https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/keyrings/microsoft.gpg > /dev/null && \ 
-    chmod go+r /etc/apt/keyrings/microsoft.gpg && \
-    AZ_REPO=$(lsb_release -cs) && \
-    echo "deb [arch=`dpkg --print-architecture` signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list && \
-    apt-get update && \
-    apt-get -y install azure-cli
-
-# gcloud cli https://cloud.google.com/sdk/docs/install#linux
-ARG GCLOUD_CLI_VERSION="431.0.0"
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=x86_64; elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then ARCHITECTURE=arm; elif [ "$TARGETPLATFORM" = "linux/arm/v8" ]; then ARCHITECTURE=arm; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=arm; else ARCHITECTURE=x86_64; fi && \
-    curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_CLI_VERSION}-linux-${ARCHITECTURE}.tar.gz && \
-    tar -xf google-cloud-cli-${GCLOUD_CLI_VERSION}-linux-${ARCHITECTURE}.tar.gz && \
-    ./google-cloud-sdk/install.sh
-
-# packer https://www.packer.io/
-ARG PACKER_VERSION="1.7.2"
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=amd64; elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then ARCHITECTURE=arm64; elif [ "$TARGETPLATFORM" = "linux/arm/v8" ]; then ARCHITECTURE=arm64; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=arm64; else ARCHITECTURE=amd64; fi && \
-    curl -L https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_${ARCHITECTURE}.zip -o packer.zip && \
-    unzip packer.zip -d /usr/local/bin && \
-    rm packer.zip
-
-# docker https://github.com/docker/docker-install
-RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
-    sh get-docker.sh && \
-    usermod -aG docker ubuntu
-
-# docker-compose https://docs.docker.com/compose/install/linux/#install-the-plugin-manually
-ARG DOCKERCOMPOSE_VERSION="2.11.2"
-RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCHITECTURE=x86_64; elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then ARCHITECTURE=aarch64; elif [ "$TARGETPLATFORM" = "linux/arm/v8" ]; then ARCHITECTURE=aarch64; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then ARCHITECTURE=aarch64; else ARCHITECTURE=x86_64; fi && \
-    curl -Lo /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/v${DOCKERCOMPOSE_VERSION}/docker-compose-linux-${ARCHITECTURE} && \
-    chmod +x /usr/local/bin/docker-compose
+# gcloud cli https://cloud.google.com/sdk/docs/install#deb
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && apt-get update -y && apt-get install google-cloud-cli -y
 
 # cleanup
 RUN apt autoremove --purge -y && \
@@ -181,21 +136,11 @@ RUN apt autoremove --purge -y && \
 USER ubuntu
 ENV PATH="$PATH:/home/ubuntu/.local/bin"
 
-# BUG: Broken pip due to bad openssl pip module
-# https://stackoverflow.com/questions/70544278/pip-install-failing-due-to-pyopenssl-openssl-error
-# https://serverfault.com/questions/1099606/ansible-openssl-error-with-apt-module
-# https://www.reddit.com/r/saltstack/comments/vc7oyb/getting_cryptographydeprecationwarning_python_36/
-# https://bitcoden.com/answers/broken-pip-due-to-bad-openssl-module
-RUN python3 -m pip install --no-cache-dir --quiet --upgrade --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org cryptography==38.0.0
-# https://www.reddit.com/r/saltstack/comments/vc7oyb/getting_cryptographydeprecationwarning_python_36/
-# https://bitcoden.com/answers/broken-pip-due-to-bad-openssl-module
-RUN python3 -m pip install --no-cache-dir --quiet --upgrade cachecontrol
-RUN python3 -m pip install --no-cache-dir --quiet --upgrade pyopenssl
+# azure cli
+# BUG: https://github.com/Azure/azure-cli/issues/7368 so installing via pip
+RUN python3 -m pip install --no-cache-dir --quiet --upgrade azure-cli
 
 # pre-commit https://pre-commit.com/#install
 RUN python3 -m pip install --no-cache-dir --quiet --upgrade --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org git+https://github.com/pre-commit/pre-commit.git@v2.20.0
-
-# cookie-cutter https://github.com/cookiecutter/cookiecutter/blob/master/docs/installation.rst
-RUN python3 -m pip install --no-cache-dir --quiet --upgrade cookiecutter
 
 WORKDIR /app

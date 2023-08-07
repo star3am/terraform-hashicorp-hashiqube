@@ -38,13 +38,14 @@ variable "whitelist_cidr" {
 variable "ssh_public_key" {
   type        = string
   default     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ......"
-  description = "SSH public key"
+  description = "Path to your SSH public key, matching the private key below"
 }
 
 variable "ssh_private_key" {
   type        = string
-  default     = "~/.ssh/id_rsa"
-  description = "SSH private key"
+  default     = "~/.ssh/id_rsa" #tfsec:ignore:general-secrets-sensitive-in-variable
+  description = "Path to your SSH private key, matching the public key above"
+  sensitive   = true
 }
 
 variable "azure_region" {
@@ -84,8 +85,9 @@ variable "aws_instance_type" {
 }
 
 variable "gcp_credentials" {
-  type    = string
-  default = "~/.gcp/credentials.json"
+  type        = string
+  default     = "~/.gcp/credentials.json"
+  description = "GCP project credentials file"
 }
 
 variable "gcp_project" {
@@ -142,14 +144,9 @@ variable "gcp_zones" {
 }
 
 variable "gcp_machine_type" {
-  type    = string
-  default = "n1-standard-1"
-}
-
-variable "gcp_custom_metadata" {
-  description = "A map of metadata key value pairs to assign to the Compute Instance metadata"
-  type        = map(string)
-  default     = {}
+  type        = string
+  default     = "n1-standard-1"
+  description = "GCP Machine Type"
 }
 
 variable "gcp_root_volume_disk_size_gb" {
