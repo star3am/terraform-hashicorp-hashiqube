@@ -1,18 +1,34 @@
 # https://www.terraform.io/docs/providers/google/r/compute_instance.html
 # https://github.com/terraform-providers/terraform-provider-google/blob/master/examples/internal-load-balancing/main.tf
 
+terraform {
+  required_version = "~> 1.0"
+
+  required_providers {
+    # https://registry.terraform.io/providers/hashicorp/google/latest
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 4.66"
+    }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.0"
+    }
+  }
+}
+
 resource "null_resource" "hashiqube" {
   triggers = {
-    deploy_to_aws      = var.deploy_to_aws
-    deploy_to_azure    = var.deploy_to_azure
-    deploy_to_gcp      = var.deploy_to_gcp
-    whitelist_cidr     = var.whitelist_cidr
-    my_ipaddress       = var.my_ipaddress
-    gcp_project        = var.gcp_project
-    gcp_credentials    = var.gcp_credentials
-    ssh_public_key     = var.ssh_public_key
-    aws_hashiqube_ip   = var.aws_hashiqube_ip
-    azure_hashiqube_ip = var.azure_hashiqube_ip
+    deploy_to_aws        = var.deploy_to_aws
+    deploy_to_azure      = var.deploy_to_azure
+    deploy_to_gcp        = var.deploy_to_gcp
+    whitelist_cidr       = var.whitelist_cidr
+    my_ipaddress         = var.my_ipaddress
+    gcp_project          = var.gcp_project
+    gcp_credentials      = var.gcp_credentials
+    ssh_public_key       = var.ssh_public_key
+    aws_hashiqube_ip     = var.aws_hashiqube_ip
+    azure_hashiqube_ip   = var.azure_hashiqube_ip
     vagrant_provisioners = var.vagrant_provisioners
   }
 }
@@ -22,8 +38,8 @@ locals {
 }
 
 resource "google_compute_region_instance_group_manager" "hashiqube" {
-  name     = "hashiqube"
-  provider = google
+  name                      = "hashiqube"
+  provider                  = google
   base_instance_name        = var.gcp_cluster_name
   region                    = var.gcp_region
   distribution_policy_zones = var.gcp_zones
@@ -32,10 +48,10 @@ resource "google_compute_region_instance_group_manager" "hashiqube" {
     instance_template = google_compute_instance_template.hashiqube.self_link
   }
   target_size = var.gcp_cluster_size
-  depends_on = [google_compute_instance_template.hashiqube]
+  depends_on  = [google_compute_instance_template.hashiqube]
   update_policy {
-    type                 = "PROACTIVE"
-    minimal_action       = "REPLACE"
+    type                  = "PROACTIVE"
+    minimal_action        = "REPLACE"
     max_surge_fixed       = 3
     max_unavailable_fixed = 0
   }
@@ -65,10 +81,10 @@ resource "google_compute_instance_template" "hashiqube" {
     disk_size_gb = var.gcp_root_volume_disk_size_gb
     disk_type    = var.gcp_root_volume_disk_type
   }
-  metadata_startup_script = templatefile("${path.module}/../../modules/shared/startup_script",{
-    HASHIQUBE_GCP_IP   = google_compute_address.hashiqube.address
-    HASHIQUBE_AWS_IP   = var.aws_hashiqube_ip == null ? "" : var.aws_hashiqube_ip
-    HASHIQUBE_AZURE_IP = var.azure_hashiqube_ip == null ? "" : var.azure_hashiqube_ip
+  metadata_startup_script = templatefile("${path.module}/../../modules/shared/startup_script", {
+    HASHIQUBE_GCP_IP     = google_compute_address.hashiqube.address
+    HASHIQUBE_AWS_IP     = var.aws_hashiqube_ip == null ? "" : var.aws_hashiqube_ip
+    HASHIQUBE_AZURE_IP   = var.azure_hashiqube_ip == null ? "" : var.azure_hashiqube_ip
     VAGRANT_PROVISIONERS = var.vagrant_provisioners
   })
   metadata = {
@@ -108,7 +124,7 @@ resource "google_compute_firewall" "my_ipaddress" {
   source_ranges = ["${var.my_ipaddress}/32"]
 }
 
-resource "google_compute_firewall" "aws-hashiqube_ip" {
+resource "google_compute_firewall" "aws_hashiqube_ip" {
   count   = var.deploy_to_aws ? 1 : 0
   name    = "aws-hashiqube-ip"
   network = "default"
@@ -192,10 +208,10 @@ resource "null_resource" "debug" {
   }
 
   connection {
-    type     = "ssh"
-    user     = "ubuntu"
-    host     = google_compute_address.hashiqube.address
-    private_key = file(var.ssh_private_key)
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = google_compute_address.hashiqube.address
+    private_key = var.ssh_private_key
   }
 
   provisioner "remote-exec" {

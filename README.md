@@ -32,7 +32,7 @@ Give it a try and most of all have fun with this module, your feedback is always
 ## Basic concept
 The basic concept is, we spin up a cloud instance, we install `docker` and `vagrant` and we clone https://github.com/star3am/hashiqube into /home/ubuntu/hashiqube
 
-We then use vagrant to spin up Hashiqube as a docker container with all the Hashicorp tools inside of this docker container. So Vault, Nomad, Consul, Boundary and Waypoint actually runs inside a docker container on the cloud instance. 
+We then use vagrant to spin up Hashiqube as a docker container with all the Hashicorp tools inside of this docker container. So Vault, Nomad, Consul, Boundary and Waypoint actually runs inside a docker container on the cloud instance.
 
 *ubuntu@hashiqube-aws:~$* `vagrant status`
 ```
@@ -46,7 +46,7 @@ kill/destroy it with `vagrant destroy`.
 ```
 
 *ubuntu@hashiqube-aws:~$* `docker ps`
-``` 
+```
 CONTAINER ID   IMAGE          COMMAND            CREATED          STATUS          PORTS   NAMES
 f6bc621e730e   7b224f871e2a   "/usr/sbin/init"   58 minutes ago   Up 58 minutes   0.0.0.0:1433->1433/tcp, :::1433->1433/tcp, 0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 0.0.0.0:3333->3333/tcp, :::3333->3333/tcp, 0.0.0.0:4566->4566/tcp, :::4566->4566/tcp, 0.0.0.0:4646-4648->4646-4648/tcp, :::4646-4648->4646-4648/tcp, 0.0.0.0:5001-5002->5001-5002/tcp, :::5001-5002->5001-5002/tcp, 0.0.0.0:5432->5432/tcp, :::5432->5432/tcp, 0.0.0.0:7777->7777/tcp, :::7777->7777/tcp, 0.0.0.0:8000->8000/tcp, :::8000->8000/tcp, 0.0.0.0:8043->8043/tcp, :::8043->8043/tcp, 0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 0.0.0.0:8088->8088/tcp, :::8088->8088/tcp, 0.0.0.0:8181->8181/tcp, :::8181->8181/tcp, 0.0.0.0:8200->8200/tcp, :::8200->8200/tcp, 0.0.0.0:8300-8302->8300-8302/tcp, :::8300-8302->8300-8302/tcp, 0.0.0.0:8500->8500/tcp, :::8500->8500/tcp, 0.0.0.0:8888-8889->8888-8889/tcp, :::8888-8889->8888-8889/tcp, 0.0.0.0:9001-9002->9001-9002/tcp, :::9001-9002->9001-9002/tcp, 0.0.0.0:9011->9011/tcp, :::9011->9011/tcp, 0.0.0.0:9022->9022/tcp, :::9022->9022/tcp, 0.0.0.0:9701-9702->9701-9702/tcp, :::9701-9702->9701-9702/tcp, 0.0.0.0:9998-9999->9998-9999/tcp, :::9998-9999->9998-9999/tcp, 0.0.0.0:10888->10888/tcp, :::10888->10888/tcp, 0.0.0.0:18080->18080/tcp, :::18080->18080/tcp, 0.0.0.0:18181->18181/tcp, :::18181->18181/tcp, 0.0.0.0:18888-18889->18888-18889/tcp, :::18888-18889->18888-18889/tcp, 0.0.0.0:19200->19200/tcp, :::19200->19200/tcp, 0.0.0.0:19701-19702->19701-19702/tcp, :::19701-19702->19701-19702/tcp, 0.0.0.0:28080->28080/tcp, :::28080->28080/tcp, 0.0.0.0:31506->31506/tcp, :::31506->31506/tcp, 0.0.0.0:8600->8600/udp, :::8600->8600/udp, 0.0.0.0:2255->22/tcp, :::2255->22/tcp, 0.0.0.0:33389->389/tcp, :::33389->389/tcp   hashiqube_hashiqube0serviceconsul_1684968900
 ```
@@ -56,7 +56,7 @@ f6bc621e730e   7b224f871e2a   "/usr/sbin/init"   58 minutes ago   Up 58 minutes 
 - Install the VSCode Remote Containers extension https://code.visualstudio.com/docs/devcontainers/containers
 - Install Docker Desktop
 
-Everything you need is done via the Dockerfile, and once you open this project folder with VSCode Dev Containers, you will be dropped into a container built of the Dockerfile with Terraform already installed. 
+Everything you need is done via the Dockerfile, and once you open this project folder with VSCode Dev Containers, you will be dropped into a container built of the Dockerfile with Terraform already installed.
 
 You simple need to configure your Cloud authentication, and this is done by exporting the following Environment variables, be sure to look at the helpful links
 
@@ -84,7 +84,7 @@ export ARM_TENANT_ID=YOUR_ARM_TENANT_ID
 Also see terraform.auto.tfvars.example which you should copy to terraform.auto.tfvars and fill in the details
 
 - Run `terraform plan` and `terraform apply`
-- The Terraform Output will look something like: 
+- The Terraform Output will look something like:
 
 ```
 Outputs:
@@ -143,7 +143,7 @@ After your Hashiqube instances has been launched you can access them by using th
 ![Hashiqube Access](images/hashiqube-first-login.png?raw=true "Hashiqube Access")
 
 ## Voodoo Bash Aliases
-I use `~/.bash_aliases` file to make it easier to interact with Hashicorp tools running in the hashiqube docker container. 
+I use `~/.bash_aliases` file to make it easier to interact with Hashicorp tools running in the hashiqube docker container.
 
 *ubuntu@hashiqube-aws:~$* `cat ~/.bash_aliases`
 ```
@@ -234,12 +234,12 @@ Or simply access the Hashiqube container to interact freely with the Hashicorp S
 
 *ubuntu@hashiqube-aws:~/hashiqube#* `vagrant ssh`
 ```
- _               _     _             _                                                         _                                     _ 
+ _               _     _             _                                                         _                                     _
 | |__   __ _ ___| |__ (_) __ _ _   _| |__   ___        __ ___      _____   ___  ___ _ ____   _(_) ___ ___   ___ ___  _ __  ___ _   _| |
 | '_ \ / _` / __| '_ \| |/ _` | | | | '_ \ / _ \_____ / _` \ \ /\ / / __| / __|/ _ \ '__\ \ / / |/ __/ _ \ / __/ _ \| '_ \/ __| | | | |
 | | | | (_| \__ \ | | | | (_| | |_| | |_) |  __/_____| (_| |\ V  V /\__ \_\__ \  __/ |   \ V /| | (_|  __/| (_| (_) | | | \__ \ |_| | |
 |_| |_|\__,_|___/_| |_|_|\__, |\__,_|_.__/ \___|      \__,_| \_/\_/ |___(_)___/\___|_|    \_/ |_|\___\___(_)___\___/|_| |_|___/\__,_|_|
-                            |_|                                                                                                        
+                            |_|  
 
  * Documentation:  https://help.ubuntu.com
  * Management:     https://landscape.canonical.com
@@ -280,9 +280,9 @@ The Visual Studio Code Dev Containers extension lets you use a container as a fu
 
 Workspace files are mounted from the local file system or copied or cloned into the container. Extensions are installed and run inside the container, where they have full access to the tools, platform, and file system. This means that you can seamlessly switch your entire development environment just by connecting to a different container.
 
-## Popular VSCode Extensions 
+## Popular VSCode Extensions
 
-Also install these popular Extensions to help you get started: 
+Also install these popular Extensions to help you get started:
 
 - Azure Terraform Extension
 https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureterraform
@@ -311,7 +311,7 @@ https://marketplace.visualstudio.com/items?itemName=aws-scripting-guy.cform
 - Dracula Dark Theme
 https://marketplace.visualstudio.com/items?itemName=dracula-theme.theme-dracula
 
-- Live Share Extension 
+- Live Share Extension
 https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare-pack
 
 ## Links
@@ -1632,7 +1632,7 @@ your_ipaddress = "101.189.211.xxx"
 ```
 
 ## SSH into the Cloud Instances
-Your IP will be whitelisted and you will be able to access the cloud instance with the commands in the Terraform Output, for example: 
+Your IP will be whitelisted and you will be able to access the cloud instance with the commands in the Terraform Output, for example:
 
 ```
 gcp_hashiqube-ssh = "ssh ubuntu@34.87.247.xxx" so simply do ssh ubuntu@34.87.247.xxx
@@ -1647,7 +1647,7 @@ Your SSH Public key in ~/.ssh/id_rsa.pub will be added to the instances, and you
 To make use of this module, you need a Cloud account.
 AWS, GCP and Azure is supported.
 
-- You need a Public/Private SSH key pair. 
+- You need a Public/Private SSH key pair.
 - A Cloud account
 
 __Instructions on how to setup a SSH Key pair__: <br />
@@ -1656,10 +1656,10 @@ __Instructions on how to setup Cloud Account__: <br />
 [Google Cloud Installation and Setup](https://cloud.google.com/deployment-manager/docs/step-by-step-guide/installation-and-setup)<br />
 [AWS Cloud Installation and Setup](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
 
-When you do Terraform Apply, this is the output you will see. 
+When you do Terraform Apply, this is the output you will see.
 ![HashiQube SSH](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-01-terraform-apply.png?raw=true "HashiQube Terraform Apply")
 
-Now that HashiQube is up, let's SSH into the instance. 
+Now that HashiQube is up, let's SSH into the instance.
 ![HashiQube SSH](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-03-ssh.png?raw=true "HashiQube SSH")
 
 You can check the Vault, Consul and Nomad Cluster status.
@@ -1701,7 +1701,7 @@ We can also access Fabio Load Balancer, running as a Nomad job
 | gcp_cluster_tag_name | string | "hashiqube" | GCP Cluster tag to apply |
 | gcp_cluster_size | number | 1 | GCP size of the cluster |
 | gcp_zones| list(string) | ["australia-southeast1-a","australia-southeast1-b","australia-southeast1-c"] | The zones accross which GCP resources will be launched |
-| gcp_machine_type | string | "n1-standard-1" | GCP machine type | 
+| gcp_machine_type | string | "n1-standard-1" | GCP machine type |
 | gcp_custom_metadata | map(string) | {} | A map of metadata key value pairs to assign to the Compute Instance metadata |
 | gcp_root_volume_disk_size_gb | number | 16 | The size, in GB, of the root disk volume on each HashiQube node |
 | gcp_root_volume_disk_type | string | "pd-standard" | The GCE disk type. Can be either pd-ssd, local-ssd, or pd-standard |
@@ -1737,7 +1737,7 @@ We can also access Fabio Load Balancer, running as a Nomad job
 ### About Me
 My name is Riaan Nolan and I was born in South Africa. I started out as a Web Developer in 2000 and from there progressed into Systems Administration, with a strong focus on Automation, Infrastrtucture and Configuration as Code.
 
-I have worked for Multi-National companies in Portugal, Germany, China, South Africa, United States and Australia. 
+I have worked for Multi-National companies in Portugal, Germany, China, South Africa, United States and Australia.
 
 You are welcome to connect with me on Linkedin https://www.linkedin.com/in/riaannolan/ <br />
 Credly profile: https://www.credly.com/users/riaan-nolan.e657145c

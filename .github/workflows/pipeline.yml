@@ -1,0 +1,121 @@
+---
+# https://docs.github.com/en/actions/quickstart
+# https://raw.githubusercontent.com/hashicorp-education/learn-terraform-github-actions/main/.github/workflows/terraform-plan.yml
+# https://developer.hashicorp.com/terraform/tutorials/automation/github-actions
+name: "Pipeline"
+
+on: # yamllint disable-line rule:truthy
+  push: # yamllint disable-line rule:empty-values
+
+env:
+  TF_CLOUD_ORGANIZATION: "nolan"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_WORKSPACE: "terraform-hashicorp-hashiqube"
+  CONFIG_DIRECTORY: "./"
+
+jobs:
+  build-and-publish-latest:
+    if: contains(github.event.pull_request.labels.*.name, 'rebuild container image')
+    runs-on: ubuntu-latest
+    steps:
+      # Checking out the repo
+      - uses: actions/checkout@v3
+
+      # https://github.com/docker/setup-qemu-action
+      # https://blog.thesparktree.com/docker-multi-arch-github-actions
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: 'arm64,amd64'
+
+      # https://github.com/docker/setup-buildx-action
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # https://github.com/marketplace/actions/docker-build-push-action
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build and Push Docker image
+        with:
+          image: terraform-hashicorp-hashiqube-container
+          tags: latest
+          registry: ghcr.io
+          multiPlatform: true
+          platform: linux/amd64,linux/arm64
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+  run-run-dot-sh:
+    needs: build-and-publish-latest
+    if: |
+      always() &&
+      (needs.build-and-publish-latest.result == 'success' || needs.build-and-publish-latest.result == 'skipped')
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/${{ github.repository_owner }}/terraform-hashicorp-hashiqube-container:latest
+      options: --user 1001
+    steps:
+      # Checking out the repo
+      - uses: actions/checkout@v3
+
+      - name: Terraform version
+        run: terraform -v
+
+      - name: Copy /home/ubuntu/.tflint.d to /github/home/
+        run: cp -r /home/ubuntu/.tflint.d /github/home/
+
+      - name: Install Pre Commit
+        run: python3 -m pip install --no-cache-dir --quiet --upgrade --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org git+https://github.com/pre-commit/pre-commit.git@v2.20.0
+
+      - name: cd GITHUB_WORKSPACE
+        run: cd $GITHUB_WORKSPACE
+
+      - name: Run
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          TF_VAR_aws_region: ${{ secrets.TF_VAR_AWS_REGION }}
+          TF_VAR_deploy_to_aws: ${{ secrets.TF_VAR_DEPLOY_TO_AWS }}
+          TF_VAR_deploy_to_azure: ${{ secrets.TF_VAR_DEPLOY_TO_AZURE }}
+          TF_VAR_deploy_to_gcp: ${{ secrets.TF_VAR_DEPLOY_TO_GCP }}
+          TF_VAR_gcp_region: ${{ secrets.TF_VAR_GCP_REGION }}
+          TF_VAR_ssh_private_key: ${{ secrets.TF_VAR_SSH_PRIVATE_KEY }}
+          TF_VAR_ssh_public_key: ${{ secrets.TF_VAR_SSH_PUBLIC_KEY }}
+        run: ./run.sh
+
+  terraform-plan-on-terraform-cloud:
+    if: github.repository != 'hashicorp-education/learn-terraform-github-actions'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Upload Configuration
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
+        id: plan-upload
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          directory: ${{ env.CONFIG_DIRECTORY }}
+          speculative: true
+
+      - name: Create Plan Run
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
+        id: plan-run
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
+          plan_only: true
+
+      - name: Get Plan Output
+        uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
+        id: plan-output
+        with:
+          plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
