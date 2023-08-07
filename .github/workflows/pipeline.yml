@@ -79,6 +79,13 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          TF_VAR_aws_region: ${{ secrets.TF_VAR_AWS_REGION }}
+          TF_VAR_deploy_to_aws: ${{ secrets.TF_VAR_DEPLOY_TO_AWS }}
+          TF_VAR_deploy_to_azure: ${{ secrets.TF_VAR_DEPLOY_TO_AZURE }}
+          TF_VAR_deploy_to_gcp: ${{ secrets.TF_VAR_DEPLOY_TO_GCP }}
+          TF_VAR_gcp_region: ${{ secrets.TF_VAR_GCP_REGION }}
+          TF_VAR_ssh_private_key: ${{ secrets.TF_VAR_SSH_PRIVATE_KEY }}
+          TF_VAR_ssh_public_key: ${{ secrets.TF_VAR_SSH_PUBLIC_KEY }}
         run: ./run.sh
 
   terraform-plan-on-terraform-cloud:
