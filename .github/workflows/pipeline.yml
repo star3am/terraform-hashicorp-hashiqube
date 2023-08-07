@@ -2,7 +2,7 @@
 # https://docs.github.com/en/actions/quickstart
 # https://raw.githubusercontent.com/hashicorp-education/learn-terraform-github-actions/main/.github/workflows/terraform-plan.yml
 # https://developer.hashicorp.com/terraform/tutorials/automation/github-actions
-name: "Terraform Plan"
+name: "Pipeline"
 
 on: # yamllint disable-line rule:truthy
   push: # yamllint disable-line rule:empty-values
@@ -15,11 +15,8 @@ env:
 
 jobs:
   build-and-publish-latest:
-    # if: ${{ github.event.label.name == 'rebuild container image' }}
+    if: contains(github.event.pull_request.labels.*.name, 'rebuild container image')
     runs-on: ubuntu-latest
-    # Running this job only for master branch
-    # if: github.ref == 'refs/heads/main'
-
     steps:
       # Checking out the repo
       - uses: actions/checkout@v3
@@ -48,11 +45,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
   run-run-dot-sh:
+    needs: build-and-publish-latest
+    if: |
+      always() &&
+      (needs.build-and-publish-latest.result == 'success' || needs.build-and-publish-latest.result == 'skipped')
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/${{ github.repository_owner }}/terraform-modules-library-container:latest
       options: --user 1001
-
     steps:
       # Checking out the repo
       - uses: actions/checkout@v3
