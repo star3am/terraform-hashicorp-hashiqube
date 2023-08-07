@@ -45,7 +45,8 @@ jobs:
           multiPlatform: true
           platform: linux/amd64,linux/arm64
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.CONTAINER_REGISTRY_PAT }}
+          # password: ${{ secrets.GITHUB_TOKEN }}
 
   run-run-dot-sh:
     needs: build-and-publish-latest
