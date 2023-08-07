@@ -7,4 +7,3 @@ terraform {
     arguments = ["-input=false"]
   }
 }
-

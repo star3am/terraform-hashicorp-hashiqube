@@ -1,6 +1,6 @@
-plugin "azurerm" {
-  enabled = true
-}
+// plugin "azurerm" {
+//   enabled = true
+// }
 
 config {
   module              = false
