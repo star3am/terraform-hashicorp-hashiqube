@@ -239,7 +239,7 @@ resource "null_resource" "debug" {
     user        = "ubuntu"
     host        = azurerm_public_ip.hashiqube.ip_address
     private_key = var.ssh_private_key
-    timeout     = "3m"
+    timeout     = "10m"
   }
 
   provisioner "remote-exec" {

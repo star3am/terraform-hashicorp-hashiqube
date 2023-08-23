@@ -212,7 +212,7 @@ resource "null_resource" "debug" {
     user        = "ubuntu"
     host        = google_compute_address.hashiqube.address
     private_key = var.ssh_private_key
-    timeout     = "3m"
+    timeout     = "10m"
   }
 
   provisioner "remote-exec" {

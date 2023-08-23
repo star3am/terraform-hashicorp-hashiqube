@@ -210,7 +210,7 @@ resource "null_resource" "debug" {
     user        = "ubuntu"
     host        = aws_eip.hashiqube.public_ip
     private_key = var.ssh_private_key
-    timeout     = "3m"
+    timeout     = "10m"
   }
 
   provisioner "remote-exec" {
