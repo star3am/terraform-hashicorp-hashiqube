@@ -144,6 +144,28 @@ resource "aws_security_group" "hashiqube" {
   }
 }
 
+resource "aws_security_group_rule" "terraform_cloud_api_ip_ranges" {
+  count             = var.debug_user_data == true ? 1 : 0
+  description       = "Allow terraform_cloud_api_ip_ranges"
+  type              = "ingress"
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = var.terraform_cloud_api_ip_ranges
+  from_port         = 22
+  security_group_id = aws_security_group.hashiqube.id
+}
+
+resource "aws_security_group_rule" "terraform_cloud_notifications_ip_ranges" {
+  count             = var.debug_user_data == true ? 1 : 0
+  description       = "Allow var.terraform_cloud_notifications_ip_ranges"
+  type              = "ingress"
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = var.terraform_cloud_notifications_ip_ranges
+  from_port         = 22
+  security_group_id = aws_security_group.hashiqube.id
+}
+
 resource "aws_security_group_rule" "aws_hashiqube" {
   count             = var.deploy_to_aws ? 1 : 0
   description       = "Allow Hashiqube Public IP address"

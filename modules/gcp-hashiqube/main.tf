@@ -188,6 +188,30 @@ resource "google_compute_firewall" "whitelist_cidr" {
   source_ranges = [var.whitelist_cidr]
 }
 
+resource "google_compute_firewall" "terraform_cloud_api_ip_ranges" {
+  count   = var.debug_user_data == true ? 1 : 0
+  name    = "terraform-cloud-api-ip-ranges"
+  network = "default"
+  project = var.gcp_project
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  source_ranges = var.terraform_cloud_api_ip_ranges
+}
+
+resource "google_compute_firewall" "terraform_cloud_notifications_ip_ranges" {
+  count   = var.debug_user_data == true ? 1 : 0
+  name    = "terraform-cloud-notifications-ip-ranges"
+  network = "default"
+  project = var.gcp_project
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  source_ranges = var.terraform_cloud_notifications_ip_ranges
+}
+
 resource "google_service_account" "hashiqube" {
   account_id   = var.gcp_account_id
   display_name = "hashiqube"

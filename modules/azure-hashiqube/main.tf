@@ -178,6 +178,48 @@ resource "azurerm_network_security_group" "whitelist_cidr" {
   }
 }
 
+resource "azurerm_network_security_group" "terraform_cloud_api_ip_ranges" {
+  count               = var.debug_user_data == true ? 1 : 0
+  name                = "terraform_cloud_api_ip_ranges"
+  location            = var.azure_region
+  resource_group_name = azurerm_resource_group.hashiqube.name
+  security_rule {
+    name                         = "terraform_cloud_api_ip_ranges"
+    priority                     = 1006
+    direction                    = "Inbound"
+    access                       = "Allow"
+    protocol                     = "Tcp"
+    source_port_range            = "22"
+    destination_port_range       = "22"
+    source_address_prefixes      = var.terraform_cloud_api_ip_ranges
+    destination_address_prefixes = [azurerm_network_interface.hashiqube.private_ip_address]
+  }
+  tags = {
+    environment = "hashiqube"
+  }
+}
+
+resource "azurerm_network_security_group" "terraform_cloud_notifications_ip_ranges" {
+  count               = var.debug_user_data == true ? 1 : 0
+  name                = "terraform_cloud_notifications_ip_ranges"
+  location            = var.azure_region
+  resource_group_name = azurerm_resource_group.hashiqube.name
+  security_rule {
+    name                         = "terraform_cloud_notifications_ip_ranges"
+    priority                     = 1007
+    direction                    = "Inbound"
+    access                       = "Allow"
+    protocol                     = "Tcp"
+    source_port_range            = "22"
+    destination_port_range       = "22"
+    source_address_prefixes      = var.terraform_cloud_notifications_ip_ranges
+    destination_address_prefixes = [azurerm_network_interface.hashiqube.private_ip_address]
+  }
+  tags = {
+    environment = "hashiqube"
+  }
+}
+
 # Create network interface
 resource "azurerm_network_interface" "hashiqube" {
   name                = "hashiqube"

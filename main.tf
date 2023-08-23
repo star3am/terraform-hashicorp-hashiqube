@@ -14,7 +14,7 @@ terraform {
     # https://registry.terraform.io/providers/hashicorp/azurerm/latest
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.57.0"
+      version = "~> 3.57"
     }
     # https://registry.terraform.io/providers/hashicorp/google/latest
     google = {
@@ -27,7 +27,11 @@ terraform {
     }
     external = {
       source  = "hashicorp/external"
-      version = "2.3.1"
+      version = "~> 2.3"
+    }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.4"
     }
   }
 }
@@ -55,6 +59,22 @@ data "external" "myipaddress" {
   program = ["bash", "-c", "curl -m 10 -sk 'https://api.ipify.org?format=json'"]
 }
 
+# https://developer.hashicorp.com/terraform/cloud-docs/api-docs/ip-ranges
+# curl -X GET https://app.terraform.io/api/meta/ip-ranges
+data "http" "terraform_cloud_ip_ranges" {
+  url = "https://app.terraform.io/api/meta/ip-ranges"
+
+  request_headers = {
+    # Enabling the `If-Modified-Since` flag may result in an empty response
+    # If-Modified-Since = "Tue, 26 May 2020 15:10:05 GMT"
+    Accept = "application/json"
+  }
+}
+
+locals {
+  terraform_cloud_ip_ranges = jsondecode(data.http.terraform_cloud_ip_ranges.body)
+}
+
 resource "null_resource" "hashiqube" {
   triggers = {
     deploy_to_azure      = var.deploy_to_azure
@@ -71,30 +91,32 @@ module "gcp_hashiqube" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
   # source = "git::git@github.com:star3am/terraform-hashicorp-hashiqube.git//modules/gcp-hashiqube?ref=v0.0.1"
-  source                       = "./modules/gcp-hashiqube"
-  deploy_to_aws                = var.deploy_to_aws
-  deploy_to_azure              = var.deploy_to_azure
-  deploy_to_gcp                = var.deploy_to_gcp
-  whitelist_cidr               = var.whitelist_cidr
-  gcp_project                  = var.gcp_project
-  gcp_credentials              = var.gcp_credentials
-  gcp_cluster_description      = var.gcp_cluster_description
-  gcp_cluster_name             = var.gcp_cluster_name
-  gcp_cluster_size             = var.gcp_cluster_size
-  gcp_machine_type             = var.gcp_machine_type
-  gcp_region                   = var.gcp_region
-  gcp_account_id               = var.gcp_account_id
-  gcp_root_volume_disk_size_gb = var.gcp_root_volume_disk_size_gb
-  gcp_root_volume_disk_type    = var.gcp_root_volume_disk_type
-  gcp_zones                    = var.gcp_zones
-  gcp_cluster_tag_name         = var.gcp_cluster_tag_name
-  ssh_public_key               = var.ssh_public_key
-  ssh_private_key              = var.ssh_private_key
-  debug_user_data              = var.debug_user_data
-  aws_hashiqube_ip             = var.deploy_to_aws ? try(module.aws_hashiqube[0].hashiqube_ip, null) : null
-  azure_hashiqube_ip           = var.deploy_to_azure ? try(module.azure_hashiqube[0].hashiqube_ip, null) : null
-  my_ipaddress                 = data.external.myipaddress.result.ip
-  vagrant_provisioners         = var.vagrant_provisioners
+  source                                  = "./modules/gcp-hashiqube"
+  deploy_to_aws                           = var.deploy_to_aws
+  deploy_to_azure                         = var.deploy_to_azure
+  deploy_to_gcp                           = var.deploy_to_gcp
+  whitelist_cidr                          = var.whitelist_cidr
+  gcp_project                             = var.gcp_project
+  gcp_credentials                         = var.gcp_credentials
+  gcp_cluster_description                 = var.gcp_cluster_description
+  gcp_cluster_name                        = var.gcp_cluster_name
+  gcp_cluster_size                        = var.gcp_cluster_size
+  gcp_machine_type                        = var.gcp_machine_type
+  gcp_region                              = var.gcp_region
+  gcp_account_id                          = var.gcp_account_id
+  gcp_root_volume_disk_size_gb            = var.gcp_root_volume_disk_size_gb
+  gcp_root_volume_disk_type               = var.gcp_root_volume_disk_type
+  gcp_zones                               = var.gcp_zones
+  gcp_cluster_tag_name                    = var.gcp_cluster_tag_name
+  ssh_public_key                          = var.ssh_public_key
+  ssh_private_key                         = var.ssh_private_key
+  debug_user_data                         = var.debug_user_data
+  aws_hashiqube_ip                        = var.deploy_to_aws ? try(module.aws_hashiqube[0].hashiqube_ip, null) : null
+  azure_hashiqube_ip                      = var.deploy_to_azure ? try(module.azure_hashiqube[0].hashiqube_ip, null) : null
+  my_ipaddress                            = data.external.myipaddress.result.ip
+  vagrant_provisioners                    = var.vagrant_provisioners
+  terraform_cloud_api_ip_ranges           = local.terraform_cloud_ip_ranges.api
+  terraform_cloud_notifications_ip_ranges = local.terraform_cloud_ip_ranges.notifications
 }
 
 module "aws_hashiqube" {
@@ -112,12 +134,14 @@ module "aws_hashiqube" {
   # aws_credentials      = var.aws_credentials
   aws_instance_type = var.aws_instance_type
   # aws_profile          = var.aws_profile
-  aws_region           = var.aws_region
-  whitelist_cidr       = var.whitelist_cidr
-  azure_hashiqube_ip   = var.deploy_to_azure ? try(module.azure_hashiqube[0].hashiqube_ip, null) : null
-  gcp_hashiqube_ip     = var.deploy_to_gcp ? try(module.gcp_hashiqube[0].hashiqube_ip, null) : null
-  my_ipaddress         = data.external.myipaddress.result.ip
-  vagrant_provisioners = var.vagrant_provisioners
+  aws_region                              = var.aws_region
+  whitelist_cidr                          = var.whitelist_cidr
+  azure_hashiqube_ip                      = var.deploy_to_azure ? try(module.azure_hashiqube[0].hashiqube_ip, null) : null
+  gcp_hashiqube_ip                        = var.deploy_to_gcp ? try(module.gcp_hashiqube[0].hashiqube_ip, null) : null
+  my_ipaddress                            = data.external.myipaddress.result.ip
+  vagrant_provisioners                    = var.vagrant_provisioners
+  terraform_cloud_api_ip_ranges           = local.terraform_cloud_ip_ranges.api
+  terraform_cloud_notifications_ip_ranges = local.terraform_cloud_ip_ranges.notifications
 }
 
 module "azure_hashiqube" {
@@ -125,18 +149,20 @@ module "azure_hashiqube" {
   # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
   # to a specific version of the modules, such as the following example:
   # source = "git::git@github.com:star3am/terraform-hashicorp-hashiqube.git//modules/azure-hashiqube?ref=v0.0.1"
-  source               = "./modules/azure-hashiqube"
-  deploy_to_aws        = var.deploy_to_aws
-  deploy_to_azure      = var.deploy_to_azure
-  deploy_to_gcp        = var.deploy_to_gcp
-  whitelist_cidr       = var.whitelist_cidr
-  ssh_public_key       = var.ssh_public_key
-  ssh_private_key      = var.ssh_private_key
-  debug_user_data      = var.debug_user_data
-  aws_hashiqube_ip     = var.deploy_to_aws ? try(module.aws_hashiqube[0].hashiqube_ip, null) : null
-  gcp_hashiqube_ip     = var.deploy_to_gcp ? try(module.gcp_hashiqube[0].hashiqube_ip, null) : null
-  my_ipaddress         = data.external.myipaddress.result.ip
-  azure_region         = var.azure_region
-  azure_instance_type  = var.azure_instance_type
-  vagrant_provisioners = var.vagrant_provisioners
+  source                                  = "./modules/azure-hashiqube"
+  deploy_to_aws                           = var.deploy_to_aws
+  deploy_to_azure                         = var.deploy_to_azure
+  deploy_to_gcp                           = var.deploy_to_gcp
+  whitelist_cidr                          = var.whitelist_cidr
+  ssh_public_key                          = var.ssh_public_key
+  ssh_private_key                         = var.ssh_private_key
+  debug_user_data                         = var.debug_user_data
+  aws_hashiqube_ip                        = var.deploy_to_aws ? try(module.aws_hashiqube[0].hashiqube_ip, null) : null
+  gcp_hashiqube_ip                        = var.deploy_to_gcp ? try(module.gcp_hashiqube[0].hashiqube_ip, null) : null
+  my_ipaddress                            = data.external.myipaddress.result.ip
+  azure_region                            = var.azure_region
+  azure_instance_type                     = var.azure_instance_type
+  vagrant_provisioners                    = var.vagrant_provisioners
+  terraform_cloud_api_ip_ranges           = local.terraform_cloud_ip_ranges.api
+  terraform_cloud_notifications_ip_ranges = local.terraform_cloud_ip_ranges.notifications
 }

@@ -25,6 +25,8 @@ The following resources are used by this module:
 - [aws_security_group_rule.aws_hashiqube](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [aws_security_group_rule.azure_hashiqube](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [aws_security_group_rule.gcp_hashiqube](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
+- [aws_security_group_rule.terraform_cloud_api_ip_ranges](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
+- [aws_security_group_rule.terraform_cloud_notifications_ip_ranges](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [aws_security_group_rule.whitelist_cidr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [null_resource.debug](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) (resource)
 - [null_resource.hashiqube](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) (resource)
@@ -125,6 +127,40 @@ Description: Path to your SSH public key, matching the private key below
 Type: `string`
 
 Default: `"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ......"`
+
+### <a name="input_terraform_cloud_api_ip_ranges"></a> [terraform_cloud_api_ip_ranges](#input_terraform_cloud_api_ip_ranges)
+
+Description: Terraform Cloud API IP Ranges
+
+Type: `list(any)`
+
+Default:
+
+```json
+[
+  "75.2.98.97/32",
+  "99.83.150.238/32"
+]
+```
+
+### <a name="input_terraform_cloud_notifications_ip_ranges"></a> [terraform_cloud_notifications_ip_ranges](#input_terraform_cloud_notifications_ip_ranges)
+
+Description: Terraform Cloud Notifications IP Ranges
+
+Type: `list(any)`
+
+Default:
+
+```json
+[
+  "52.86.200.106/32",
+  "52.86.201.227/32",
+  "52.70.186.109/32",
+  "44.236.246.186/32",
+  "54.185.161.84/32",
+  "44.238.78.236/32"
+]
+```
 
 ### <a name="input_vagrant_provisioners"></a> [vagrant_provisioners](#input_vagrant_provisioners)
 
