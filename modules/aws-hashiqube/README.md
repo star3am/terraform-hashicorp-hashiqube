@@ -24,6 +24,7 @@ The following resources are used by this module:
 - [aws_security_group.hashiqube](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) (resource)
 - [aws_security_group_rule.aws_hashiqube](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [aws_security_group_rule.azure_hashiqube](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
+- [aws_security_group_rule.debug_allow_ssh_cidr_range](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [aws_security_group_rule.gcp_hashiqube](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [aws_security_group_rule.terraform_cloud_api_ip_ranges](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [aws_security_group_rule.terraform_cloud_notifications_ip_ranges](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
@@ -63,6 +64,14 @@ Description: Azure Hahiqube IP address
 Type: `string`
 
 Default: `null`
+
+### <a name="input_debug_allow_ssh_cidr_range"></a> [debug_allow_ssh_cidr_range](#input_debug_allow_ssh_cidr_range)
+
+Description: CAREFUL! Debug Open SSH port 22 to this CIDR range, use only in emergency
+
+Type: `string`
+
+Default: `""`
 
 ### <a name="input_debug_user_data"></a> [debug_user_data](#input_debug_user_data)
 

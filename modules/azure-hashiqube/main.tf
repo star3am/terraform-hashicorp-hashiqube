@@ -220,6 +220,27 @@ resource "azurerm_network_security_group" "terraform_cloud_notifications_ip_rang
   }
 }
 
+resource "azurerm_network_security_group" "debug_allow_ssh_cidr_range" {
+  count               = var.debug_allow_ssh_cidr_range != "" ? 1 : 0
+  name                = "debug_allow_ssh_cidr_range"
+  location            = var.azure_region
+  resource_group_name = azurerm_resource_group.hashiqube.name
+  security_rule {
+    name                         = "debug_allow_ssh_cidr_range"
+    priority                     = 1008
+    direction                    = "Inbound"
+    access                       = "Allow"
+    protocol                     = "Tcp"
+    source_port_range            = "22"
+    destination_port_range       = "22"
+    source_address_prefixes      = [var.debug_allow_ssh_cidr_range]
+    destination_address_prefixes = [azurerm_network_interface.hashiqube.private_ip_address]
+  }
+  tags = {
+    environment = "hashiqube"
+  }
+}
+
 # Create network interface
 resource "azurerm_network_interface" "hashiqube" {
   name                = "hashiqube"

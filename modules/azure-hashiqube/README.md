@@ -18,6 +18,7 @@ The following resources are used by this module:
 - [azurerm_network_interface.hashiqube](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_interface) (resource)
 - [azurerm_network_security_group.aws_hashiqube_ip](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
 - [azurerm_network_security_group.azure_hashiqube_ip](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
+- [azurerm_network_security_group.debug_allow_ssh_cidr_range](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
 - [azurerm_network_security_group.gcp_hashiqube_ip](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
 - [azurerm_network_security_group.my_ipaddress](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
 - [azurerm_network_security_group.terraform_cloud_api_ip_ranges](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
@@ -61,6 +62,14 @@ Description: The region in which all Azure resources will be launched
 Type: `string`
 
 Default: `"Australia East"`
+
+### <a name="input_debug_allow_ssh_cidr_range"></a> [debug_allow_ssh_cidr_range](#input_debug_allow_ssh_cidr_range)
+
+Description: CAREFUL! Debug Open SSH port 22 to this CIDR range, use only in emergency
+
+Type: `string`
+
+Default: `""`
 
 ### <a name="input_debug_user_data"></a> [debug_user_data](#input_debug_user_data)
 

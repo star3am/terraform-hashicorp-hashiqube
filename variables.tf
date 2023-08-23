@@ -22,6 +22,12 @@ variable "debug_user_data" {
   description = "Debug Output the User Data of the Cloud instance during Terraform Apply"
 }
 
+variable "debug_allow_ssh_cidr_range" {
+  type        = string
+  default     = ""
+  description = "CAREFUL! Debug Open SSH port 22 to this CIDR range, use only in emergency"
+}
+
 # You can find the full list of provisioners in the Vagrantfile
 variable "vagrant_provisioners" {
   description = "The list of services you would like to run in Hashiqube, the more you run, the bigger instance youd need with more RAM"
