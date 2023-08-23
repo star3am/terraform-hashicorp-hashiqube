@@ -188,6 +188,18 @@ resource "google_compute_firewall" "whitelist_cidr" {
   source_ranges = [var.whitelist_cidr]
 }
 
+resource "google_compute_firewall" "debug_allow_ssh_cidr_range" {
+  count   = var.debug_allow_ssh_cidr_range != "" ? 1 : 0
+  name    = "debug-allow-ssh-cidr-range"
+  network = "default"
+  project = var.gcp_project
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  source_ranges = [var.debug_allow_ssh_cidr_range]
+}
+
 resource "google_compute_firewall" "terraform_cloud_api_ip_ranges" {
   count   = var.debug_user_data == true ? 1 : 0
   name    = "terraform-cloud-api-ip-ranges"

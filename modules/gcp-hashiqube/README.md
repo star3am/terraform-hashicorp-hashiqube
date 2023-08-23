@@ -17,6 +17,7 @@ The following resources are used by this module:
 - [google_compute_address.hashiqube](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_address) (resource)
 - [google_compute_firewall.aws_hashiqube_ip](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_firewall.azure_hashiqube_ip](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
+- [google_compute_firewall.debug_allow_ssh_cidr_range](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_firewall.gcp_hashiqube_ip](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_firewall.my_ipaddress](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_firewall.terraform_cloud_api_ip_ranges](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
@@ -53,6 +54,14 @@ Description: Azure Hahiqube IP address
 Type: `string`
 
 Default: `null`
+
+### <a name="input_debug_allow_ssh_cidr_range"></a> [debug_allow_ssh_cidr_range](#input_debug_allow_ssh_cidr_range)
+
+Description: CAREFUL! Debug Open SSH port 22 to this CIDR range, use only in emergency
+
+Type: `string`
+
+Default: `""`
 
 ### <a name="input_debug_user_data"></a> [debug_user_data](#input_debug_user_data)
 

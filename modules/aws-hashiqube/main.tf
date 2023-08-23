@@ -144,6 +144,7 @@ resource "aws_security_group" "hashiqube" {
   }
 }
 
+# tfsec:ignore:aws-vpc-disallow-mixed-sgr
 resource "aws_security_group_rule" "terraform_cloud_api_ip_ranges" {
   count             = var.debug_user_data == true ? 1 : 0
   description       = "Allow terraform_cloud_api_ip_ranges"
@@ -155,6 +156,7 @@ resource "aws_security_group_rule" "terraform_cloud_api_ip_ranges" {
   security_group_id = aws_security_group.hashiqube.id
 }
 
+# tfsec:ignore:aws-vpc-disallow-mixed-sgr
 resource "aws_security_group_rule" "terraform_cloud_notifications_ip_ranges" {
   count             = var.debug_user_data == true ? 1 : 0
   description       = "Allow var.terraform_cloud_notifications_ip_ranges"
@@ -208,6 +210,18 @@ resource "aws_security_group_rule" "whitelist_cidr" {
   protocol          = "all"
   cidr_blocks       = [var.whitelist_cidr]
   from_port         = 0
+  security_group_id = aws_security_group.hashiqube.id
+}
+
+# tfsec:ignore:aws-vpc-disallow-mixed-sgr
+resource "aws_security_group_rule" "debug_allow_ssh_cidr_range" {
+  count             = var.debug_allow_ssh_cidr_range != "" ? 1 : 0
+  description       = "Debug Open SSH port 22 to this CIDR range"
+  type              = "ingress"
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = [var.debug_allow_ssh_cidr_range]
+  from_port         = 22
   security_group_id = aws_security_group.hashiqube.id
 }
 
