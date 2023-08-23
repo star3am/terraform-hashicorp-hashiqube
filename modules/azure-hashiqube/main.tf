@@ -239,6 +239,7 @@ resource "null_resource" "debug" {
     user        = "ubuntu"
     host        = azurerm_public_ip.hashiqube.ip_address
     private_key = var.ssh_private_key
+    timeout     = "3m"
   }
 
   provisioner "remote-exec" {
@@ -255,6 +256,7 @@ resource "null_resource" "debug" {
 
   depends_on = [
     azurerm_linux_virtual_machine.hashiqube,
-    azurerm_public_ip.hashiqube
+    azurerm_public_ip.hashiqube,
+    azurerm_network_security_group.my_ipaddress
   ]
 }

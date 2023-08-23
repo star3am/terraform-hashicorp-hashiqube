@@ -210,6 +210,7 @@ resource "null_resource" "debug" {
     user        = "ubuntu"
     host        = aws_eip.hashiqube.public_ip
     private_key = var.ssh_private_key
+    timeout     = "3m"
   }
 
   provisioner "remote-exec" {
@@ -226,6 +227,7 @@ resource "null_resource" "debug" {
 
   depends_on = [
     aws_instance.hashiqube,
-    aws_eip_association.eip_assoc
+    aws_eip_association.eip_assoc,
+    aws_security_group.hashiqube
   ]
 }
