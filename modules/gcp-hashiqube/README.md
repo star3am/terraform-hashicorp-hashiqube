@@ -19,6 +19,8 @@ The following resources are used by this module:
 - [google_compute_firewall.azure_hashiqube_ip](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_firewall.gcp_hashiqube_ip](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_firewall.my_ipaddress](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
+- [google_compute_firewall.terraform_cloud_api_ip_ranges](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
+- [google_compute_firewall.terraform_cloud_notifications_ip_ranges](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_firewall.whitelist_cidr](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_instance_template.hashiqube](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance_template) (resource)
 - [google_compute_region_instance_group_manager.hashiqube](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_instance_group_manager) (resource)
@@ -217,6 +219,40 @@ Description: Path to your SSH public key, matching the private key below
 Type: `string`
 
 Default: `"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ......"`
+
+### <a name="input_terraform_cloud_api_ip_ranges"></a> [terraform_cloud_api_ip_ranges](#input_terraform_cloud_api_ip_ranges)
+
+Description: Terraform Cloud API IP Ranges
+
+Type: `list(any)`
+
+Default:
+
+```json
+[
+  "75.2.98.97/32",
+  "99.83.150.238/32"
+]
+```
+
+### <a name="input_terraform_cloud_notifications_ip_ranges"></a> [terraform_cloud_notifications_ip_ranges](#input_terraform_cloud_notifications_ip_ranges)
+
+Description: Terraform Cloud Notifications IP Ranges
+
+Type: `list(any)`
+
+Default:
+
+```json
+[
+  "52.86.200.106/32",
+  "52.86.201.227/32",
+  "52.70.186.109/32",
+  "44.236.246.186/32",
+  "54.185.161.84/32",
+  "44.238.78.236/32"
+]
+```
 
 ### <a name="input_vagrant_provisioners"></a> [vagrant_provisioners](#input_vagrant_provisioners)
 

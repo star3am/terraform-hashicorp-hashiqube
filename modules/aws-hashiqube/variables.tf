@@ -89,3 +89,26 @@ variable "aws_instance_type" {
   default     = "t2.medium"
   description = "AWS instance type"
 }
+
+# https://developer.hashicorp.com/terraform/cloud-docs/api-docs/ip-ranges
+variable "terraform_cloud_api_ip_ranges" {
+  type = list(any)
+  default = [
+    "75.2.98.97/32",
+    "99.83.150.238/32",
+  ]
+  description = "Terraform Cloud API IP Ranges"
+}
+
+variable "terraform_cloud_notifications_ip_ranges" {
+  type = list(any)
+  default = [
+    "52.86.200.106/32",
+    "52.86.201.227/32",
+    "52.70.186.109/32",
+    "44.236.246.186/32",
+    "54.185.161.84/32",
+    "44.238.78.236/32",
+  ]
+  description = "Terraform Cloud Notifications IP Ranges"
+}

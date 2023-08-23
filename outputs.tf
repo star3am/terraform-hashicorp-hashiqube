@@ -196,3 +196,23 @@ output "gcp_hashiqube_fabio_lb" {
   value       = var.deploy_to_gcp ? try("http://${module.gcp_hashiqube[0].hashiqube_ip}:9999", null) : null
   description = "Hashiqube on GCP Fabio LB URL"
 }
+
+output "terraform_cloud_api_ip_ranges" {
+  description = "Terraform Cloud API IP Ranges"
+  value       = local.terraform_cloud_ip_ranges.api
+}
+
+output "terraform_cloud_notifications_ip_ranges" {
+  description = "Terraform Cloud Notifications IP Ranges"
+  value       = local.terraform_cloud_ip_ranges.notifications
+}
+
+output "terraform_cloud_sentinel_ip_ranges" {
+  description = "Terraform Cloud Sentinel Runner IP Ranges"
+  value       = local.terraform_cloud_ip_ranges.sentinel
+}
+
+output "terraform_cloud_vcs_ip_ranges" {
+  description = "Terraform Cloud VCS Integration IP Ranges"
+  value       = local.terraform_cloud_ip_ranges.vcs
+}

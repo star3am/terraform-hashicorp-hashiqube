@@ -20,6 +20,8 @@ The following resources are used by this module:
 - [azurerm_network_security_group.azure_hashiqube_ip](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
 - [azurerm_network_security_group.gcp_hashiqube_ip](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
 - [azurerm_network_security_group.my_ipaddress](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
+- [azurerm_network_security_group.terraform_cloud_api_ip_ranges](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
+- [azurerm_network_security_group.terraform_cloud_notifications_ip_ranges](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
 - [azurerm_network_security_group.whitelist_cidr](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/network_security_group) (resource)
 - [azurerm_public_ip.hashiqube](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/public_ip) (resource)
 - [azurerm_resource_group.hashiqube](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/resource_group) (resource)
@@ -123,6 +125,40 @@ Description: Path to your SSH public key, matching the private key below
 Type: `string`
 
 Default: `"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ......"`
+
+### <a name="input_terraform_cloud_api_ip_ranges"></a> [terraform_cloud_api_ip_ranges](#input_terraform_cloud_api_ip_ranges)
+
+Description: Terraform Cloud API IP Ranges
+
+Type: `list(any)`
+
+Default:
+
+```json
+[
+  "75.2.98.97/32",
+  "99.83.150.238/32"
+]
+```
+
+### <a name="input_terraform_cloud_notifications_ip_ranges"></a> [terraform_cloud_notifications_ip_ranges](#input_terraform_cloud_notifications_ip_ranges)
+
+Description: Terraform Cloud Notifications IP Ranges
+
+Type: `list(any)`
+
+Default:
+
+```json
+[
+  "52.86.200.106/32",
+  "52.86.201.227/32",
+  "52.70.186.109/32",
+  "44.236.246.186/32",
+  "54.185.161.84/32",
+  "44.238.78.236/32"
+]
+```
 
 ### <a name="input_vagrant_provisioners"></a> [vagrant_provisioners](#input_vagrant_provisioners)
 
