@@ -212,6 +212,7 @@ resource "null_resource" "debug" {
     user        = "ubuntu"
     host        = google_compute_address.hashiqube.address
     private_key = var.ssh_private_key
+    timeout     = "3m"
   }
 
   provisioner "remote-exec" {
@@ -228,6 +229,7 @@ resource "null_resource" "debug" {
 
   depends_on = [
     google_compute_instance_template.hashiqube,
-    google_compute_address.hashiqube
+    google_compute_address.hashiqube,
+    google_compute_firewall.my_ipaddress
   ]
 }
