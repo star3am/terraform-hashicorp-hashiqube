@@ -72,7 +72,7 @@ data "http" "terraform_cloud_ip_ranges" {
 }
 
 locals {
-  terraform_cloud_ip_ranges = jsondecode(data.http.terraform_cloud_ip_ranges.body)
+  terraform_cloud_ip_ranges = jsondecode(data.http.terraform_cloud_ip_ranges.response_body)
 }
 
 resource "null_resource" "hashiqube" {
