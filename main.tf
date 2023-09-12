@@ -2,7 +2,8 @@
 # https://hashiqube.com
 # DO NOT USE THIS IN PRODUCTION
 # Counter to force push PR -> Merge without any real changes
-# 05
+# Welcome to my Terraform Cloud demo everyone
+# I hope you have a great time today!
 
 terraform {
   required_version = "~> 1.0"
