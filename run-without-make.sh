@@ -4,7 +4,7 @@ echo "Simulate Pipeline"
 
 echo "make format"
 # make format
-terraform fmt -recursive -diff
+terraform fmt -recursive -diff -no-color
 
 echo "make lint"
 # make lint
@@ -12,15 +12,15 @@ echo "make lint"
 
 echo "make tflint"
 # make tflint
-terraform fmt -check -recursive -diff
+terraform fmt -check -recursive -diff -no-color
 
 echo "make init-all"
 # make init-all
-terraform init
+terraform init -no-color
 
 echo "make validate"
 # make validate
-terraform validate
+terraform validate -no-color
 
 echo "make clean"
 # make clean
@@ -34,7 +34,7 @@ echo "make tfsec"
 
 echo "make plan-all"
 # make plan-all
-terraform plan
+terraform plan -no-color
 
 echo "pre-commit run -a"
 # pre-commit run -a
