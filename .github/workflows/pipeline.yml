@@ -15,7 +15,10 @@ env:
 
 jobs:
   build-and-publish-latest:
-    if: contains(github.event.pull_request.labels.*.name, 'rebuild container image')
+    if: |
+      always() &&
+      contains(github.event.pull_request.labels.*.name, 'rebuild container image') &&
+      (github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master')
     runs-on: ubuntu-latest
     steps:
       # Checking out the repo
@@ -48,6 +51,7 @@ jobs:
     needs: build-and-publish-latest
     if: |
       always() &&
+      (github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master') &&
       (needs.build-and-publish-latest.result == 'success' || needs.build-and-publish-latest.result == 'skipped')
     runs-on: ubuntu-latest
     container:
@@ -88,7 +92,11 @@ jobs:
           TF_VAR_ssh_public_key: ${{ secrets.TF_VAR_SSH_PUBLIC_KEY }}
         run: ./run.sh
 
-  terraform-plan-on-terraform-cloud-api-integration:
+  terraform-plan-on-tfc-api-integration:
+    needs: run-run-dot-sh
+    if: |
+      always() &&
+      (needs.run-run-dot-sh.result == 'success' || needs.run-run-dot-sh.result == 'skipped')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -118,3 +126,39 @@ jobs:
         id: plan-output
         with:
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
+
+  terraform-apply-on-tfc-api-integration:
+    needs: terraform-plan-on-tfc-api-integration
+    if: |
+      always() &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
+      (needs.terraform-plan-on-tfc-api-integration.result == 'success' || needs.terraform-plan-on-tfc-api-integration.result == 'skipped')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Upload Configuration
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.4
+        id: upload
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          directory: ${{ env.TF_DIRECTORY }}
+
+      - name: Create Run
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.4
+        id: create-run
+        with:
+          workspace: ${{ env.TF_WORKSPACE }}
+          configuration_version: ${{ steps.upload.outputs.configuration_version_id }}
+
+      - name: Apply Run
+        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.4
+        # assign id attribute to reference in subsequent steps
+        id: apply
+        with:
+          run: ${{ steps.create-run.outputs.run_id }}
+          comment: "Confirmed from GitHub Actions CI"

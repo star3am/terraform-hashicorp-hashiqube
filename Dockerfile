@@ -77,14 +77,14 @@ RUN git clone --depth 1 https://github.com/tfutils/tfenv.git /opt/tfenv && \
 
 # tgenv
 COPY --chown=ubuntu ./.terragrunt-version /opt/.terragrunt-version
-#RUN git clone --depth 1 https://github.com/cunymatthieu/tgenv.git /opt/tgenv && \
-#    ln -s /opt/tgenv/bin/tgenv /usr/local/bin && \
-#    ln -s /opt/tgenv/bin/terragrunt /usr/local/bin && \
-#    mkdir -p /opt/tgenv/versions && \
-#    cd /opt/tgenv && \
-#    if [ "$TARGETPLATFORM" = "linux/amd64" ]; then TGENV_ARCH=amd64; elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then TGENV_ARCH=arm64; elif [ "$TARGETPLATFORM" = "linux/arm64/v8" ]; then TGENV_ARCH=arm64; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then TGENV_ARCH=arm64; else TGENV_ARCH=amd64; fi && \
-#    TGENV_ARCH=${TGENV_ARCH} tgenv install && \
-#    chown -R ubuntu:root /opt/tgenv
+RUN git clone --depth 1 https://github.com/cunymatthieu/tgenv.git /opt/tgenv && \
+   ln -s /opt/tgenv/bin/tgenv /usr/local/bin && \
+   ln -s /opt/tgenv/bin/terragrunt /usr/local/bin && \
+   mkdir -p /opt/tgenv/versions && \
+   cd /opt/tgenv && \
+   if [ "$TARGETPLATFORM" = "linux/amd64" ]; then TGENV_ARCH=amd64; elif [ "$TARGETPLATFORM" = "linux/arm/v7" ]; then TGENV_ARCH=arm64; elif [ "$TARGETPLATFORM" = "linux/arm64/v8" ]; then TGENV_ARCH=arm64; elif [ "$TARGETPLATFORM" = "linux/arm64" ]; then TGENV_ARCH=arm64; else TGENV_ARCH=amd64; fi && \
+   TGENV_ARCH=${TGENV_ARCH} tgenv install && \
+   chown -R ubuntu:root /opt/tgenv
 
 # tfsec
 ARG TFSEC_VERSION="0.58.14"
