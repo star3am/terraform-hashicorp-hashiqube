@@ -48,7 +48,7 @@ jobs:
     needs: build-and-publish-latest
     if: |
       always() &&
-      (github.ref != 'refs/heads/main') &&
+      (github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master') &&
       (needs.build-and-publish-latest.result == 'success' || needs.build-and-publish-latest.result == 'skipped')
     runs-on: ubuntu-latest
     container:
@@ -128,7 +128,7 @@ jobs:
     needs: terraform-plan-on-tfc-api-integration
     if: |
       always() &&
-      (github.ref == 'refs/heads/main') &&
+      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') &&
       (needs.terraform-plan-on-tfc-api-integration.result == 'success' || needs.terraform-plan-on-tfc-api-integration.result == 'skipped')
     runs-on: ubuntu-latest
     permissions:
