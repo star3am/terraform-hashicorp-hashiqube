@@ -93,6 +93,8 @@ sudo apt update && sudo apt install -y -qq vagrant < /dev/null > /dev/null
 # clone and run hashiqube
 sudo -u ubuntu git clone https://github.com/star3am/hashiqube.git /home/ubuntu/hashiqube
 cd /home/ubuntu/hashiqube
+# set trex background
+sudo -u ubuntu cp /home/ubuntu/hashiqube/trex/trex-nodejs/public/hashicorp-unlock-the-cloud-operating-model-$DC.png /home/ubuntu/hashiqube/trex/trex-nodejs/public/hashicorp-unlock-the-cloud-operating-model.png
 # set different IPs for the nodes
 for i in $(grep -Rlz '10.9.99.10' /home/ubuntu/hashiqube/); do sudo -u ubuntu sed -i "s/10.9.99.10/$HASHIQUBE_IP/g" $i; done < /dev/null > /dev/null
 # set different Hostnames for the nodes
