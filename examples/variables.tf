@@ -8,12 +8,12 @@ variable "deploy_to_aws" {
 
 variable "deploy_to_gcp" {
   type        = bool
-  default     = true
+  default     = false
   description = "Deploy Hashiqube on GCP"
 }
 
 variable "deploy_to_azure" {
   type        = bool
-  default     = true
+  default     = false
   description = "Deploy Hashiqube on Azure"
 }
