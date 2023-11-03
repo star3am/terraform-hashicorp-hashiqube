@@ -102,7 +102,6 @@ resource "aws_instance" "hashiqube" {
     volume_size = var.aws_instance_root_block_device_size
     volume_type = var.aws_instance_root_block_device_type
   }
-
   metadata_options {
     http_endpoint = "enabled"
   }
