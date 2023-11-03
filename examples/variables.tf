@@ -17,3 +17,9 @@ variable "deploy_to_azure" {
   default     = false
   description = "Deploy Hashiqube on Azure"
 }
+
+variable "debug_user_data" {
+  type        = bool
+  default     = true
+  description = "Debug and Output User Data progress"
+}
