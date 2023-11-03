@@ -89,18 +89,16 @@ Also see terraform.auto.tfvars.example which you should copy to terraform.auto.t
 ```
 Outputs:
 
-aaa_welcome = <<EOT
+aaa_welcome =
 Your HashiQube instance is busy launching, usually this takes ~5 minutes.
 Below are some links to open in your browser, and commands you can copy and paste in a terminal to login via SSH into your HashiQube instance.
 Thank you for using this module, you are most welcome to fork this repository to make it your own.
 ** DO NOT USE THIS IN PRODUCTION **
 
-EOT
-aab_instructions = <<EOT
+aab_instructions =
 Use the Hashiqube SSH output below to login to your instance
 To get Vault Shamir keys and Root token do "sudo cat /etc/vault/init.file"
 
-EOT
 aws_hashiqube-boundary = "http://13.55.129.xxx:19200 username: admin password: password"
 aws_hashiqube-consul = "http://13.55.129.xxx:8500"
 aws_hashiqube-fabio-lb = "http://13.55.129.xxx:9999"
