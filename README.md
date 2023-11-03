@@ -1,33 +1,33 @@
 # terraform-hashicorp-hashiqube
-Terraform Registry Module for HashiQube - a Development Lab using all the HashiCorp Products.
+Terraform Registry Module for HashiQube - a DevOps Development Lab using all the HashiCorp Products.
 
-This repo contains a [Terraform](https://www.terraform.io/) module for provisioning [HashiQube](https://hashiqube.com) <br />
-A __Development__ lab running all [HashiCorp](https://www.hashicorp.com/) products.
+This repo contains a [Terraform](https://www.terraform.io/) module for provisioning [HashiQube](https://hashiqube.com) on Any Cloud or All of them at once! Think of Consul Service Mesh, Vault and Nomad Clusters.
+
+A __DevOps Development__ lab running all [HashiCorp](https://www.hashicorp.com/) products.
 
 __DO NOT USE HASHIQUBE IN PRODUCTION__
 
 ## Introduction
 
-Hello friends!
+![HashiQube](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-banner.png?raw=true "HashiQube ")
 
-Hashicorp clustered Consul, Nomad and Vault HA in GCP, AWS and Azure using Terraform.
+## Overview
 
-Last year I started learning about #Hashicorp products, and to help me do that, I created a VM or Docker container running all the Hashicorp products, you can read more about HashiQube the Development Lab that runs all Hashicorp products here:
-[HashiQube at HashiTalks 2020](https://www.hashicorp.com/resources/hashiqube-a-development-lab-using-all-the-hashicorp-products/)
+This Module will help you launch HashiQube in any Cloud, AWS, GCP, Azure or all of them at once. You can then use any HashiCorp product to integrate with Cloud Service to assist your learning or POC Labs 
 
-[HashiQube Website](https://hashiqube.com)
+Hashiqube is a DevOps Lab in a Docker Container. Hashiqube has a Docker daemon inside meaning, we can run containers inside Hashiqube using Kubernetes (Minikube) or Nomad or Docker run. It runs all Hashicorp products. [Vault](https://hashiqube.com//vault/?id=vault), [Terraform](https://hashiqube.com//terraform/?id=terraform), [Nomad](https://hashiqube.com//nomad/?id=nomad), [Consul](https://hashiqube.com//consul/?id=consul), [Waypoint](https://hashiqube.com//waypoint/?id=waypoint), [Boundary](https://hashiqube.com//boundary/?id=boundary), [Vagrant](https://hashiqube.com//vagrant/?id=vagrant), [Packer](https://hashiqube.com//packer/?id=packer) and [Sentinel](https://hashiqube.com//sentinel/?id=sentinel).
 
-This year I wanted to improve my Terraform knowledge while studying for my Terraform Associate Exam and I decided to try spin up HashiQube on the Clouds, GCP, Azure and AWS using Terraform.
+It also runs a host of other popular Open Source DevOps/DevSecOps applications (Minikube, Ansible AWX Tower, Traefik etc.) showcasing how simple integration with Hashicorp products can result in tangible learnings and benefits for all its users.
 
-I have written a Terraform Registry module that can help you do exactly that, https://registry.terraform.io/modules/star3am/hashiqube/hashicorp/latest
+Once Hashiqube is up an internet connection is no longer needed meaning sales pitches and demos for potential and existing customers are greatly aided.
 
-This module can launch a Vault, Consul and Nomad (Clustered) on all clouds or just 1 if you only have 1 Cloud account.
+Hashiqube has been created to help Engineers, Developers and anyone who wants to practise, learn or demo HashiCorp products to get started quickly with a local lab. 
 
-Give it a try and most of all have fun with this module, your feedback is always greatly appreciated!
+Please connect with me on [LinkedIn (Riaan Nolan)](https://www.linkedin.com/in/riaannolan/) or check out [my Credly profile](https://www.credly.com/users/riaan-nolan.e657145c)
 
 #Hashicorp #Vault #Consul #Nomad #Waypoint #Boundary #HashiQube #Kifftech #Curious
 
-![Hashiqube Integrations](images/logo-qube.png?raw=true "Hashiqube Integrations")
+![Hashiqube Integrations](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/logo-qube.png?raw=true "Hashiqube Integrations")
 
 ## Basic concept
 The basic concept is, we spin up a cloud instance, we install `docker` and `vagrant` and we clone https://github.com/star3am/hashiqube into /home/ubuntu/hashiqube
@@ -72,7 +72,7 @@ export AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
 export AWS_REGION=YOUR_AWS_REGION
 
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference.html#authentication-configuration
-export GOOGLE_CREDENTIALS=’YOUR_GOOGLE_CREDENTIALS_FILE_JSON’
+export GOOGLE_CREDENTIALS='YOUR_GOOGLE_CREDENTIALS_FILE_JSON'
 
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret#creating-a-service-principal
 export ARM_CLIENT_ID=YOUR_ARM_CLIENT_ID
@@ -140,7 +140,7 @@ your_ipaddress = "101.189.211.xxx"
 ## Access Hashiqube, First Login
 After your Hashiqube instances has been launched you can access them by using the SSH commands in the Terraform Apply Output, and you will see something like this
 
-![Hashiqube Access](images/hashiqube-first-login.png?raw=true "Hashiqube Access")
+![Hashiqube Access](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-first-login.png?raw=true "Hashiqube Access")
 
 ## Voodoo Bash Aliases
 I use `~/.bash_aliases` file to make it easier to interact with Hashicorp tools running in the hashiqube docker container.
@@ -259,18 +259,18 @@ And acces Waypoint on the address in the Output of Terraform Apply in your brows
 aws_hashiqube-waypoint = "https://13.55.129.xxx:9702"
 ```
 
-![Hashicorp Waypoint on Hashiqube](images/hashiqube-waypoint.png?raw=true "Hashicorp Waypoint on Hashiqube")
+![Hashicorp Waypoint on Hashiqube](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-waypoint.png?raw=true "Hashicorp Waypoint on Hashiqube")
 
 Access Hashicorp Boundary on Hashiqube on the address in the Output of Terraform Apply in your browser
 ```
 aws_hashiqube-boundary = "http://13.55.129.152:19200 username: admin password: password"
 ```
 
-![Hashicorp Boundary on Hashiqube](images/hashiqube-boundary.png?raw=true "Hashicorp Boundary on Hashiqube")
+![Hashicorp Boundary on Hashiqube](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-boundary.png?raw=true "Hashicorp Boundary on Hashiqube")
 
 ## Dev Env, VSCode Dev Containers
 
-![VSCode Dev Containers](images/vscode-dev-containers.png?raw=true "VSCode Dev Containers")
+![VSCode Dev Containers](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/vscode-dev-containers.png?raw=true "VSCode Dev Containers")
 
 ## Using VSCode Dev Containers
 
@@ -324,8 +324,10 @@ HashiQube medium: https://medium.com/search?q=hashiqube
 ## Purpose
 HashiQube has been created to help developers and engineers to get up to speed with HashiCorp products. It can be used for development, testing or training. HashiQube gives all interested parties the empowerment to deploy these tools in a way covers multiple use cases effectively providing a 'concept to completion' testbed using open-source HashiCorp products.
 
-## HashiQube - Dev Lab
-![HashiQube](images/thestack.png?raw=true "HashiQube")
+## HashiQube - DevOps Lab 
+https://hashiqube.com
+
+![HashiQube](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/thestack.png?raw=true "HashiQube")
 
 - [What is a Terraform module](#what-is-a-terraform-module)
 - [How do you use this module](#how-do-you-use-this-module)
@@ -1742,4 +1744,4 @@ I have worked for Multi-National companies in Portugal, Germany, China, South Af
 You are welcome to connect with me on Linkedin https://www.linkedin.com/in/riaannolan/ <br />
 Credly profile: https://www.credly.com/users/riaan-nolan.e657145c
 
-![My Hashicorp Badges](images/hashicorp-badges.png?raw=true "My Hashicorp Badges")
+![My Hashicorp Badges](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashicorp-badges.png?raw=true "My Hashicorp Badges")
