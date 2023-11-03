@@ -96,6 +96,18 @@ variable "aws_instance_type" {
   description = "AWS instance type"
 }
 
+variable "aws_instance_root_block_device_size" {
+  type = string
+  default = "30"
+  description = "AWS instance root block device size in Gb"
+}
+
+variable "aws_instance_root_block_device_type" {
+  type = string
+  default = "gp3"
+  description = "AWS instance root block device type"
+}
+
 # https://developer.hashicorp.com/terraform/cloud-docs/api-docs/ip-ranges
 variable "terraform_cloud_api_ip_ranges" {
   type = list(any)

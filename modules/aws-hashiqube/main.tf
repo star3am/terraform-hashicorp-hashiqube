@@ -98,6 +98,11 @@ resource "aws_instance" "hashiqube" {
   instance_type   = var.aws_instance_type
   security_groups = [aws_security_group.hashiqube.name]
   key_name        = aws_key_pair.hashiqube.key_name
+  root_block_device {
+    volume_size = var.aws_instance_root_block_device_size
+    volume_type = var.aws_instance_root_block_device_type
+  }
+
   metadata_options {
     http_endpoint = "enabled"
   }

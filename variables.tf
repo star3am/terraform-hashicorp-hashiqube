@@ -66,6 +66,18 @@ variable "azure_instance_type" {
   description = "Azure instance type"
 }
 
+variable "aws_instance_root_block_device_size" {
+  type = string
+  default = "30"
+  description = "AWS instance root block device size in Gb"
+}
+
+variable "aws_instance_root_block_device_type" {
+  type = string
+  default = "gp3"
+  description = "AWS instance root block device type"
+}
+
 variable "aws_credentials" {
   type        = string
   default     = "~/.aws/config"
