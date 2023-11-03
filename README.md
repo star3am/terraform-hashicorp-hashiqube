@@ -9,7 +9,7 @@ __DO NOT USE HASHIQUBE IN PRODUCTION__
 
 ## Introduction
 
-![HashiQube](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/hashiqube-banner.png?raw=true "HashiQube ")
+![HashiQube](https://hashiqube.com/images/hashiqube-banner.png?raw=true "HashiQube")
 
 ## Overview
 
