@@ -830,9 +830,9 @@ Terraform will perform the following actions:
       + virtual_machine_id              = (known after apply)
 
       + admin_ssh_key {
-          + public_key = <<-EOT
+          + public_key = 
                 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAd1E2uJrIFr8PVIMiGvCCdwpL2UDOvKygCnGEqZ2p4aBvHrEBiyHt1POQJzhtKzG4o14zmzZ5prBHFiyhFdTeqKHtYqgKVhrYPkgALLWZFcl3rSSBZpWTli3NpkfAv98aTyCrljJohUJdJkeL3RxuX6gHN
-            EOT
+            
           + username   = "ubuntu"
         }
 
@@ -1296,9 +1296,9 @@ Terraform will perform the following actions:
       + instance_description    = "hashiqube"
       + machine_type            = "n1-standard-1"
       + metadata                = {
-          + "ssh-keys" = <<-EOT
+          + "ssh-keys" = 
                 ubuntu:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAd1E2uJrIFr8PVIMiGvCCdwpL2UDOvKygCnGEqZ2p4aBvHrEBiyHt1POQJzhtKzG4o14zmzZ5prBHFiyhFdTeqKHtYqgKVhrYPkgALLWZFcl3rSSBZpWTli3NpkfAv98aTyCrljJohUJdJkeL3RxuX6gHN
-            EOT
+            
         }
       + metadata_fingerprint    = (known after apply)
       + metadata_startup_script = (known after apply)
@@ -1440,16 +1440,16 @@ Terraform will perform the following actions:
 Plan: 37 to add, 0 to change, 0 to destroy.
 
 Changes to Outputs:
-  + aaa_welcome                = <<-EOT
+  + aaa_welcome                = 
         Your HashiQube instance is busy launching, usually this takes ~5 minutes.
         Below are some links to open in your browser, and commands you can copy and paste in a terminal to login via SSH into your HashiQube instance.
         Thank you for using this module, you are most welcome to fork this repository to make it your own.
         ** DO NOT USE THIS IN PRODUCTION **
-    EOT
-  + aab_instructions           = <<-EOT
+    
+  + aab_instructions           = 
         Use the Hashiqube SSH output below to login to your instance
         To get Vault Shamir keys and Root token do "sudo cat /etc/vault/init.file"
-    EOT
+    
   + aws_hashiqube-boundary     = (known after apply)
   + aws_hashiqube-consul       = (known after apply)
   + aws_hashiqube-fabio-lb     = (known after apply)
@@ -1583,18 +1583,18 @@ Apply complete! Resources: 37 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-aaa_welcome = <<EOT
+aaa_welcome = 
 Your HashiQube instance is busy launching, usually this takes ~5 minutes.
 Below are some links to open in your browser, and commands you can copy and paste in a terminal to login via SSH into your HashiQube instance.
 Thank you for using this module, you are most welcome to fork this repository to make it your own.
 ** DO NOT USE THIS IN PRODUCTION **
 
-EOT
-aab_instructions = <<EOT
+
+aab_instructions = 
 Use the Hashiqube SSH output below to login to your instance
 To get Vault Shamir keys and Root token do "sudo cat /etc/vault/init.file"
 
-EOT
+
 aws_hashiqube-boundary = "http://3.105.237.xxx:19200 username: admin password: password"
 aws_hashiqube-consul = "http://3.105.237.xxx:8500"
 aws_hashiqube-fabio-lb = "http://3.105.237.xxx:9999"
