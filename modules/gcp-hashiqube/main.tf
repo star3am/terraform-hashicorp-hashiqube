@@ -79,7 +79,7 @@ resource "google_compute_instance_template" "hashiqube" {
   disk {
     boot         = true
     auto_delete  = true
-    source_image = "ubuntu-os-cloud/ubuntu-2004-lts"
+    source_image = "ubuntu-os-cloud/ubuntu-2204-lts"
     disk_size_gb = var.gcp_root_volume_disk_size_gb
     disk_type    = var.gcp_root_volume_disk_type
   }
