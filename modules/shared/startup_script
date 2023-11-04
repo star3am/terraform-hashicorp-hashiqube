@@ -83,7 +83,8 @@ EOF
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" < /dev/null > /dev/null
 DEBIAN_FRONTEND=noninteractive apt-get update -qq < /dev/null > /dev/null
-DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker-ce < /dev/null > /dev/null
+# BUG: https://github.com/kubernetes-sigs/kind/issues/3223 unable to use kubectl exec
+DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker-ce=5:24.0.6-1~ubuntu.20.04~focal < /dev/null > /dev/null
 usermod -aG docker ubuntu
 service docker restart
 # install vagrant

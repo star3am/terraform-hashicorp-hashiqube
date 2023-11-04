@@ -30,6 +30,8 @@ resource "null_resource" "hashiqube" {
     aws_hashiqube_ip     = var.aws_hashiqube_ip
     azure_hashiqube_ip   = var.azure_hashiqube_ip
     vagrant_provisioners = var.vagrant_provisioners
+    timestamp            = local.timestamp
+    debug_user_data      = var.debug_user_data
   }
 }
 

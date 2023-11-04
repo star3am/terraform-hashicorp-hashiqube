@@ -27,6 +27,8 @@ resource "null_resource" "hashiqube" {
     azure_region         = var.azure_region
     azure_instance_type  = var.azure_instance_type
     vagrant_provisioners = var.vagrant_provisioners
+    timestamp            = local.timestamp
+    debug_user_data      = var.debug_user_data
   }
 }
 

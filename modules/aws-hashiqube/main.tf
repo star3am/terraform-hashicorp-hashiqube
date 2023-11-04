@@ -29,6 +29,8 @@ resource "null_resource" "hashiqube" {
     azure_hashiqube_ip   = var.azure_hashiqube_ip
     gcp_hashiqube_ip     = var.gcp_hashiqube_ip
     vagrant_provisioners = var.vagrant_provisioners
+    timestamp            = local.timestamp
+    debug_user_data      = var.debug_user_data
   }
 }
 
