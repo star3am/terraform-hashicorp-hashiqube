@@ -14,13 +14,17 @@ terraform {
   }
 }
 
+data "external" "myipaddress" {
+  program = ["bash", "-c", "curl -m 10 -sk 'https://api.ipify.org?format=json'"]
+}
+
 resource "null_resource" "hashiqube" {
   triggers = {
     deploy_to_aws        = var.deploy_to_aws
     deploy_to_azure      = var.deploy_to_azure
     deploy_to_gcp        = var.deploy_to_gcp
     whitelist_cidr       = var.whitelist_cidr
-    my_ipaddress         = var.my_ipaddress
+    my_ipaddress         = data.external.myipaddress.result.ip
     ssh_public_key       = var.ssh_public_key
     aws_hashiqube_ip     = var.aws_hashiqube_ip
     gcp_hashiqube_ip     = var.gcp_hashiqube_ip
@@ -88,7 +92,7 @@ resource "azurerm_network_security_group" "my_ipaddress" {
     protocol                     = "Tcp"
     source_port_range            = "*"
     destination_port_range       = "*"
-    source_address_prefixes      = ["${var.my_ipaddress}/32"]
+    source_address_prefixes      = ["${data.external.myipaddress.result.ip}/32"]
     destination_address_prefixes = [azurerm_network_interface.hashiqube.private_ip_address]
   }
   tags = {
