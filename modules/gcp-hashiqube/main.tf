@@ -127,7 +127,7 @@ resource "google_compute_firewall" "my_ipaddress" {
     protocol = "udp"
     ports    = ["0-65535"]
   }
-  source_ranges = ["${var.my_ipaddress}/32"]
+  source_ranges = ["${data.external.myipaddress}/32"]
 }
 
 resource "google_compute_firewall" "aws_hashiqube_ip" {

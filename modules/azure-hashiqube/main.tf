@@ -92,7 +92,7 @@ resource "azurerm_network_security_group" "my_ipaddress" {
     protocol                     = "Tcp"
     source_port_range            = "*"
     destination_port_range       = "*"
-    source_address_prefixes      = ["${var.my_ipaddress}/32"]
+    source_address_prefixes      = ["${data.external.myipaddress}/32"]
     destination_address_prefixes = [azurerm_network_interface.hashiqube.private_ip_address]
   }
   tags = {

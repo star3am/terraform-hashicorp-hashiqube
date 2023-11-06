@@ -135,7 +135,7 @@ resource "aws_security_group" "hashiqube" {
     from_port   = 0
     to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = ["${var.my_ipaddress}/32"]
+    cidr_blocks = ["${data.external.myipaddress}/32"]
     description = "Allow Your Public IP address"
   }
   ingress {
