@@ -27,7 +27,7 @@ resource "null_resource" "hashiqube" {
     deploy_to_azure      = var.deploy_to_azure
     deploy_to_gcp        = var.deploy_to_gcp
     whitelist_cidr       = var.whitelist_cidr
-    my_ipaddress         = data.external.myipaddress
+    my_ipaddress         = data.external.myipaddress.result.ip
     region               = var.aws_region
     ssh_public_key       = var.ssh_public_key
     azure_hashiqube_ip   = var.azure_hashiqube_ip
@@ -135,14 +135,14 @@ resource "aws_security_group" "hashiqube" {
     from_port   = 0
     to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = ["${data.external.myipaddress}/32"]
+    cidr_blocks = ["${data.external.myipaddress.result.ip}/32"]
     description = "Allow Your Public IP address"
   }
   ingress {
     from_port   = 0
     to_port     = 65535
     protocol    = "udp"
-    cidr_blocks = ["${data.external.myipaddress}/32"]
+    cidr_blocks = ["${data.external.myipaddress.result.ip}/32"]
     description = "Allow Your Public IP address"
   }
   egress {

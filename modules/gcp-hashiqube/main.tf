@@ -27,7 +27,7 @@ resource "null_resource" "hashiqube" {
     deploy_to_azure      = var.deploy_to_azure
     deploy_to_gcp        = var.deploy_to_gcp
     whitelist_cidr       = var.whitelist_cidr
-    my_ipaddress         = data.external.myipaddress
+    my_ipaddress         = data.external.myipaddress.result.ip
     gcp_project          = var.gcp_project
     gcp_credentials      = var.gcp_credentials
     ssh_public_key       = var.ssh_public_key
@@ -127,7 +127,7 @@ resource "google_compute_firewall" "my_ipaddress" {
     protocol = "udp"
     ports    = ["0-65535"]
   }
-  source_ranges = ["${data.external.myipaddress}/32"]
+  source_ranges = ["${data.external.myipaddress.result.ip}/32"]
 }
 
 resource "google_compute_firewall" "aws_hashiqube_ip" {
