@@ -241,7 +241,7 @@ resource "aws_eip" "hashiqube" {
 }
 
 resource "null_resource" "debug" {
-  #count = var.debug_user_data == true ? 1 : 0
+  count = var.debug_user_data == true ? 1 : 0
 
   triggers = {
     timestamp = local.timestamp
