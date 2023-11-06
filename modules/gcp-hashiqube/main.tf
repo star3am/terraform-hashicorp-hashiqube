@@ -17,13 +17,17 @@ terraform {
   }
 }
 
+data "external" "myipaddress" {
+  program = ["bash", "-c", "curl -m 10 -sk 'https://api.ipify.org?format=json'"]
+}
+
 resource "null_resource" "hashiqube" {
   triggers = {
     deploy_to_aws        = var.deploy_to_aws
     deploy_to_azure      = var.deploy_to_azure
     deploy_to_gcp        = var.deploy_to_gcp
     whitelist_cidr       = var.whitelist_cidr
-    my_ipaddress         = var.my_ipaddress
+    my_ipaddress         = data.external.myipaddress
     gcp_project          = var.gcp_project
     gcp_credentials      = var.gcp_credentials
     ssh_public_key       = var.ssh_public_key
