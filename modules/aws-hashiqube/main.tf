@@ -117,7 +117,7 @@ EOF
 }
 
 resource "aws_instance" "hashiqube" {
-  ami             = var.use_packer_image == true ? data.aws_ami.packer.id : data.aws_ami.ubuntu.id
+  ami             = var.use_packer_image == true ? data.aws_ami.packer[0].id : data.aws_ami.ubuntu[0].id
   instance_type   = var.aws_instance_type
   security_groups = [aws_security_group.hashiqube.name]
   key_name        = aws_key_pair.hashiqube.key_name
