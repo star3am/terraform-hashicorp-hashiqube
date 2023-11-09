@@ -13,15 +13,15 @@ __DO NOT USE HASHIQUBE IN PRODUCTION__
 
 ## Overview
 
-This Module will help you launch HashiQube in any Cloud, AWS, GCP, Azure or all of them at once. You can then use any HashiCorp product to integrate with Cloud Service to assist your learning or POC Labs 
+This Module will help you launch HashiQube in any Cloud, AWS, GCP, Azure or all of them at once. You can then use any HashiCorp product to integrate with Cloud Service to assist your learning or POC Labs
 
-Hashiqube is a DevOps Lab in a Docker Container. Hashiqube has a Docker daemon inside meaning, we can run containers inside Hashiqube using Kubernetes (Minikube) or Nomad or Docker run. It runs all Hashicorp products. [Vault](https://hashiqube.com//vault/?id=vault), [Terraform](https://hashiqube.com//terraform/?id=terraform), [Nomad](https://hashiqube.com//nomad/?id=nomad), [Consul](https://hashiqube.com//consul/?id=consul), [Waypoint](https://hashiqube.com//waypoint/?id=waypoint), [Boundary](https://hashiqube.com//boundary/?id=boundary), [Vagrant](https://hashiqube.com//vagrant/?id=vagrant), [Packer](https://hashiqube.com//packer/?id=packer) and [Sentinel](https://hashiqube.com//sentinel/?id=sentinel).
+Hashiqube is a DevOps Lab in a Docker Container. Hashiqube has a Docker daemon inside meaning, we can run containers inside Hashiqube using Kubernetes (Minikube) or Nomad or Docker run. It runs all Hashicorp products. [Vault](https://hashiqube.com/vault/?id=vault), [Terraform](https://hashiqube.com/terraform/?id=terraform), [Nomad](https://hashiqube.com/nomad/?id=nomad), [Consul](https://hashiqube.com/consul/?id=consul), [Waypoint](https://hashiqube.com/waypoint/?id=waypoint), [Boundary](https://hashiqube.com/boundary/?id=boundary), [Vagrant](https://hashiqube.com/vagrant/?id=vagrant), [Packer](https://hashiqube.com/packer/?id=packer) and [Sentinel](https://hashiqube.com/sentinel/?id=sentinel).
 
 It also runs a host of other popular Open Source DevOps/DevSecOps applications (Minikube, Ansible AWX Tower, Traefik etc.) showcasing how simple integration with Hashicorp products can result in tangible learnings and benefits for all its users.
 
 Once Hashiqube is up an internet connection is no longer needed meaning sales pitches and demos for potential and existing customers are greatly aided.
 
-Hashiqube has been created to help Engineers, Developers and anyone who wants to practise, learn or demo HashiCorp products to get started quickly with a local lab. 
+Hashiqube has been created to help Engineers, Developers and anyone who wants to practise, learn or demo HashiCorp products to get started quickly with a local lab.
 
 Please connect with me on [LinkedIn (Riaan Nolan)](https://www.linkedin.com/in/riaannolan/) or check out [my Credly profile](https://www.credly.com/users/riaan-nolan.e657145c)
 
@@ -82,6 +82,30 @@ export ARM_TENANT_ID=YOUR_ARM_TENANT_ID
 ```
 
 Also see terraform.auto.tfvars.example which you should copy to terraform.auto.tfvars and fill in the details
+
+`terraform.auto.tfvars`
+
+```
+debug_user_data      = true
+deploy_to_aws        = true
+deploy_to_gcp        = false
+deploy_to_azure      = false
+ssh_public_key       = "ssh-rsa AAAAB3N....."
+vagrant_provisioners = "basetools,docker,minikube,ansible-tower"
+ssh_private_key      = <<EOF
+-----ENTER YOUR PRIVATE KEY-----
+...
+...
+...
+...
+-----ENTER YOUR PRIVATE KEY-----
+EOF
+aws_profile          = "YOUR_AWS_PROFILE"
+gcp_project          = "YOUR_GCP_PROJECT"
+gcp_region           = "australia-southeast1"
+```
+
+See examples folder
 
 - Run `terraform plan` and `terraform apply`
 - The Terraform Output will look something like:
@@ -322,7 +346,7 @@ HashiQube medium: https://medium.com/search?q=hashiqube
 ## Purpose
 HashiQube has been created to help developers and engineers to get up to speed with HashiCorp products. It can be used for development, testing or training. HashiQube gives all interested parties the empowerment to deploy these tools in a way covers multiple use cases effectively providing a 'concept to completion' testbed using open-source HashiCorp products.
 
-## HashiQube - DevOps Lab 
+## HashiQube - DevOps Lab
 https://hashiqube.com
 
 ![HashiQube](https://github.com/star3am/terraform-hashicorp-hashiqube/blob/master/images/thestack.png?raw=true "HashiQube")
@@ -830,9 +854,9 @@ Terraform will perform the following actions:
       + virtual_machine_id              = (known after apply)
 
       + admin_ssh_key {
-          + public_key = 
+          + public_key =
                 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAd1E2uJrIFr8PVIMiGvCCdwpL2UDOvKygCnGEqZ2p4aBvHrEBiyHt1POQJzhtKzG4o14zmzZ5prBHFiyhFdTeqKHtYqgKVhrYPkgALLWZFcl3rSSBZpWTli3NpkfAv98aTyCrljJohUJdJkeL3RxuX6gHN
-            
+
           + username   = "ubuntu"
         }
 
@@ -1296,9 +1320,9 @@ Terraform will perform the following actions:
       + instance_description    = "hashiqube"
       + machine_type            = "n1-standard-1"
       + metadata                = {
-          + "ssh-keys" = 
+          + "ssh-keys" =
                 ubuntu:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAd1E2uJrIFr8PVIMiGvCCdwpL2UDOvKygCnGEqZ2p4aBvHrEBiyHt1POQJzhtKzG4o14zmzZ5prBHFiyhFdTeqKHtYqgKVhrYPkgALLWZFcl3rSSBZpWTli3NpkfAv98aTyCrljJohUJdJkeL3RxuX6gHN
-            
+
         }
       + metadata_fingerprint    = (known after apply)
       + metadata_startup_script = (known after apply)
@@ -1440,16 +1464,16 @@ Terraform will perform the following actions:
 Plan: 37 to add, 0 to change, 0 to destroy.
 
 Changes to Outputs:
-  + aaa_welcome                = 
+  + aaa_welcome                =
         Your HashiQube instance is busy launching, usually this takes ~5 minutes.
         Below are some links to open in your browser, and commands you can copy and paste in a terminal to login via SSH into your HashiQube instance.
         Thank you for using this module, you are most welcome to fork this repository to make it your own.
         ** DO NOT USE THIS IN PRODUCTION **
-    
-  + aab_instructions           = 
+
+  + aab_instructions           =
         Use the Hashiqube SSH output below to login to your instance
         To get Vault Shamir keys and Root token do "sudo cat /etc/vault/init.file"
-    
+
   + aws_hashiqube-boundary     = (known after apply)
   + aws_hashiqube-consul       = (known after apply)
   + aws_hashiqube-fabio-lb     = (known after apply)
@@ -1583,14 +1607,14 @@ Apply complete! Resources: 37 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-aaa_welcome = 
+aaa_welcome =
 Your HashiQube instance is busy launching, usually this takes ~5 minutes.
 Below are some links to open in your browser, and commands you can copy and paste in a terminal to login via SSH into your HashiQube instance.
 Thank you for using this module, you are most welcome to fork this repository to make it your own.
 ** DO NOT USE THIS IN PRODUCTION **
 
 
-aab_instructions = 
+aab_instructions =
 Use the Hashiqube SSH output below to login to your instance
 To get Vault Shamir keys and Root token do "sudo cat /etc/vault/init.file"
 

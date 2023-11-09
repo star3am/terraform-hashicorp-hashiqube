@@ -5,7 +5,7 @@
 # terraform apply
 
 module "hashiqube" {
-  source  = "star3am/hashiqube/hashicorp"
+  source          = "star3am/hashiqube/hashicorp"
   deploy_to_aws   = true
   deploy_to_gcp   = false
   deploy_to_azure = false
