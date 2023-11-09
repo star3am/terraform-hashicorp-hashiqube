@@ -76,6 +76,7 @@ resource "null_resource" "hashiqube" {
     deploy_to_gcp        = var.deploy_to_gcp
     deploy_to_aws        = var.deploy_to_aws
     debug_user_data      = var.debug_user_data
+    use_packer_image     = var.use_packer_image
     vagrant_provisioners = var.vagrant_provisioners
   }
 }
@@ -109,6 +110,7 @@ module "gcp_hashiqube" {
   aws_hashiqube_ip                        = var.deploy_to_aws ? try(module.aws_hashiqube[0].hashiqube_ip, null) : null
   azure_hashiqube_ip                      = var.deploy_to_azure ? try(module.azure_hashiqube[0].hashiqube_ip, null) : null
   vagrant_provisioners                    = var.vagrant_provisioners
+  use_packer_image                        = var.use_packer_image
   terraform_cloud_api_ip_ranges           = local.terraform_cloud_ip_ranges.api
   terraform_cloud_notifications_ip_ranges = local.terraform_cloud_ip_ranges.notifications
 }
@@ -134,6 +136,7 @@ module "aws_hashiqube" {
   azure_hashiqube_ip                      = var.deploy_to_azure ? try(module.azure_hashiqube[0].hashiqube_ip, null) : null
   gcp_hashiqube_ip                        = var.deploy_to_gcp ? try(module.gcp_hashiqube[0].hashiqube_ip, null) : null
   vagrant_provisioners                    = var.vagrant_provisioners
+  use_packer_image                        = var.use_packer_image
   terraform_cloud_api_ip_ranges           = local.terraform_cloud_ip_ranges.api
   terraform_cloud_notifications_ip_ranges = local.terraform_cloud_ip_ranges.notifications
 }
@@ -157,6 +160,7 @@ module "azure_hashiqube" {
   azure_region                            = var.azure_region
   azure_instance_type                     = var.azure_instance_type
   vagrant_provisioners                    = var.vagrant_provisioners
+  use_packer_image                        = var.use_packer_image
   terraform_cloud_api_ip_ranges           = local.terraform_cloud_ip_ranges.api
   terraform_cloud_notifications_ip_ranges = local.terraform_cloud_ip_ranges.notifications
 }
