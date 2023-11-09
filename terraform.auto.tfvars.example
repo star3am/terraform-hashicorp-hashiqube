@@ -1,7 +1,17 @@
-deploy_to_aws = true
-deploy_to_gcp = true
-deploy_to_azure = true
-ssh_public_key = "" # The contents of your ~/.ssh/id_rsa.pub
-aws_profile = "default"
-gcp_project = "default"
-gcp_region = "australia-southeast1"
+debug_user_data      = true
+deploy_to_aws        = true
+deploy_to_gcp        = false
+deploy_to_azure      = false
+ssh_public_key       = "ssh-rsa AAAAB3N....."
+vagrant_provisioners = "basetools,docker,minikube,ansible-tower"
+ssh_private_key      = <<EOF
+-----BEGIN YOUR PRIVATE KEY-----
+...
+...
+...
+...
+-----END YOUR PRIVATE KEY-----
+EOF
+aws_profile          = "YOUR_AWS_PROFILE"
+gcp_project          = "YOUR_GCP_PROJECT"
+gcp_region           = "australia-southeast1"

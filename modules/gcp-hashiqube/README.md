@@ -223,11 +223,11 @@ Default: `"~/.ssh/id_rsa"`
 
 ### <a name="input_ssh_public_key"></a> [ssh_public_key](#input_ssh_public_key)
 
-Description: Path to your SSH public key, matching the private key below
+Description: Content of your SSH public key, matching the private key below
 
 Type: `string`
 
-Default: `"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ......"`
+Default: `"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAd1E2uJrIFr8PVIMiGvCCdwpL2U+1HqpQ8YVbXCT104SFkYl7IArRmlY9LfGagO9xw/xcAP2gR3e3Bfo1Z4p3ZmbB0E4HqI+9MwRFS86xT9KVqH+anTgTIPAfpjCzoEHk/BMT5/Gzowkn426cMAFz1Fg+Umv9GrHkxPf2+xuoHvjYyibkvvO88lMeTojt/HjTz3QZUL361QCsZxcChAR1/DOvKygCnGEqZ2p4aBvHrEBiyHt1POQJzhtKzG4o14zmzZ5prBHFiyhFdTeqKHtYqgKVhrYPkgALLWZFcl3rSSBZpWTli3NpkfAv98aTyCrljJohUJdJkeL3RxuX6gHN"`
 
 ### <a name="input_terraform_cloud_api_ip_ranges"></a> [terraform_cloud_api_ip_ranges](#input_terraform_cloud_api_ip_ranges)
 
