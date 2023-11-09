@@ -59,12 +59,6 @@ variable "ssh_private_key" {
   sensitive   = true
 }
 
-variable "my_ipaddress" {
-  type        = string
-  default     = null
-  description = "Your Public IP address"
-}
-
 # You can find the full list of provisioners in the Vagrantfile
 variable "vagrant_provisioners" {
   description = "The list of services you would like to run in Hashiqube, the more you run, the bigger instance youd need with more RAM"

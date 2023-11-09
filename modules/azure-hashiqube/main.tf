@@ -11,6 +11,10 @@ terraform {
       source  = "hashicorp/null"
       version = "~> 3.0"
     }
+    external = {
+      source  = "hashicorp/external"
+      version = "~> 2.3"
+    }
   }
 }
 
@@ -33,6 +37,7 @@ resource "null_resource" "hashiqube" {
     vagrant_provisioners = var.vagrant_provisioners
     timestamp            = local.timestamp
     debug_user_data      = var.debug_user_data
+    use_packer_image     = var.use_packer_image
   }
 }
 
@@ -40,7 +45,7 @@ locals {
   timestamp = timestamp()
 }
 
-# Create a resource group if it doesn’t exist
+# Create a resource group if it doesnt exist
 resource "azurerm_resource_group" "hashiqube" {
   name     = "hashiqube"
   location = var.azure_region

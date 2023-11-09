@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/null"
       version = "~> 3.0"
     }
+    external = {
+      source  = "hashicorp/external"
+      version = "~> 2.3"
+    }
   }
 }
 
@@ -36,6 +40,7 @@ resource "null_resource" "hashiqube" {
     vagrant_provisioners = var.vagrant_provisioners
     timestamp            = local.timestamp
     debug_user_data      = var.debug_user_data
+    use_packer_image     = var.use_packer_image
   }
 }
 
