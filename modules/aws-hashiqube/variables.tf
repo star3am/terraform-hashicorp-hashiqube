@@ -108,6 +108,12 @@ variable "aws_instance_root_block_device_type" {
   description = "AWS instance root block device type"
 }
 
+variable "use_packer_image" {
+  type        = bool
+  default     = false
+  description = "Use your own Packer build image?"
+}
+
 # https://developer.hashicorp.com/terraform/cloud-docs/api-docs/ip-ranges
 variable "terraform_cloud_api_ip_ranges" {
   type = list(any)

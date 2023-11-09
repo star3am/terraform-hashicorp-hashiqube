@@ -149,6 +149,12 @@ variable "gcp_root_volume_disk_type" {
   default     = "pd-standard"
 }
 
+variable "use_packer_image" {
+  type        = bool
+  default     = false
+  description = "Use your own Packer build image?"
+}
+
 # https://developer.hashicorp.com/terraform/cloud-docs/api-docs/ip-ranges
 variable "terraform_cloud_api_ip_ranges" {
   type = list(any)

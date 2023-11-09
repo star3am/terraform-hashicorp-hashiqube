@@ -43,6 +43,8 @@ locals {
 }
 
 data "aws_ami" "ubuntu" {
+  count = var.use_packer_image == true ? 0 : 1
+
   most_recent = true
   filter {
     name   = "name"
@@ -53,6 +55,21 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
   owners = ["099720109477"] # Canonical
+}
+
+data "aws_ami" "packer" {
+  count = var.use_packer_image == true ? 1 : 0
+
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["ubuntu-2204-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  owners = ["self"]
 }
 
 resource "aws_iam_role" "hashiqube" {
@@ -100,7 +117,7 @@ EOF
 }
 
 resource "aws_instance" "hashiqube" {
-  ami             = data.aws_ami.ubuntu.id
+  ami             = var.use_packer_image == true ? data.aws_ami.packer.id : data.aws_ami.ubuntu.id
   instance_type   = var.aws_instance_type
   security_groups = [aws_security_group.hashiqube.name]
   key_name        = aws_key_pair.hashiqube.key_name
