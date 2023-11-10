@@ -4,6 +4,8 @@ The following providers are used by this module:
 
 - <a name="provider_azurerm"></a> [azurerm](#provider_azurerm) (3.57.0)
 
+- <a name="provider_external"></a> [external](#provider_external) (~> 2.3)
+
 - <a name="provider_null"></a> [null](#provider_null) (~> 3.0)
 
 ## Modules
@@ -30,6 +32,7 @@ The following resources are used by this module:
 - [azurerm_virtual_network.hashiqube](https://registry.terraform.io/providers/hashicorp/azurerm/3.57.0/docs/resources/virtual_network) (resource)
 - [null_resource.debug](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) (resource)
 - [null_resource.hashiqube](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) (resource)
+- [external_external.myipaddress](https://registry.terraform.io/providers/hashicorp/external/latest/docs/data-sources/external) (data source)
 
 ## Required Inputs
 
@@ -111,21 +114,13 @@ Type: `string`
 
 Default: `null`
 
-### <a name="input_my_ipaddress"></a> [my_ipaddress](#input_my_ipaddress)
-
-Description: Your Public IP address
-
-Type: `string`
-
-Default: `null`
-
 ### <a name="input_ssh_private_key"></a> [ssh_private_key](#input_ssh_private_key)
 
-Description: Path to your SSH private key, matching the public key above
+Description: Content of your SSH private key, matching the public key above
 
 Type: `string`
 
-Default: `"~/.ssh/id_rsa"`
+Default: `""`
 
 ### <a name="input_ssh_public_key"></a> [ssh_public_key](#input_ssh_public_key)
 
@@ -168,6 +163,14 @@ Default:
   "44.238.78.236/32"
 ]
 ```
+
+### <a name="input_use_packer_image"></a> [use_packer_image](#input_use_packer_image)
+
+Description: Use your own Packer build image?
+
+Type: `bool`
+
+Default: `false`
 
 ### <a name="input_vagrant_provisioners"></a> [vagrant_provisioners](#input_vagrant_provisioners)
 

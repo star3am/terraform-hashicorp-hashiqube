@@ -1,8 +1,3 @@
-output "your_ipaddress" {
-  value       = data.external.myipaddress.result.ip
-  description = "Your Public IP Address, used for Whitelisting"
-}
-
 output "aaa_welcome" {
   value       = <<WELCOME
 Your HashiQube instance is busy launching, usually this takes ~5 minutes.

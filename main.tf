@@ -28,10 +28,6 @@ terraform {
       source  = "hashicorp/null"
       version = "~> 3.0"
     }
-    external = {
-      source  = "hashicorp/external"
-      version = "~> 2.3"
-    }
     http = {
       source  = "hashicorp/http"
       version = "~> 3.4"
@@ -58,10 +54,6 @@ provider "google" {
   region  = var.gcp_region
 }
 
-data "external" "myipaddress" {
-  program = ["bash", "-c", "curl -m 10 -sk 'https://api.ipify.org?format=json'"]
-}
-
 # https://developer.hashicorp.com/terraform/cloud-docs/api-docs/ip-ranges
 # curl -X GET https://app.terraform.io/api/meta/ip-ranges
 data "http" "terraform_cloud_ip_ranges" {
@@ -84,7 +76,7 @@ resource "null_resource" "hashiqube" {
     deploy_to_gcp        = var.deploy_to_gcp
     deploy_to_aws        = var.deploy_to_aws
     debug_user_data      = var.debug_user_data
-    my_ipaddress         = data.external.myipaddress.result.ip
+    use_packer_image     = var.use_packer_image
     vagrant_provisioners = var.vagrant_provisioners
   }
 }
@@ -117,8 +109,8 @@ module "gcp_hashiqube" {
   debug_allow_ssh_cidr_range              = var.debug_allow_ssh_cidr_range
   aws_hashiqube_ip                        = var.deploy_to_aws ? try(module.aws_hashiqube[0].hashiqube_ip, null) : null
   azure_hashiqube_ip                      = var.deploy_to_azure ? try(module.azure_hashiqube[0].hashiqube_ip, null) : null
-  my_ipaddress                            = data.external.myipaddress.result.ip
   vagrant_provisioners                    = var.vagrant_provisioners
+  use_packer_image                        = var.use_packer_image
   terraform_cloud_api_ip_ranges           = local.terraform_cloud_ip_ranges.api
   terraform_cloud_notifications_ip_ranges = local.terraform_cloud_ip_ranges.notifications
 }
@@ -143,8 +135,8 @@ module "aws_hashiqube" {
   whitelist_cidr                          = var.whitelist_cidr
   azure_hashiqube_ip                      = var.deploy_to_azure ? try(module.azure_hashiqube[0].hashiqube_ip, null) : null
   gcp_hashiqube_ip                        = var.deploy_to_gcp ? try(module.gcp_hashiqube[0].hashiqube_ip, null) : null
-  my_ipaddress                            = data.external.myipaddress.result.ip
   vagrant_provisioners                    = var.vagrant_provisioners
+  use_packer_image                        = var.use_packer_image
   terraform_cloud_api_ip_ranges           = local.terraform_cloud_ip_ranges.api
   terraform_cloud_notifications_ip_ranges = local.terraform_cloud_ip_ranges.notifications
 }
@@ -165,10 +157,10 @@ module "azure_hashiqube" {
   debug_allow_ssh_cidr_range              = var.debug_allow_ssh_cidr_range
   aws_hashiqube_ip                        = var.deploy_to_aws ? try(module.aws_hashiqube[0].hashiqube_ip, null) : null
   gcp_hashiqube_ip                        = var.deploy_to_gcp ? try(module.gcp_hashiqube[0].hashiqube_ip, null) : null
-  my_ipaddress                            = data.external.myipaddress.result.ip
   azure_region                            = var.azure_region
   azure_instance_type                     = var.azure_instance_type
   vagrant_provisioners                    = var.vagrant_provisioners
+  use_packer_image                        = var.use_packer_image
   terraform_cloud_api_ip_ranges           = local.terraform_cloud_ip_ranges.api
   terraform_cloud_notifications_ip_ranges = local.terraform_cloud_ip_ranges.notifications
 }
