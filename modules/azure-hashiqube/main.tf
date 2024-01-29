@@ -35,6 +35,7 @@ resource "null_resource" "hashiqube" {
     azure_region         = var.azure_region
     azure_instance_type  = var.azure_instance_type
     vagrant_provisioners = var.vagrant_provisioners
+    docker_version       = var.docker_version
     timestamp            = local.timestamp
     debug_user_data      = var.debug_user_data
     use_packer_image     = var.use_packer_image
@@ -295,6 +296,7 @@ resource "azurerm_linux_virtual_machine" "hashiqube" {
     HASHIQUBE_GCP_IP     = var.gcp_hashiqube_ip == null ? "" : var.gcp_hashiqube_ip
     HASHIQUBE_AWS_IP     = var.aws_hashiqube_ip == null ? "" : var.aws_hashiqube_ip
     VAGRANT_PROVISIONERS = var.vagrant_provisioners
+    DOCKER_VERSION       = var.docker_version
   }))
   tags = {
     environment = "hashiqube"

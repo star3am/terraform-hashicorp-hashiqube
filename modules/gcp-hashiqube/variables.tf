@@ -66,6 +66,12 @@ variable "vagrant_provisioners" {
   default     = "basetools,docker,consul,vault,nomad,boundary,waypoint"
 }
 
+variable "docker_version" {
+  description = "The Docker version you would like to install"
+  type        = string
+  default     = "latest"
+}
+
 variable "gcp_credentials" {
   type        = string
   default     = "~/.gcp/credentials.json"

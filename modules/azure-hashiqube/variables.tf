@@ -66,6 +66,12 @@ variable "vagrant_provisioners" {
   default     = "basetools,docker,consul,vault,nomad,boundary,waypoint"
 }
 
+variable "docker_version" {
+  description = "The Docker version you would like to install"
+  type        = string
+  default     = "latest"
+}
+
 variable "azure_region" {
   type        = string
   description = "The region in which all Azure resources will be launched"

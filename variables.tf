@@ -35,6 +35,12 @@ variable "vagrant_provisioners" {
   default     = "basetools,docker,consul,vault,nomad,boundary,waypoint"
 }
 
+variable "docker_version" {
+  description = "The Docker version you would like to install"
+  type        = string
+  default     = "latest"
+}
+
 variable "whitelist_cidr" {
   description = "Additional CIDR to whitelist"
   type        = string
