@@ -37,6 +37,7 @@ resource "null_resource" "hashiqube" {
     azure_hashiqube_ip   = var.azure_hashiqube_ip
     gcp_hashiqube_ip     = var.gcp_hashiqube_ip
     vagrant_provisioners = var.vagrant_provisioners
+    docker_version       = var.docker_version
     timestamp            = local.timestamp
     debug_user_data      = var.debug_user_data
     use_packer_image     = var.use_packer_image
@@ -138,6 +139,7 @@ resource "aws_instance" "hashiqube" {
     HASHIQUBE_AZURE_IP   = var.azure_hashiqube_ip == null ? "" : var.azure_hashiqube_ip
     HASHIQUBE_GCP_IP     = var.gcp_hashiqube_ip == null ? "" : var.gcp_hashiqube_ip
     VAGRANT_PROVISIONERS = var.vagrant_provisioners
+    DOCKER_VERSION       = var.docker_version
   }))
   iam_instance_profile = aws_iam_instance_profile.hashiqube.name
   tags = {

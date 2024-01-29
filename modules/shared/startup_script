@@ -15,6 +15,7 @@ then
   HOSTNAME=hashiqube-aws
   FQDN=hashiqube-aws.service.consul
   VAGRANT_PROVISIONERS=${VAGRANT_PROVISIONERS}
+  DOCKER_VERSION=${DOCKER_VERSION}
 elif [[ $(dmidecode -s bios-version) =~ Google ]]
 then
   echo "This is GCP"
@@ -28,6 +29,7 @@ then
   HOSTNAME=hashiqube-gcp
   FQDN=hashiqube-gcp.service.consul
   VAGRANT_PROVISIONERS=${VAGRANT_PROVISIONERS}
+  DOCKER_VERSION=${DOCKER_VERSION}
 else
   echo "This is Azure"
   DC=azure
@@ -40,6 +42,7 @@ else
   HOSTNAME=hashiqube-azure
   FQDN=hashiqube-azure.service.consul
   VAGRANT_PROVISIONERS=${VAGRANT_PROVISIONERS}
+  DOCKER_VERSION=${DOCKER_VERSION}
 fi
 # set hostname
 echo "$HOSTNAME" > /etc/hostname
@@ -92,7 +95,11 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" < /dev/null > /dev/null
 DEBIAN_FRONTEND=noninteractive apt-get update -qq < /dev/null > /dev/null
 # BUG: https://github.com/kubernetes-sigs/kind/issues/3223 unable to use kubectl exec
-DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker-ce < /dev/null > /dev/null
+if [[ ${DOCKER_VERSION} != "latest" ]]; then
+  DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker-ce=${DOCKER_VERSION} < /dev/null > /dev/null
+else
+  DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker-ce < /dev/null > /dev/null
+fi
 usermod -aG docker ubuntu
 service docker restart
 # install vagrant

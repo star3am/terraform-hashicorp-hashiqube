@@ -38,6 +38,7 @@ resource "null_resource" "hashiqube" {
     aws_hashiqube_ip     = var.aws_hashiqube_ip
     azure_hashiqube_ip   = var.azure_hashiqube_ip
     vagrant_provisioners = var.vagrant_provisioners
+    docker_version       = var.docker_version
     timestamp            = local.timestamp
     debug_user_data      = var.debug_user_data
     use_packer_image     = var.use_packer_image
@@ -97,6 +98,7 @@ resource "google_compute_instance_template" "hashiqube" {
     HASHIQUBE_AWS_IP     = var.aws_hashiqube_ip == null ? "" : var.aws_hashiqube_ip
     HASHIQUBE_AZURE_IP   = var.azure_hashiqube_ip == null ? "" : var.azure_hashiqube_ip
     VAGRANT_PROVISIONERS = var.vagrant_provisioners
+    DOCKER_VERSION       = var.docker_version
   })
   metadata = {
     ssh-keys = "ubuntu:${var.ssh_public_key}"
