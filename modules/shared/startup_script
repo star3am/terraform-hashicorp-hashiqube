@@ -98,7 +98,7 @@ DEBIAN_FRONTEND=noninteractive apt-get update -qq < /dev/null > /dev/null
 if [[ ${DOCKER_VERSION} != "latest" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker-ce=${DOCKER_VERSION} < /dev/null > /dev/null
 else
-  DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker-ce < /dev/null > /dev/null  
+  DEBIAN_FRONTEND=noninteractive apt-get install -qq --allow-downgrades --assume-yes docker-ce < /dev/null > /dev/null
 fi
 usermod -aG docker ubuntu
 service docker restart
