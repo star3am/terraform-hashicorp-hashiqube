@@ -30,7 +30,6 @@ resource "null_resource" "hashiqube" {
     deploy_to_aws        = var.deploy_to_aws
     deploy_to_azure      = var.deploy_to_azure
     deploy_to_gcp        = var.deploy_to_gcp
-    whitelist_cidr       = var.whitelist_cidr
     my_ipaddress         = data.external.myipaddress.result.ip
     gcp_project          = var.gcp_project
     gcp_credentials      = var.gcp_credentials
@@ -185,8 +184,8 @@ resource "google_compute_firewall" "gcp_hashiqube_ip" {
   source_ranges = ["${google_compute_address.hashiqube.address}/32"]
 }
 
-resource "google_compute_firewall" "whitelist_cidr" {
-  count   = var.whitelist_cidr != "" ? 1 : 0
+resource "google_compute_firewall" "whitelist_cidrs" {
+  count   = var.whitelist_cidrs != "" ? 1 : 0
   name    = "whitelist-cidr"
   network = "default"
   project = var.gcp_project
@@ -198,7 +197,7 @@ resource "google_compute_firewall" "whitelist_cidr" {
     protocol = "udp"
     ports    = ["0-65535"]
   }
-  source_ranges = [var.whitelist_cidr]
+  source_ranges = var.whitelist_cidrs
 }
 
 resource "google_compute_firewall" "debug_allow_ssh_cidr_range" {

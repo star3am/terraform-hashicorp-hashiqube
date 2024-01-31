@@ -27,7 +27,6 @@ resource "null_resource" "hashiqube" {
     deploy_to_aws        = var.deploy_to_aws
     deploy_to_azure      = var.deploy_to_azure
     deploy_to_gcp        = var.deploy_to_gcp
-    whitelist_cidr       = var.whitelist_cidr
     my_ipaddress         = data.external.myipaddress.result.ip
     ssh_public_key       = var.ssh_public_key
     aws_hashiqube_ip     = var.aws_hashiqube_ip
@@ -169,20 +168,20 @@ resource "azurerm_network_security_group" "gcp_hashiqube_ip" {
   }
 }
 
-resource "azurerm_network_security_group" "whitelist_cidr" {
-  count               = var.whitelist_cidr != "" ? 1 : 0
+resource "azurerm_network_security_group" "whitelist_cidrs" {
+  count               = var.whitelist_cidrs != "" ? 1 : 0
   name                = "whitelist_cidr"
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
-    name                         = "whitelist_cidr"
+    name                         = "whitelist_cidrs"
     priority                     = 1005
     direction                    = "Inbound"
     access                       = "Allow"
     protocol                     = "Tcp"
     source_port_range            = "*"
     destination_port_range       = "*"
-    source_address_prefixes      = [var.whitelist_cidr]
+    source_address_prefixes      = var.whitelist_cidrs
     destination_address_prefixes = [azurerm_network_interface.hashiqube.private_ip_address]
   }
   tags = {
