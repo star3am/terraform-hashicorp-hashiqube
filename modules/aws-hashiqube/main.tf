@@ -30,7 +30,6 @@ resource "null_resource" "hashiqube" {
     deploy_to_aws        = var.deploy_to_aws
     deploy_to_azure      = var.deploy_to_azure
     deploy_to_gcp        = var.deploy_to_gcp
-    whitelist_cidr       = var.whitelist_cidr
     my_ipaddress         = data.external.myipaddress.result.ip
     region               = var.aws_region
     ssh_public_key       = var.ssh_public_key
@@ -48,6 +47,7 @@ locals {
   timestamp = timestamp()
 }
 
+# Use latest Canonical Ubuntu AMI
 data "aws_ami" "ubuntu" {
   count = var.use_packer_image == true ? 0 : 1
 
@@ -63,6 +63,7 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
+# Use Our own Packer built Private AMI
 data "aws_ami" "packer" {
   count = var.use_packer_image == true ? 1 : 0
 
@@ -236,13 +237,13 @@ resource "aws_security_group_rule" "gcp_hashiqube" {
 }
 
 # tfsec:ignore:aws-vpc-disallow-mixed-sgr
-resource "aws_security_group_rule" "whitelist_cidr" {
-  count             = var.whitelist_cidr != "" ? 1 : 0
+resource "aws_security_group_rule" "whitelist_cidrs" {
+  count             = var.whitelist_cidrs != "" ? 1 : 0
   description       = "Allow Your Whitelist CIDR addresses"
   type              = "ingress"
   to_port           = 65535
   protocol          = "all"
-  cidr_blocks       = [var.whitelist_cidr]
+  cidr_blocks       = var.whitelist_cidrs
   from_port         = 0
   security_group_id = aws_security_group.hashiqube.id
 }

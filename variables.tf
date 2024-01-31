@@ -41,10 +41,17 @@ variable "docker_version" {
   default     = "latest"
 }
 
-variable "whitelist_cidr" {
-  description = "Additional CIDR to whitelist"
-  type        = string
-  default     = "20.191.210.171/32" # Example: 0.0.0.0/0
+variable "whitelist_cidrs" {
+  description = "Additional CIDRs to whitelist"
+  type        = list(any)
+  default = [
+    "52.86.200.106/32",
+    "52.86.201.227/32",
+    "52.70.186.109/32",
+    "44.236.246.186/32",
+    "54.185.161.84/32",
+    "44.238.78.236/32",
+  ]
 }
 
 variable "ssh_public_key" {

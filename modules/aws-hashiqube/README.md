@@ -30,7 +30,7 @@ The following resources are used by this module:
 - [aws_security_group_rule.gcp_hashiqube](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [aws_security_group_rule.terraform_cloud_api_ip_ranges](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [aws_security_group_rule.terraform_cloud_notifications_ip_ranges](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
-- [aws_security_group_rule.whitelist_cidr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
+- [aws_security_group_rule.whitelist_cidrs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) (resource)
 - [null_resource.debug](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) (resource)
 - [null_resource.hashiqube](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) (resource)
 - [aws_ami.packer](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) (data source)
@@ -125,6 +125,14 @@ Type: `bool`
 
 Default: `false`
 
+### <a name="input_docker_version"></a> [docker_version](#input_docker_version)
+
+Description: The Docker version you would like to install
+
+Type: `string`
+
+Default: `"latest"`
+
 ### <a name="input_gcp_hashiqube_ip"></a> [gcp_hashiqube_ip](#input_gcp_hashiqube_ip)
 
 Description: GCP Hahiqube IP address
@@ -199,13 +207,24 @@ Type: `string`
 
 Default: `"basetools,docker,consul,vault,nomad,boundary,waypoint"`
 
-### <a name="input_whitelist_cidr"></a> [whitelist_cidr](#input_whitelist_cidr)
+### <a name="input_whitelist_cidrs"></a> [whitelist_cidrs](#input_whitelist_cidrs)
 
-Description: Additional CIDR to whitelist
+Description: Additional CIDRs to whitelist
 
-Type: `string`
+Type: `list(any)`
 
-Default: `"20.191.210.171/32"`
+Default:
+
+```json
+[
+  "52.86.200.106/32",
+  "52.86.201.227/32",
+  "52.70.186.109/32",
+  "44.236.246.186/32",
+  "54.185.161.84/32",
+  "44.238.78.236/32"
+]
+```
 
 ## Outputs
 

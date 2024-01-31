@@ -91,7 +91,7 @@ module "gcp_hashiqube" {
   deploy_to_aws                           = var.deploy_to_aws
   deploy_to_azure                         = var.deploy_to_azure
   deploy_to_gcp                           = var.deploy_to_gcp
-  whitelist_cidr                          = var.whitelist_cidr
+  whitelist_cidrs                         = var.whitelist_cidrs
   gcp_project                             = var.gcp_project
   gcp_credentials                         = var.gcp_credentials
   gcp_cluster_description                 = var.gcp_cluster_description
@@ -134,7 +134,7 @@ module "aws_hashiqube" {
   aws_instance_type          = var.aws_instance_type
   # aws_profile          = var.aws_profile
   # aws_credentials      = var.aws_credentials
-  whitelist_cidr                          = var.whitelist_cidr
+  whitelist_cidrs                         = var.whitelist_cidrs
   azure_hashiqube_ip                      = var.deploy_to_azure ? try(module.azure_hashiqube[0].hashiqube_ip, null) : null
   gcp_hashiqube_ip                        = var.deploy_to_gcp ? try(module.gcp_hashiqube[0].hashiqube_ip, null) : null
   vagrant_provisioners                    = var.vagrant_provisioners
@@ -153,7 +153,7 @@ module "azure_hashiqube" {
   deploy_to_aws                           = var.deploy_to_aws
   deploy_to_azure                         = var.deploy_to_azure
   deploy_to_gcp                           = var.deploy_to_gcp
-  whitelist_cidr                          = var.whitelist_cidr
+  whitelist_cidrs                         = var.whitelist_cidrs
   ssh_public_key                          = var.ssh_public_key
   ssh_private_key                         = var.ssh_private_key
   debug_user_data                         = var.debug_user_data

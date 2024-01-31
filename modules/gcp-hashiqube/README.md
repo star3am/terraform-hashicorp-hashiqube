@@ -24,7 +24,7 @@ The following resources are used by this module:
 - [google_compute_firewall.my_ipaddress](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_firewall.terraform_cloud_api_ip_ranges](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_firewall.terraform_cloud_notifications_ip_ranges](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
-- [google_compute_firewall.whitelist_cidr](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
+- [google_compute_firewall.whitelist_cidrs](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) (resource)
 - [google_compute_instance_template.hashiqube](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_instance_template) (resource)
 - [google_compute_region_instance_group_manager.hashiqube](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_region_instance_group_manager) (resource)
 - [google_project_iam_member.hashiqube](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) (resource)
@@ -97,6 +97,14 @@ Description: Deploy Hashiqube on GCP
 Type: `bool`
 
 Default: `false`
+
+### <a name="input_docker_version"></a> [docker_version](#input_docker_version)
+
+Description: The Docker version you would like to install
+
+Type: `string`
+
+Default: `"latest"`
 
 ### <a name="input_gcp_account_id"></a> [gcp_account_id](#input_gcp_account_id)
 
@@ -274,13 +282,24 @@ Type: `string`
 
 Default: `"basetools,docker,consul,vault,nomad,boundary,waypoint"`
 
-### <a name="input_whitelist_cidr"></a> [whitelist_cidr](#input_whitelist_cidr)
+### <a name="input_whitelist_cidrs"></a> [whitelist_cidrs](#input_whitelist_cidrs)
 
-Description: Additional CIDR to whitelist
+Description: Additional CIDRs to whitelist
 
-Type: `string`
+Type: `list(any)`
 
-Default: `"20.191.210.171/32"`
+Default:
+
+```json
+[
+  "52.86.200.106/32",
+  "52.86.201.227/32",
+  "52.70.186.109/32",
+  "44.236.246.186/32",
+  "54.185.161.84/32",
+  "44.238.78.236/32"
+]
+```
 
 ## Outputs
 
