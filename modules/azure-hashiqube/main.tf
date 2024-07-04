@@ -15,11 +15,19 @@ terraform {
       source  = "hashicorp/external"
       version = "~> 2.3"
     }
+    random = {
+      source = "hashicorp/random"
+      version = "3.6.2"
+    }
   }
 }
 
 data "external" "myipaddress" {
   program = ["bash", "-c", "curl -m 10 -sk 'https://api.ipify.org?format=json'"]
+}
+
+resource "random_pet" "hashiqube" {
+  length = 1
 }
 
 resource "null_resource" "hashiqube" {
@@ -38,6 +46,7 @@ resource "null_resource" "hashiqube" {
     timestamp            = local.timestamp
     debug_user_data      = var.debug_user_data
     use_packer_image     = var.use_packer_image
+    random_pet           = random_pet.hashiqube.id
   }
 }
 
@@ -47,7 +56,7 @@ locals {
 
 # Create a resource group if it doesnt exist
 resource "azurerm_resource_group" "hashiqube" {
-  name     = "hashiqube"
+  name     = "hashiqube-${random_pet.hashiqube.id}"
   location = var.azure_region
   tags = {
     environment = "hashiqube"
@@ -56,7 +65,7 @@ resource "azurerm_resource_group" "hashiqube" {
 
 # Create virtual network
 resource "azurerm_virtual_network" "hashiqube" {
-  name                = "hashiqube"
+  name                = "hashiqube-${random_pet.hashiqube.id}"
   address_space       = ["10.0.0.0/16"]
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
@@ -67,7 +76,7 @@ resource "azurerm_virtual_network" "hashiqube" {
 
 # Create subnet
 resource "azurerm_subnet" "hashiqube" {
-  name                 = "hashiqube"
+  name                 = "hashiqube-${random_pet.hashiqube.id}"
   resource_group_name  = azurerm_resource_group.hashiqube.name
   virtual_network_name = azurerm_virtual_network.hashiqube.name
   address_prefixes     = ["10.0.1.0/24"]
@@ -75,7 +84,7 @@ resource "azurerm_subnet" "hashiqube" {
 
 # Create public IPs
 resource "azurerm_public_ip" "hashiqube" {
-  name                = "hashiqube"
+  name                = "hashiqube-${random_pet.hashiqube.id}"
   location            = azurerm_resource_group.hashiqube.location
   resource_group_name = azurerm_resource_group.hashiqube.name
   allocation_method   = "Static"
@@ -86,7 +95,7 @@ resource "azurerm_public_ip" "hashiqube" {
 
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "my_ipaddress" {
-  name                = "hashiqube"
+  name                = "hashiqube-${random_pet.hashiqube.id}"
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
@@ -107,7 +116,7 @@ resource "azurerm_network_security_group" "my_ipaddress" {
 
 resource "azurerm_network_security_group" "azure_hashiqube_ip" {
   count               = var.deploy_to_azure ? 1 : 0
-  name                = "azure_hashiqube_ip"
+  name                = "azure_hashiqube_ip_${random_pet.hashiqube.id}"
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
@@ -128,7 +137,7 @@ resource "azurerm_network_security_group" "azure_hashiqube_ip" {
 
 resource "azurerm_network_security_group" "aws_hashiqube_ip" {
   count               = var.deploy_to_aws ? 1 : 0
-  name                = "aws_hashiqube_ip"
+  name                = "aws_hashiqube_ip_${random_pet.hashiqube.id}"
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
@@ -149,7 +158,7 @@ resource "azurerm_network_security_group" "aws_hashiqube_ip" {
 
 resource "azurerm_network_security_group" "gcp_hashiqube_ip" {
   count               = var.deploy_to_gcp ? 1 : 0
-  name                = "gcp_hashiqube_ip"
+  name                = "gcp_hashiqube_ip_${random_pet.hashiqube.id}"
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
@@ -170,7 +179,7 @@ resource "azurerm_network_security_group" "gcp_hashiqube_ip" {
 
 resource "azurerm_network_security_group" "whitelist_cidrs" {
   count               = var.whitelist_cidrs != "" ? 1 : 0
-  name                = "whitelist_cidr"
+  name                = "whitelist_cidr_${random_pet.hashiqube.id}"
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
@@ -191,7 +200,7 @@ resource "azurerm_network_security_group" "whitelist_cidrs" {
 
 resource "azurerm_network_security_group" "terraform_cloud_api_ip_ranges" {
   count               = var.debug_user_data == true ? 1 : 0
-  name                = "terraform_cloud_api_ip_ranges"
+  name                = "terraform_cloud_api_ip_ranges_${random_pet.hashiqube.id}"
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
@@ -212,7 +221,7 @@ resource "azurerm_network_security_group" "terraform_cloud_api_ip_ranges" {
 
 resource "azurerm_network_security_group" "terraform_cloud_notifications_ip_ranges" {
   count               = var.debug_user_data == true ? 1 : 0
-  name                = "terraform_cloud_notifications_ip_ranges"
+  name                = "terraform_cloud_notifications_ip_ranges_${random_pet.hashiqube.id}"
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
@@ -233,7 +242,7 @@ resource "azurerm_network_security_group" "terraform_cloud_notifications_ip_rang
 
 resource "azurerm_network_security_group" "debug_allow_ssh_cidr_range" {
   count               = var.debug_allow_ssh_cidr_range != "" ? 1 : 0
-  name                = "debug_allow_ssh_cidr_range"
+  name                = "debug_allow_ssh_cidr_range_${random_pet.hashiqube.id}"
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
   security_rule {
@@ -254,7 +263,7 @@ resource "azurerm_network_security_group" "debug_allow_ssh_cidr_range" {
 
 # Create network interface
 resource "azurerm_network_interface" "hashiqube" {
-  name                = "hashiqube"
+  name                = "hashiqube-${random_pet.hashiqube.id}"
   location            = var.azure_region
   resource_group_name = azurerm_resource_group.hashiqube.name
   ip_configuration {
@@ -270,7 +279,7 @@ resource "azurerm_network_interface" "hashiqube" {
 
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "hashiqube" {
-  name                  = "hashiqube"
+  name                  = "hashiqube-${random_pet.hashiqube.id}"
   location              = var.azure_region
   size                  = var.azure_instance_type
   admin_username        = "ubuntu"
