@@ -132,8 +132,8 @@ resource "google_compute_address" "hashiqube" {
 }
 
 resource "google_compute_firewall" "my_ipaddress" {
-  name    = "my-ipaddress-${random_pet.hashiqube.id}"
-  network = "hashiqube-${random_pet.hashiqube.id}"
+  name    = "${var.gcp_cluster_name}-my-ipaddress-${random_pet.hashiqube.id}"
+  network = "default"
   project = var.gcp_project
   allow {
     protocol = "tcp"
@@ -149,7 +149,7 @@ resource "google_compute_firewall" "my_ipaddress" {
 resource "google_compute_firewall" "aws_hashiqube_ip" {
   count   = var.deploy_to_aws ? 1 : 0
   name    = "aws-hashiqube-ip-${random_pet.hashiqube.id}"
-  network = "hashiqube-${random_pet.hashiqube.id}"
+  network = "default"
   project = var.gcp_project
   allow {
     protocol = "tcp"
@@ -165,7 +165,7 @@ resource "google_compute_firewall" "aws_hashiqube_ip" {
 resource "google_compute_firewall" "azure_hashiqube_ip" {
   count   = var.deploy_to_azure ? 1 : 0
   name    = "azure-hashiqube-ip-${random_pet.hashiqube.id}"
-  network = "hashiqube-${random_pet.hashiqube.id}"
+  network = "default"
   project = var.gcp_project
   allow {
     protocol = "tcp"
@@ -181,7 +181,7 @@ resource "google_compute_firewall" "azure_hashiqube_ip" {
 resource "google_compute_firewall" "gcp_hashiqube_ip" {
   count   = var.deploy_to_gcp ? 1 : 0
   name    = "gcp-hashiqube-ip-${random_pet.hashiqube.id}"
-  network = "hashiqube-${random_pet.hashiqube.id}"
+  network = "default"
   project = var.gcp_project
   allow {
     protocol = "tcp"
@@ -197,7 +197,7 @@ resource "google_compute_firewall" "gcp_hashiqube_ip" {
 resource "google_compute_firewall" "whitelist_cidrs" {
   count   = var.whitelist_cidrs != "" ? 1 : 0
   name    = "whitelist-cidr-${random_pet.hashiqube.id}"
-  network = "hashiqube-${random_pet.hashiqube.id}"
+  network = "default"
   project = var.gcp_project
   allow {
     protocol = "tcp"
@@ -213,7 +213,7 @@ resource "google_compute_firewall" "whitelist_cidrs" {
 resource "google_compute_firewall" "debug_allow_ssh_cidr_range" {
   count   = var.debug_allow_ssh_cidr_range != "" ? 1 : 0
   name    = "debug-allow-ssh-cidr-range-${random_pet.hashiqube.id}"
-  network = "hashiqube-${random_pet.hashiqube.id}"
+  network = "default"
   project = var.gcp_project
   allow {
     protocol = "tcp"
@@ -225,7 +225,7 @@ resource "google_compute_firewall" "debug_allow_ssh_cidr_range" {
 resource "google_compute_firewall" "terraform_cloud_api_ip_ranges" {
   count   = var.debug_user_data == true ? 1 : 0
   name    = "terraform-cloud-api-ip-ranges-${random_pet.hashiqube.id}"
-  network = "hashiqube-${random_pet.hashiqube.id}"
+  network = "default"
   project = var.gcp_project
   allow {
     protocol = "tcp"
@@ -237,7 +237,7 @@ resource "google_compute_firewall" "terraform_cloud_api_ip_ranges" {
 resource "google_compute_firewall" "terraform_cloud_notifications_ip_ranges" {
   count   = var.debug_user_data == true ? 1 : 0
   name    = "terraform-cloud-notifications-ip-ranges-${random_pet.hashiqube.id}"
-  network = "hashiqube-${random_pet.hashiqube.id}"
+  network = "default"
   project = var.gcp_project
   allow {
     protocol = "tcp"
