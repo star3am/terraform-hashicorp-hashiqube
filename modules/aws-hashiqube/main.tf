@@ -18,11 +18,19 @@ terraform {
       source  = "hashicorp/external"
       version = "~> 2.3"
     }
+    random = {
+      source = "hashicorp/random"
+      version = "3.6.2"
+    }
   }
 }
 
 data "external" "myipaddress" {
   program = ["bash", "-c", "curl -m 10 -sk 'https://api.ipify.org?format=json'"]
+}
+
+resource "random_pet" "hashiqube" {
+  length = 1
 }
 
 resource "null_resource" "hashiqube" {
@@ -40,6 +48,7 @@ resource "null_resource" "hashiqube" {
     timestamp            = local.timestamp
     debug_user_data      = var.debug_user_data
     use_packer_image     = var.use_packer_image
+    random_pet           = random_pet.hashiqube.id
   }
 }
 
@@ -80,7 +89,7 @@ data "aws_ami" "packer" {
 }
 
 resource "aws_iam_role" "hashiqube" {
-  name               = "hashiqube"
+  name               = "hashiqube-${random_pet.hashiqube.id}"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -99,13 +108,13 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "hashiqube" {
-  name = "hashiqube"
+  name = "hashiqube-${random_pet.hashiqube.id}"
   role = aws_iam_role.hashiqube.name
 }
 
 # tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_role_policy" "hashiqube" {
-  name   = "hashiqube"
+  name   = "hashiqube-${random_pet.hashiqube.id}"
   role   = aws_iam_role.hashiqube.id
   policy = <<EOF
 {
@@ -144,17 +153,17 @@ resource "aws_instance" "hashiqube" {
   }))
   iam_instance_profile = aws_iam_instance_profile.hashiqube.name
   tags = {
-    Name = "hashiqube"
+    Name = "hashiqube-${random_pet.hashiqube.id}"
   }
 }
 
 resource "aws_key_pair" "hashiqube" {
-  key_name   = "hashiqube"
+  key_name   = "hashiqube-${random_pet.hashiqube.id}"
   public_key = var.ssh_public_key
 }
 
 resource "aws_security_group" "hashiqube" {
-  name        = "hashiqube"
+  name        = "hashiqube-${random_pet.hashiqube.id}"
   description = "Allow Your Whitelist CIDR addresses"
   ingress {
     from_port   = 0
