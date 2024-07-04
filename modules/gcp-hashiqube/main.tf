@@ -85,7 +85,7 @@ data "google_compute_subnetwork" "hashiqube" {
 resource "google_compute_instance_template" "hashiqube" {
   name                 = "hashiqube-${random_pet.hashiqube.id}"
   provider             = google
-  name_prefix          = var.gcp_cluster_name
+  # name_prefix          = var.gcp_cluster_name
   description          = var.gcp_cluster_description
   instance_description = var.gcp_cluster_description
   machine_type         = var.gcp_machine_type
